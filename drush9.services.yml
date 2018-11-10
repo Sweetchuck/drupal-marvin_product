@@ -1,0 +1,25 @@
+
+services:
+  marvin.git_hook.commands:
+    class: 'Drush\Commands\marvin_product\GitHookCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.lint.commands:
+    class: 'Drush\Commands\marvin_product\LintCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.onboarding.commands:
+    class: 'Drush\Commands\marvin_product\OnboardingCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.phpcs.commands:
+    class: 'Drush\Commands\marvin_product\PhpcsCommands'
+    tags:
+      -
+        name: 'drush.command'
