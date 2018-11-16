@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7317322e4b120f08a209b60f843e4f2c",
+    "content-hash": "c25aed98998dbbbe7eb1d859efc6c34f",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -457,16 +457,16 @@
         },
         {
             "name": "consolidation/site-alias",
-            "version": "1.1.9",
+            "version": "1.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/site-alias.git",
-                "reference": "0a4c49f91e44b0b7bb288f3547875a136a7ed704"
+                "reference": "54ea74ee7dbd54ef356798028ca9a3548cb8df14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/0a4c49f91e44b0b7bb288f3547875a136a7ed704",
-                "reference": "0a4c49f91e44b0b7bb288f3547875a136a7ed704",
+                "url": "https://api.github.com/repos/consolidation/site-alias/zipball/54ea74ee7dbd54ef356798028ca9a3548cb8df14",
+                "reference": "54ea74ee7dbd54ef356798028ca9a3548cb8df14",
                 "shasum": ""
             },
             "require": {
@@ -509,7 +509,7 @@
                 }
             ],
             "description": "Manage alias records for local and remote sites.",
-            "time": "2018-10-31T01:29:05+00:00"
+            "time": "2018-11-03T05:07:56+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -691,21 +691,60 @@
             "time": "2014-10-24T07:27:01+00:00"
         },
         {
+            "name": "drupal/coder",
+            "version": "8.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/coder.git",
+                "reference": "29a25627e7148b3119c84f18e087fc3b8c85b959"
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4.0",
+                "squizlabs/php_codesniffer": "^3.0.1",
+                "symfony/yaml": ">=2.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=3.7 <6"
+            },
+            "type": "phpcodesniffer-standard",
+            "autoload": {
+                "psr-0": {
+                    "Drupal\\": "coder_sniffer/Drupal/",
+                    "DrupalPractice\\": "coder_sniffer/Drupal/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "description": "Coder is a library to review Drupal code.",
+            "homepage": "https://www.drupal.org/project/coder",
+            "keywords": [
+                "code review",
+                "phpcs",
+                "standards"
+            ],
+            "time": "2018-09-21T14:22:49+00:00"
+        },
+        {
             "name": "drupal/marvin",
             "version": "dev-8.x-1.x",
             "dist": {
                 "type": "path",
                 "url": "../../drupal/marvin",
-                "reference": "240704dd1bf0da8aa87b7fd680921a8666713ecd",
+                "reference": "557be577a1163b91dd8b359bd7952ff5eac27481",
                 "shasum": null
             },
             "require": {
                 "danielstjules/stringy": "^3.1",
+                "drupal/coder": "^8.3",
                 "drush/drush": "^9.3",
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "ext-pcre": "*",
                 "php": ">=7.1",
+                "squizlabs/php_codesniffer": "^3.3",
                 "sweetchuck/git-hooks-stdinput-reader": "*",
                 "sweetchuck/robo-bundler": "*",
                 "sweetchuck/robo-compass": "*",
@@ -716,6 +755,7 @@
                 "sweetchuck/robo-phpunit": "*",
                 "sweetchuck/robo-rvm": "dev-master",
                 "sweetchuck/robo-scss-lint": "*",
+                "sweetchuck/robo-stringy": "^0.0",
                 "sweetchuck/robo-yarn": "*",
                 "sweetchuck/utils": "*",
                 "symfony/yaml": "^3.4 || ^4.0",
@@ -724,7 +764,6 @@
             "require-dev": {
                 "composer/installers": "^1.5",
                 "drupal-composer/drupal-scaffold": "^2.5",
-                "drupal/coder": "^8.2",
                 "drupal/core": "^8.5",
                 "mikey179/vfsstream": "^1.6",
                 "phpunit/phpunit": "^6.3",
@@ -1652,63 +1691,36 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.9.1",
+            "version": "3.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "dcbed1074f8244661eecddfc2a675430d8d33f62"
+                "reference": "6ad28354c04b364c3c71a34e4a18b629cc3b231e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/dcbed1074f8244661eecddfc2a675430d8d33f62",
-                "reference": "dcbed1074f8244661eecddfc2a675430d8d33f62",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/6ad28354c04b364c3c71a34e4a18b629cc3b231e",
+                "reference": "6ad28354c04b364c3c71a34e4a18b629cc3b231e",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
                 "ext-tokenizer": "*",
                 "ext-xmlwriter": "*",
-                "php": ">=5.1.2"
+                "php": ">=5.4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0"
             },
             "bin": [
-                "scripts/phpcs",
-                "scripts/phpcbf"
+                "bin/phpcs",
+                "bin/phpcbf"
             ],
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.x-dev"
+                    "dev-master": "3.x-dev"
                 }
-            },
-            "autoload": {
-                "classmap": [
-                    "CodeSniffer.php",
-                    "CodeSniffer/CLI.php",
-                    "CodeSniffer/Exception.php",
-                    "CodeSniffer/File.php",
-                    "CodeSniffer/Fixer.php",
-                    "CodeSniffer/Report.php",
-                    "CodeSniffer/Reporting.php",
-                    "CodeSniffer/Sniff.php",
-                    "CodeSniffer/Tokens.php",
-                    "CodeSniffer/Reports/",
-                    "CodeSniffer/Tokenizers/",
-                    "CodeSniffer/DocGenerators/",
-                    "CodeSniffer/Standards/AbstractPatternSniff.php",
-                    "CodeSniffer/Standards/AbstractScopeSniff.php",
-                    "CodeSniffer/Standards/AbstractVariableSniff.php",
-                    "CodeSniffer/Standards/IncorrectPatternException.php",
-                    "CodeSniffer/Standards/Generic/Sniffs/",
-                    "CodeSniffer/Standards/MySource/Sniffs/",
-                    "CodeSniffer/Standards/PEAR/Sniffs/",
-                    "CodeSniffer/Standards/PSR1/Sniffs/",
-                    "CodeSniffer/Standards/PSR2/Sniffs/",
-                    "CodeSniffer/Standards/Squiz/Sniffs/",
-                    "CodeSniffer/Standards/Zend/Sniffs/"
-                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1726,7 +1738,45 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2017-05-22T02:43:20+00:00"
+            "time": "2018-09-23T23:08:17+00:00"
+        },
+        {
+            "name": "sweetchuck/cli-cmd-builder",
+            "version": "v0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sweetchuck/cli-cmd-builder.git",
+                "reference": "9f709dd738d105aab2c3b7d8953b2bc4ab7dcccc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sweetchuck/cli-cmd-builder/zipball/9f709dd738d105aab2c3b7d8953b2bc4ab7dcccc",
+                "reference": "9f709dd738d105aab2c3b7d8953b2bc4ab7dcccc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-pcre": "*"
+            },
+            "require-dev": {
+                "codeception/codeception": "^2.4",
+                "consolidation/robo": "^1.3",
+                "squizlabs/php_codesniffer": "^3.3",
+                "sweetchuck/git-hooks": "^0.0.10",
+                "webmozart/path-util": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sweetchuck\\CliCmdBuilder\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "description": "Build a CLI commands. Basically string concatenating.",
+            "time": "2018-11-13T20:22:38+00:00"
         },
         {
             "name": "sweetchuck/git-hooks-stdinput-reader",
@@ -1888,30 +1938,32 @@
         },
         {
             "name": "sweetchuck/robo-composer",
-            "version": "v0.0.1",
+            "version": "v0.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/robo-composer.git",
-                "reference": "5300129121c0e6d9ef72a246048bb02dbcd1e30b"
+                "reference": "05c78d45f670c6e8fc01d05b715ec0e7a595316e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sweetchuck/robo-composer/zipball/5300129121c0e6d9ef72a246048bb02dbcd1e30b",
-                "reference": "5300129121c0e6d9ef72a246048bb02dbcd1e30b",
+                "url": "https://api.github.com/repos/Sweetchuck/robo-composer/zipball/05c78d45f670c6e8fc01d05b715ec0e7a595316e",
+                "reference": "05c78d45f670c6e8fc01d05b715ec0e7a595316e",
                 "shasum": ""
             },
             "require": {
-                "consolidation/robo": "^1.0",
-                "php": ">=7.1",
-                "squizlabs/php_codesniffer": "^2.6",
-                "sweetchuck/lint-report": "^0.0"
+                "ext-pcre": "*",
+                "php": ">=7.1"
             },
             "require-dev": {
                 "codeception/codeception": "^2.2",
+                "consolidation/robo": "^1.0",
+                "squizlabs/php_codesniffer": "^3",
                 "sweetchuck/codeception-module-robo-task-runner": "^0.0",
                 "sweetchuck/git-hooks": "^0.0",
+                "sweetchuck/lint-report": "^0.0",
                 "sweetchuck/robo-git": "^0.0",
-                "symfony/yaml": "^2.8 || ^3.1",
+                "sweetchuck/robo-phpcs": "^0.0",
+                "symfony/yaml": "^4.0",
                 "webmozart/path-util": "^2.3"
             },
             "type": "library",
@@ -1922,10 +1974,10 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "description": "Robo task wrapper for Composer",
-            "time": "2017-11-10T19:17:33+00:00"
+            "time": "2018-11-14T12:14:54+00:00"
         },
         {
             "name": "sweetchuck/robo-git",
@@ -2019,28 +2071,29 @@
         },
         {
             "name": "sweetchuck/robo-phpcs",
-            "version": "v0.0.19",
+            "version": "v0.0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/robo-phpcs.git",
-                "reference": "f23339752026ffed568429ebf1f1f50a557c71c7"
+                "reference": "d1a5d3b4d6c34888280ffba8300542c1c83a9e89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sweetchuck/robo-phpcs/zipball/f23339752026ffed568429ebf1f1f50a557c71c7",
-                "reference": "f23339752026ffed568429ebf1f1f50a557c71c7",
+                "url": "https://api.github.com/repos/Sweetchuck/robo-phpcs/zipball/d1a5d3b4d6c34888280ffba8300542c1c83a9e89",
+                "reference": "d1a5d3b4d6c34888280ffba8300542c1c83a9e89",
                 "shasum": ""
             },
             "require": {
                 "consolidation/robo": "^1.0",
+                "ext-json": "*",
                 "php": ">=7.1",
-                "squizlabs/php_codesniffer": "^2.6",
                 "sweetchuck/lint-report": "^0.0"
             },
             "require-dev": {
                 "codeception/codeception": "^2.2",
                 "cweagans/composer-patches": "^1.6",
                 "mikey179/vfsstream": "^1.6",
+                "squizlabs/php_codesniffer": "^3.0",
                 "sweetchuck/codeception-module-robo-task-runner": "^0.0",
                 "sweetchuck/git-hooks": "^0.0",
                 "sweetchuck/robo-git": "^0.0",
@@ -2058,7 +2111,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Robo task wrapper for PHPCS",
-            "time": "2018-03-15T17:22:48+00:00"
+            "time": "2018-09-01T12:11:34+00:00"
         },
         {
             "name": "sweetchuck/robo-phpunit",
@@ -2066,23 +2119,26 @@
             "dist": {
                 "type": "path",
                 "url": "../../sweetchuck/robo-phpunit",
-                "reference": "04c8eeefb500df47429eff919d7d5fbe62fdf014",
+                "reference": "15d123d0443c5d8a62b942ecedb6550ff43b8bb1",
                 "shasum": null
             },
             "require": {
                 "consolidation/robo": "^1.0",
                 "danielstjules/stringy": "^3.1",
                 "ext-pcre": "*",
-                "php": ">=7.1"
+                "php": ">=7.1",
+                "sweetchuck/cli-cmd-builder": "^0.0",
+                "sweetchuck/utils": "dev-master"
             },
             "require-dev": {
                 "codeception/codeception": "^2.2",
-                "sweetchuck/cli-cmd-builder": "^0.0",
+                "squizlabs/php_codesniffer": "^3.3",
                 "sweetchuck/codeception-module-robo-task-runner": "^0.4",
                 "sweetchuck/git-hooks": "^0.0",
                 "sweetchuck/robo-git": "^0.0",
                 "sweetchuck/robo-phpcs": "^0.0",
-                "symfony/finder": "^3.2 || ^4.0",
+                "symfony/debug": "^4.1",
+                "symfony/finder": "^4.0",
                 "webmozart/path-util": "^2.3"
             },
             "type": "library",
@@ -2207,6 +2263,48 @@
             "time": "2018-02-18T13:21:57+00:00"
         },
         {
+            "name": "sweetchuck/robo-stringy",
+            "version": "v0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sweetchuck/robo-stringy.git",
+                "reference": "6cab7510086ee016ef477a32045c0bb92eb85c73"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sweetchuck/robo-stringy/zipball/6cab7510086ee016ef477a32045c0bb92eb85c73",
+                "reference": "6cab7510086ee016ef477a32045c0bb92eb85c73",
+                "shasum": ""
+            },
+            "require": {
+                "consolidation/robo": "^1.2",
+                "danielstjules/stringy": "^3.1",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "codeception/codeception": "^2.2",
+                "sweetchuck/codeception-module-robo-task-runner": "^0.4.0",
+                "sweetchuck/git-hooks": "^0.0",
+                "sweetchuck/robo-git": "^0.0",
+                "sweetchuck/robo-phpcs": "^0.0",
+                "symfony/finder": "^3.2 || ^4.0",
+                "symfony/yaml": "^3.2 || ^4.0",
+                "webmozart/path-util": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sweetchuck\\Robo\\Stringy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Template to create a new Robo task.",
+            "time": "2018-05-06T12:52:17+00:00"
+        },
+        {
             "name": "sweetchuck/robo-yarn",
             "version": "v0.0.3",
             "source": {
@@ -2294,16 +2392,16 @@
         },
         {
             "name": "symfony/config",
-            "version": "v3.4.17",
+            "version": "v3.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "e5389132dc6320682de3643091121c048ff796b3"
+                "reference": "99b2fa8acc244e656cdf324ff419fbe6fd300a4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/e5389132dc6320682de3643091121c048ff796b3",
-                "reference": "e5389132dc6320682de3643091121c048ff796b3",
+                "url": "https://api.github.com/repos/symfony/config/zipball/99b2fa8acc244e656cdf324ff419fbe6fd300a4d",
+                "reference": "99b2fa8acc244e656cdf324ff419fbe6fd300a4d",
                 "shasum": ""
             },
             "require": {
@@ -2354,20 +2452,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2018-09-08T13:15:14+00:00"
+            "time": "2018-10-31T09:06:03+00:00"
         },
         {
             "name": "symfony/console",
-            "version": "v3.4.17",
+            "version": "v3.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "3b2b415d4c48fbefca7dc742aa0a0171bfae4e0b"
+                "reference": "1d228fb4602047d7b26a0554e0d3efd567da5803"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/3b2b415d4c48fbefca7dc742aa0a0171bfae4e0b",
-                "reference": "3b2b415d4c48fbefca7dc742aa0a0171bfae4e0b",
+                "url": "https://api.github.com/repos/symfony/console/zipball/1d228fb4602047d7b26a0554e0d3efd567da5803",
+                "reference": "1d228fb4602047d7b26a0554e0d3efd567da5803",
                 "shasum": ""
             },
             "require": {
@@ -2423,20 +2521,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2018-10-02T16:33:53+00:00"
+            "time": "2018-10-30T16:50:50+00:00"
         },
         {
             "name": "symfony/debug",
-            "version": "v4.1.6",
+            "version": "v4.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "e3f76ce6198f81994e019bb2b4e533e9de1b9b90"
+                "reference": "19090917b848a799cbae4800abf740fe4eb71c1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/e3f76ce6198f81994e019bb2b4e533e9de1b9b90",
-                "reference": "e3f76ce6198f81994e019bb2b4e533e9de1b9b90",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/19090917b848a799cbae4800abf740fe4eb71c1d",
+                "reference": "19090917b848a799cbae4800abf740fe4eb71c1d",
                 "shasum": ""
             },
             "require": {
@@ -2479,20 +2577,20 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2018-10-02T16:36:10+00:00"
+            "time": "2018-10-31T09:09:42+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v3.4.17",
+            "version": "v3.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "b2e1f19280c09a42dc64c0b72b80fe44dd6e88fb"
+                "reference": "db9e829c8f34c3d35cf37fcd4cdb4293bc4a2f14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/b2e1f19280c09a42dc64c0b72b80fe44dd6e88fb",
-                "reference": "b2e1f19280c09a42dc64c0b72b80fe44dd6e88fb",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/db9e829c8f34c3d35cf37fcd4cdb4293bc4a2f14",
+                "reference": "db9e829c8f34c3d35cf37fcd4cdb4293bc4a2f14",
                 "shasum": ""
             },
             "require": {
@@ -2542,20 +2640,20 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2018-07-26T09:06:28+00:00"
+            "time": "2018-10-30T16:50:50+00:00"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v4.1.6",
+            "version": "v4.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "596d12b40624055c300c8b619755b748ca5cf0b5"
+                "reference": "fd7bd6535beb1f0a0a9e3ee960666d0598546981"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/596d12b40624055c300c8b619755b748ca5cf0b5",
-                "reference": "596d12b40624055c300c8b619755b748ca5cf0b5",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/fd7bd6535beb1f0a0a9e3ee960666d0598546981",
+                "reference": "fd7bd6535beb1f0a0a9e3ee960666d0598546981",
                 "shasum": ""
             },
             "require": {
@@ -2592,11 +2690,11 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2018-10-02T12:40:59+00:00"
+            "time": "2018-10-30T13:18:25+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v3.4.17",
+            "version": "v3.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -2762,16 +2860,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v3.4.17",
+            "version": "v3.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "1dc2977afa7d70f90f3fefbcd84152813558910e"
+                "reference": "35c2914a9f50519bd207164c353ae4d59182c2cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/1dc2977afa7d70f90f3fefbcd84152813558910e",
-                "reference": "1dc2977afa7d70f90f3fefbcd84152813558910e",
+                "url": "https://api.github.com/repos/symfony/process/zipball/35c2914a9f50519bd207164c353ae4d59182c2cb",
+                "reference": "35c2914a9f50519bd207164c353ae4d59182c2cb",
                 "shasum": ""
             },
             "require": {
@@ -2807,11 +2905,11 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2018-10-02T12:28:39+00:00"
+            "time": "2018-10-14T17:33:21+00:00"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v3.4.17",
+            "version": "v3.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
@@ -2880,7 +2978,7 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v3.4.17",
+            "version": "v3.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
@@ -3137,7 +3235,49 @@
             "time": "2015-12-17T08:42:14+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "sweetchuck/git-hooks",
+            "version": "v0.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sweetchuck/git-hooks.git",
+                "reference": "59d66a1258c27101a63b35ad35d1bb4546e79071"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sweetchuck/git-hooks/zipball/59d66a1258c27101a63b35ad35d1bb4546e79071",
+                "reference": "59d66a1258c27101a63b35ad35d1bb4546e79071",
+                "shasum": ""
+            },
+            "require-dev": {
+                "behat/behat": "~3.1",
+                "consolidation/robo": "~1.0",
+                "php": ">=7.1",
+                "phpunit/phpunit": "^6.2",
+                "squizlabs/php_codesniffer": "~2.6",
+                "symfony/filesystem": "~3.1",
+                "symfony/process": "~3.1"
+            },
+            "type": "library",
+            "extra": {
+                "sweetchuck/git-hooks": {
+                    "symlink": true
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sweetchuck\\GitHooks\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "description": "Provide a bridge between Git hooks and scripts under VCS.",
+            "time": "2017-07-28T20:43:48+00:00"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {

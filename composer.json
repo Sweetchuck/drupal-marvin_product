@@ -29,10 +29,11 @@
         }
     },
     "require": {
-        "ext-openssl": "*",
         "drupal/marvin": "dev-8.x-1.x"
     },
-    "require-dev": {},
+    "require-dev": {
+        "sweetchuck/git-hooks": "^0.0.10"
+    },
     "autoload": {
         "psr-4": {
             "Drush\\Commands\\marvin_product\\": "Commands/marvin_product/",
@@ -42,6 +43,7 @@
     "autoload-dev": {
         "psr-4": {
             "Drush\\Commands\\Tests\\marvin_product\\DrushUnit\\": "tests/src/DrushUnit/",
+            "Drupal\\marvin_product\\Dev\\Composer\\": "src-dev/Composer/",
             "Drupal\\Tests\\marvin_product\\Helper\\": "tests/src/Helper/",
             "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/"
         }
@@ -56,5 +58,12 @@
             }
         }
     },
-    "scripts": {}
+    "scripts": {
+        "post-install-cmd": [
+            "\\Drupal\\marvin_product\\Dev\\Composer\\Scripts::postInstallCmd"
+        ],
+        "post-update-cmd": [
+            "\\Drupal\\marvin_product\\Dev\\Composer\\Scripts::postUpdateCmd"
+        ]
+    }
 }

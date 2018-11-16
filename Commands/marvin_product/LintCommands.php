@@ -11,10 +11,8 @@ class LintCommands extends LintCommandsBase {
   /**
    * @command marvin:lint
    * @bootstrap none
-   *
-   * @marvinArgPackages packages
    */
-  public function lint(array $packages) {
+  public function lint() {
     return $this->delegate('');
   }
 

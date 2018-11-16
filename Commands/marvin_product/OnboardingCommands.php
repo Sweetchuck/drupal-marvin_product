@@ -48,7 +48,7 @@ class OnboardingCommands extends CommandsBase {
     return $this->getTaskOnboarding(getcwd(), 'default');
   }
 
-  protected function getTaskOnboarding(string$projectRoot, string $siteDir): CollectionBuilder {
+  protected function getTaskOnboarding(string $projectRoot, string $siteDir): CollectionBuilder {
     $composerInfo = $this->getComposerInfo();
 
     if (!empty($composerInfo['scripts']['post-create-project-cmd'])) {
@@ -132,7 +132,7 @@ class OnboardingCommands extends CommandsBase {
   }
 
   protected function generateHashSalt(): string {
-    return uniqid(mt_rand(), TRUE);
+    return uniqid('', TRUE);
   }
 
 }

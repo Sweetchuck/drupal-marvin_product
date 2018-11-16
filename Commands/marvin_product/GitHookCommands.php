@@ -8,6 +8,8 @@ use Robo\Collection\CollectionBuilder;
 class GitHookCommands extends GitHookCommandsBase {
 
   /**
+   * Git hook callback command for "./.git/hooks/applypatch-msg".
+   *
    * @command marvin:git-hook:applypatch-msg
    * @hidden
    */
@@ -16,6 +18,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/commit-msg".
+   *
    * @command marvin:git-hook:commit-msg
    * @hidden
    */
@@ -24,6 +28,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/post-applypatch".
+   *
    * @command marvin:git-hook:post-applypatch
    * @hidden
    */
@@ -32,6 +38,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/post-checkout".
+   *
    * @command marvin:git-hook:post-checkout
    * @hidden
    */
@@ -40,6 +48,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/post-commit".
+   *
    * @command marvin:git-hook:post-commit
    * @hidden
    */
@@ -48,6 +58,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/post-merge".
+   *
    * @command marvin:git-hook:post-merge
    * @hidden
    */
@@ -56,6 +68,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/post-receive".
+   *
    * @command marvin:git-hook:post-receive
    * @hidden
    */
@@ -64,6 +78,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/post-rewrite".
+   *
    * @command marvin:git-hook:post-rewrite
    * @hidden
    */
@@ -72,6 +88,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/post-update".
+   *
    * @command marvin:git-hook:post-update
    * @hidden
    */
@@ -80,6 +98,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/apply-patch".
+   *
    * @command marvin:git-hook:pre-applypatch
    * @hidden
    */
@@ -88,6 +108,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/pre-auto-gc".
+   *
    * @command marvin:git-hook:pre-auto-gc
    * @hidden
    */
@@ -96,6 +118,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/pre-commit".
+   *
    * @command marvin:git-hook:pre-commit
    * @hidden
    */
@@ -104,6 +128,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/pre-push".
+   *
    * @command marvin:git-hook:pre-push
    * @hidden
    */
@@ -112,14 +138,18 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/pre-rebase".
+   *
    * @command marvin:git-hook:pre-rebase
    * @hidden
    */
-  public function gitHookPreRebase(string $upstream, ?string $branch = null): CollectionBuilder {
+  public function gitHookPreRebase(string $upstream, ?string $branch = NULL): CollectionBuilder {
     return $this->delegate('pre-rebase');
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/pre-receive".
+   *
    * @command marvin:git-hook:pre-receive
    * @hidden
    */
@@ -128,6 +158,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/prepare-commit-msg".
+   *
    * @command marvin:git-hook:prepare-commit-msg
    * @hidden
    */
@@ -136,6 +168,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/push-to-checkout".
+   *
    * @command marvin:git-hook:push-to-checkout
    * @hidden
    */
@@ -144,6 +178,8 @@ class GitHookCommands extends GitHookCommandsBase {
   }
 
   /**
+   * Git hook callback command for "./.git/hooks/update".
+   *
    * @command marvin:git-hook:update
    * @hidden
    */

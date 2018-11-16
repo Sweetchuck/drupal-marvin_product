@@ -14,7 +14,7 @@ class PhpcsCommands extends PhpcsCommandsBase {
   /**
    * @hook on-event marvin:composer:post-install-cmd marvin:composer:post-update-cmd
    */
-  public function composerPostInstallAndUpdateCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
+  public function onEventComposerPostInstallAndUpdateCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
     $tasks = [];
 
     if ($input->getOption('dev-mode')) {
