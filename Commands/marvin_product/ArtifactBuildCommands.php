@@ -4,14 +4,19 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Drupal\marvin\Robo\VersionNumberTaskLoader;
 use Drupal\marvin\Utils as MarvinUtils;
 use Drush\Commands\marvin\Artifact\ArtifactBuildCommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
+use Sweetchuck\Robo\Git\GitTaskLoader;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Webmozart\PathUtil\Path;
 
 class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
+
+  use VersionNumberTaskLoader;
+  use GitTaskLoader;
 
   /**
    * @var string[]
@@ -25,6 +30,11 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
     'pre-release',
     'meta-data',
   ];
+
+  /**
+   * @var string
+   */
+  protected $defaultVersionPartToBump = 'minor';
 
   /**
    * @hook on-event marvin:artifact:types
@@ -59,10 +69,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
   /**
    * @hook on-event marvin:artifact:build
    */
-  public function onEventMarvinArtifactBuild(
-    InputInterface $input,
-    OutputInterface $output
-  ): array {
+  public function onEventMarvinArtifactBuild(InputInterface $input): array {
     return $this->getStepsBuildVanilla(
       '.',
       $this->getConfig()->get('command.marvin.settings.artifactDir'),
@@ -73,10 +80,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
   /**
    * @hook on-event marvin:artifact:build:vanilla
    */
-  public function onEventMarvinArtifactBuildVanilla(
-    InputInterface $input,
-    OutputInterface $output
-  ): array {
+  public function onEventMarvinArtifactBuildVanilla(InputInterface $input): array {
     return $this->getStepsBuildVanilla(
       '.',
       $this->getConfig()->get('command.marvin.settings.artifactDir'),
@@ -132,13 +136,22 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
           ->deferTaskConfiguration('setDstDir', 'buildDir')
           ->deferTaskConfiguration('setFiles', 'files'),
       ],
-      //'marvin.bumpVersionNumber' => [
-      //  'weight' => 200,
-      //  'task' => $this
-      //    ->taskMarvinVersionNumberBumpExtensionInfo()
-      //    ->deferTaskConfiguration('setPackagePath', 'buildDir')
-      //    ->deferTaskConfiguration('setVersionNumber', 'nextVersionNumber'),
-      //],
+      'marvin.bumpVersionNumber.root' => [
+        'weight' => 200,
+        'task' => $this
+          ->taskMarvinVersionNumberBumpExtensionInfo()
+          ->setBumpExtensionInfo(FALSE)
+          ->deferTaskConfiguration('setPackagePath', 'buildDir')
+          ->deferTaskConfiguration('setVersionNumber', 'nextVersionNumber.drupal'),
+      ],
+      'marvin.collectCustomExtensionDirs' => [
+        'weight' => 210,
+        'task' => $this->getTaskCollectCustomExtensionDirs(),
+      ],
+      'marvin.bumpVersionNumber.extensions' => [
+        'weight' => 220,
+        'task' => $this->getTaskBumpVersionNumberExtensions('customExtensionDirs', 'nextVersionNumber.drupal'),
+      ],
     ];
   }
 
@@ -156,13 +169,13 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
       $data['nextVersionNumber.semver'] = NULL;
       $data['nextVersionNumber.drupal'] = NULL;
 
-      $versionPartToBump = $data['versionPartToBump'] ?? 'minor';
+      $versionPartToBump = $data['versionPartToBump'] ?? $this->defaultVersionPartToBump;
       if (!in_array($versionPartToBump, $this->versionPartNames)) {
         $data['nextVersionNumber.semver'] = $versionPartToBump;
       }
 
       if (!$data['nextVersionNumber.semver']) {
-        $data['nextVersionNumber.semver'] = MarvinUtils::incrementSemVersion(
+        $data['nextVersionNumber.semver'] = (string) MarvinUtils::incrementSemVersion(
           $data['latestVersionNumber.semver'] ?? '0.0.0',
           $versionPartToBump
         );
@@ -181,10 +194,68 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
 
   protected function getTaskComposeBuildDir(string $artifactDir): \Closure {
     return function (RoboStateData $data) use ($artifactDir): int {
-      $data['buildDir'] = "$artifactDir/{$data['nextVersionNumber']}/{$data['artifactType']}";
+      $data['buildDir'] = "$artifactDir/{$data['nextVersionNumber.semver']}/{$data['artifactType']}";
 
       return 0;
     };
+  }
+
+  protected function getTaskCollectCustomExtensionDirs(): \Closure {
+    return function (RoboStateData $data): int {
+      $drupalRootDir = MarvinUtils::detectDrupalRootDir($this->getComposerInfo());
+
+      $result = $this
+        ->taskGitListFiles()
+        ->setPaths([
+          "$drupalRootDir/modules/custom/*/*.info.yml",
+          "$drupalRootDir/profiles/custom/*/*.info.yml",
+          "$drupalRootDir/themes/custom/*/*.info.yml",
+        ])
+        ->run()
+        ->stopOnFail();
+
+      $buildDir = $data['buildDir'];
+      $data['customExtensionDirs'] = [];
+      /** @var \Sweetchuck\Robo\Git\ListFilesItem $file */
+      foreach ($result['files'] as $file) {
+        $data['customExtensionDirs'][] = Path::join($buildDir, Path::getDirectory($file->fileName));
+      }
+
+      return 0;
+    };
+  }
+
+  protected function getTaskBumpVersionNumberExtensions(
+    string $iterableStateKey,
+    string $versionStateKey
+  ): CollectionBuilder {
+    $forEachTask = $this->taskForEach();
+
+    $forEachTask
+      ->deferTaskConfiguration('setIterable', $iterableStateKey)
+      ->withBuilder(function (
+          CollectionBuilder $builder,
+          $key,
+          string $extensionDir
+        ) use (
+          $forEachTask,
+          $versionStateKey
+        ) {
+
+        if (!file_exists($extensionDir)) {
+          return;
+        }
+
+        $builder->addTask(
+          $this
+            ->taskMarvinVersionNumberBumpExtensionInfo()
+            ->setBumpComposerJson(FALSE)
+            ->setPackagePath($extensionDir)
+            ->setVersionNumber($forEachTask->getState()->offsetGet($versionStateKey))
+        );
+      });
+
+    return $forEachTask;
   }
 
 }
