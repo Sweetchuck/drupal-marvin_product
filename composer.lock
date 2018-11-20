@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c25aed98998dbbbe7eb1d859efc6c34f",
+    "content-hash": "7ac2f9d99d00c8ab01be7287a0f9676c",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -2119,12 +2119,13 @@
             "dist": {
                 "type": "path",
                 "url": "../../sweetchuck/robo-phpunit",
-                "reference": "15d123d0443c5d8a62b942ecedb6550ff43b8bb1",
+                "reference": "f5df4a11049d236f158e483bf9087c9cbb700fe6",
                 "shasum": null
             },
             "require": {
                 "consolidation/robo": "^1.0",
                 "danielstjules/stringy": "^3.1",
+                "ext-dom": "*",
                 "ext-pcre": "*",
                 "php": ">=7.1",
                 "sweetchuck/cli-cmd-builder": "^0.0",
@@ -2132,6 +2133,7 @@
             },
             "require-dev": {
                 "codeception/codeception": "^2.2",
+                "ext-json": "*",
                 "squizlabs/php_codesniffer": "^3.3",
                 "sweetchuck/codeception-module-robo-task-runner": "^0.4",
                 "sweetchuck/git-hooks": "^0.0",

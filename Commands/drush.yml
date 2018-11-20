@@ -1,6 +1,9 @@
 
 command:
   marvin:
+    settings:
+      projectType: 'product'
+
     git-hook:
       commit-msg:
         settings:
