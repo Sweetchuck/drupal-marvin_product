@@ -33,7 +33,7 @@ class GitHookCommitMsgCommands extends CommandsBase {
    */
   protected function getTaskGitCommitMsgValidator(string $commitMsgFileName, array $rules): CollectionBuilder {
     return $this
-      ->taskGitCommitMsgValidator()
+      ->taskMarvinGitCommitMsgValidator()
       ->setFileName($commitMsgFileName)
       ->setRules($rules);
   }

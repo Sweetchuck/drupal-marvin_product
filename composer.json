@@ -11,21 +11,9 @@
         "sort-packages": true
     },
     "repositories": {
-        "sweetchuck/robo-nvm": {
-            "type": "path",
-            "url": "../../sweetchuck/robo-nvm"
-        },
-        "sweetchuck/robo-phpunit": {
-            "type": "path",
-            "url": "../../sweetchuck/robo-phpunit"
-        },
-        "sweetchuck/robo-rvm": {
-            "type": "path",
-            "url": "../../sweetchuck/robo-rvm"
-        },
         "drupal/marvin": {
-            "type": "path",
-            "url": "../../drupal/marvin"
+            "type": "git",
+            "url": "https://github.com/Sweetchuck/drupal-marvin.git"
         }
     },
     "require": {
