@@ -152,6 +152,10 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
         'weight' => 220,
         'task' => $this->getTaskBumpVersionNumberExtensions('customExtensionDirs', 'nextVersionNumber.drupal'),
       ],
+      'marvin.composerUpdate' => [
+        'weight' => 230,
+        'task' => $this->getTaskComposerUpdate(),
+      ],
     ];
   }
 
@@ -256,6 +260,14 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
       });
 
     return $forEachTask;
+  }
+
+  protected function getTaskComposerUpdate(): CollectionBuilder {
+    return $this
+      ->taskComposerUpdate()
+      ->noDev()
+      ->option('lock')
+      ->deferTaskConfiguration('dir', 'buildDir');
   }
 
 }
