@@ -760,7 +760,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/drupal-marvin.git",
-                "reference": "1ad3b3d004dd4e82ce468b250282f46cba7ee768"
+                "reference": "2d4f95bb6e6c0a306c4b019525202bfbb2fa60e0"
             },
             "require": {
                 "danielstjules/stringy": "^3.1",
@@ -882,7 +882,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Set of developer helper Drush commands",
-            "time": "2018-12-01T19:01:13+00:00"
+            "time": "2018-12-07T21:49:10+00:00"
         },
         {
             "name": "drush/drush",
