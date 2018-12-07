@@ -8,6 +8,7 @@
     "config": {
         "bin-dir": "bin",
         "optimize-autoloader": true,
+        "preferred-install": "dist",
         "sort-packages": true
     },
     "repositories": {
@@ -42,7 +43,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-1.x": "8.x-1.x"
+            "dev-8.x-1.x": "1.x.x-dev"
         },
         "drush": {
             "services": {
