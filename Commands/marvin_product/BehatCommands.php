@@ -34,9 +34,6 @@ class BehatCommands extends CommandsBase {
       ->setPaths($paths);
   }
 
-  /**
-   * @return \Robo\Collection\CollectionBuilder
-   */
   protected function getTaskBehatRunAll(): CollectionBuilder {
     return $this->taskForEach()
       ->deferTaskConfiguration('setIterable', 'files')
