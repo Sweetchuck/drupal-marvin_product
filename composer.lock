@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7be02dabd41c111d2a957f6efa32492",
+    "content-hash": "1ed04c09c1c97fca7877e966bb4e0c45",
     "packages": [
         {
             "name": "chi-teck/drupal-code-generator",
@@ -760,7 +760,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/drupal-marvin.git",
-                "reference": "2d4f95bb6e6c0a306c4b019525202bfbb2fa60e0"
+                "reference": "33a256a3b80580eaa9aff663c32c1b469936788a"
             },
             "require": {
                 "danielstjules/stringy": "^3.1",
@@ -882,7 +882,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Set of developer helper Drush commands",
-            "time": "2018-12-07T21:49:10+00:00"
+            "time": "2018-12-14T12:21:57+00:00"
         },
         {
             "name": "drush/drush",
