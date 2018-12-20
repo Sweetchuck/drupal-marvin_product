@@ -1,13 +1,68 @@
 
 services:
+  marvin.artifact_build.commands:
+    class: 'Drush\Commands\marvin_product\ArtifactBuildCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.artifact.commands:
+    class: 'Drush\Commands\marvin_product\ArtifactCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.behat.commands:
+    class: 'Drush\Commands\marvin_product\BehatCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.build.commands:
+    class: 'Drush\Commands\marvin_product\BuildCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.composer.commands:
+    class: 'Drush\Commands\marvin_product\ComposerCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.environment.commands:
+    class: 'Drush\Commands\marvin_product\EnvironmentCommands'
+    argiments: ['@module_installer']
+    tags:
+      -
+        name: 'drush.command'
+
   marvin.git_hook.commands:
     class: 'Drush\Commands\marvin_product\GitHookCommands'
     tags:
       -
         name: 'drush.command'
 
+  marvin.git_hook_commit_msg.commands:
+    class: 'Drush\Commands\marvin_product\GitHookCommitMsgCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.git_hooks.commands:
+    class: 'Drush\Commands\marvin_product\GitHooksCommands'
+    tags:
+      -
+        name: 'drush.command'
+
   marvin.lint.commands:
     class: 'Drush\Commands\marvin_product\LintCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.npm.commands:
+    class: 'Drush\Commands\marvin_product\NpmCommands'
     tags:
       -
         name: 'drush.command'
@@ -20,6 +75,18 @@ services:
 
   marvin.phpcs.commands:
     class: 'Drush\Commands\marvin_product\PhpcsCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.phpunit.commands:
+    class: 'Drush\Commands\marvin_product\PhpunitCommands'
+    tags:
+      -
+        name: 'drush.command'
+
+  marvin.sass.commands:
+    class: 'Drush\Commands\marvin_product\SassCommands'
     tags:
       -
         name: 'drush.command'
