@@ -49,6 +49,7 @@ class OnboardingCommands extends CommandsBase {
 
   /**
    * @command marvin:onboarding
+   * @bootstrap none
    */
   public function onboarding(): CollectionBuilder {
     return $this->getTaskOnboarding(getcwd(), 'default');

@@ -14,6 +14,7 @@ class PhpunitCommands extends PhpunitCommandsBase {
 
   /**
    * @command marvin:test:unit
+   * @bootstrap none
    */
   public function runUnit(): CollectionBuilder {
     return $this->getTaskPhpUnit(

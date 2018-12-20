@@ -46,7 +46,7 @@ class PhpcsCommands extends PhpcsCommandsBase {
     return [
       'marvin.lint.phpcs' => [
         'weight' => -200,
-        'task' => $this->getTaskLintPhpcsExtension('.'),
+        'task' => $this->getTaskLintPhpcsExtension($this->getProjectRootDir()),
       ],
     ];
   }

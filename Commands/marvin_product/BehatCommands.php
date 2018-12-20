@@ -15,6 +15,7 @@ class BehatCommands extends CommandsBase {
 
   /**
    * @command marvin:test:behat
+   * @bootstrap none
    */
   public function testBehat(): CollectionBuilder {
     return $this

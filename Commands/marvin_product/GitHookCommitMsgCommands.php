@@ -8,6 +8,7 @@ use Drupal\marvin\Robo\GitCommitMsgValidatorTaskLoader;
 use Drush\Commands\marvin\CommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Symfony\Component\Console\Input\InputInterface;
+use Webmozart\PathUtil\Path;
 
 class GitHookCommitMsgCommands extends CommandsBase {
 
@@ -17,13 +18,15 @@ class GitHookCommitMsgCommands extends CommandsBase {
    * @hook on-event marvin:git-hook:commit-msg
    */
   public function onEventMarvinGitHookCommitMsg(InputInterface $input): array {
+    $commitMsgFileName = $input->getArgument('commitMsgFileName');
+    if (!file_exists($commitMsgFileName)) {
+      $commitMsgFileName = Path::join($this->getProjectRootDir(), $commitMsgFileName);
+    }
+
     return [
       'marvin.commit-msg-validator' => [
         'weight' => 0,
-        'task' => $this->getTaskGitCommitMsgValidator(
-          $input->getArgument('commitMsgFileName'),
-          $this->getRules()
-        ),
+        'task' => $this->getTaskGitCommitMsgValidator($commitMsgFileName, $this->getRules()),
       ],
     ];
   }
