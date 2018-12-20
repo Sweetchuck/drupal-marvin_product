@@ -22,6 +22,7 @@
         "icecave/semver": "^3.0"
     },
     "require-dev": {
+        "drupal/core": "^8.6",
         "sweetchuck/git-hooks": "^0.0.10"
     },
     "conflict": {
