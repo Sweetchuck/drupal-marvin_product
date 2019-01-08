@@ -51,8 +51,14 @@ class OnboardingCommands extends CommandsBase {
    * @command marvin:onboarding
    * @bootstrap none
    */
-  public function onboarding(): CollectionBuilder {
-    return $this->getTaskOnboarding(getcwd(), 'default');
+  public function onboarding(
+    array $options = [
+      'url' => '',
+    ]
+  ): CollectionBuilder {
+    $projectRoot = Path::getDirectory($this->getComposerInfo()->getJsonFileName());
+
+    return $this->getTaskOnboarding($projectRoot, 'default');
   }
 
   protected function getTaskOnboarding(string $projectRoot, string $siteDir): CollectionBuilder {
@@ -94,7 +100,10 @@ class OnboardingCommands extends CommandsBase {
     return function () use ($projectRoot, $drupalRoot, $siteDir) {
       $dst = "$projectRoot/$drupalRoot/sites/$siteDir/settings.local.php";
       if ($this->fs->exists($dst)) {
-        $this->getLogger()->debug('"settings.local.php" already exists');
+        $this->getLogger()->debug(
+          'File "<info>{fileName}</info>" already exists',
+          ['fileName' => $dst]
+        );
 
         return 0;
       }
@@ -119,6 +128,11 @@ class OnboardingCommands extends CommandsBase {
     return function () use ($projectRoot, $siteDir): int {
       $fileName = "$projectRoot/sites/$siteDir/hash_salt.txt";
       if ($this->fs->exists($fileName)) {
+        $this->getLogger()->debug(
+          'File "<info>{fileName}</info>" already exists',
+          ['fileName' => $fileName]
+        );
+
         return 0;
       }
 
@@ -154,13 +168,37 @@ class OnboardingCommands extends CommandsBase {
       $exampleFileName = "$behatDir/behat.local.example.yml";
       $localFileName = "$behatDir/behat.local.yml";
 
-      if ($this->fs->exists($exampleFileName)) {
-        $this->fs->copy($exampleFileName, $localFileName);
+      if ($this->fs->exists("$localFileName")) {
+        $this->getLogger()->debug(
+          'File "<info>{fileName}</info>" already exists',
+          ['fileName' => $localFileName]
+        );
 
         return 0;
       }
 
-      $this->fs->dumpFile($localFileName, '{}');
+      $localFileContent = <<<YAML
+default:
+  extensions:
+    Behat\MinkExtension:
+      base_url: 'http://localhost'
+
+YAML;
+
+      if ($this->fs->exists($exampleFileName)) {
+        $localFileContent = $this->fileGetContents($exampleFileName);
+      }
+
+      // @todo This is not bullet proof.
+      $localFileContent = preg_replace(
+        '/(?<=\n      base_url:).*?(?=\n)/u',
+        ' ' . MarvinUtils::escapeYamlValueString($this->getLocalUri()),
+        $localFileContent,
+        -1,
+        $count
+      );
+
+      $this->fs->dumpFile($localFileName, $localFileContent);
 
       return 0;
     };
@@ -217,6 +255,7 @@ class OnboardingCommands extends CommandsBase {
 
   protected function getExampleSettingsLocalPhp(string $projectRoot, string $drupalRoot, string $siteDir): ?string {
     $fileNames = [
+      "$projectRoot/$drupalRoot/sites/$siteDir/settings.local.example.php",
       "$projectRoot/$drupalRoot/sites/$siteDir/example.settings.local.php",
       "$projectRoot/$drupalRoot/sites/example.settings.local.php",
     ];
@@ -244,6 +283,10 @@ class OnboardingCommands extends CommandsBase {
   }
 
   protected function getLocalUri(): string {
+    if ($this->input()->getOption('url')) {
+      return $this->input()->getOption('url');
+    }
+
     $composerInfo = $this->getComposerInfo();
 
     return sprintf('http://%s.localhost', StaticStringy::dasherize($composerInfo->packageName));

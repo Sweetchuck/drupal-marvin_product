@@ -13,8 +13,8 @@
     },
     "repositories": {
         "drupal/marvin": {
-            "type": "git",
-            "url": "https://github.com/Sweetchuck/drupal-marvin.git"
+            "type": "path",
+            "url": "../../drupal/marvin"
         }
     },
     "require": {
@@ -55,7 +55,6 @@
         ],
         "post-update-cmd": [
             "\\Drupal\\marvin_product\\Dev\\Composer\\Scripts::postUpdateCmd"
-        ],
-        "clean": "rm -rf bin/ vendor/"
+        ]
     }
 }

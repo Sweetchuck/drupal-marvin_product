@@ -66,12 +66,12 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
    */
   public function __construct(
     ?ComposerInfo $composerInfo = NULL,
-    ?ModuleInstallerInterface $module_installer = NULL,
-    ?ModuleHandlerInterface $module_handler = NULL,
+    ?ModuleInstallerInterface $moduleInstaller = NULL,
+    ?ModuleHandlerInterface $moduleHandler = NULL,
     ?ModuleExtensionList $moduleLister = NULL
   ) {
-    $this->moduleInstaller = $module_installer;
-    $this->moduleHandler = $module_handler;
+    $this->moduleInstaller = $moduleInstaller;
+    $this->moduleHandler = $moduleHandler;
     $this->moduleLister = $moduleLister;
 
     parent::__construct($composerInfo);
