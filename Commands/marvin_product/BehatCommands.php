@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Drupal\marvin\Utils as MarvinUtils;
 use Drush\Commands\marvin\CommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Sweetchuck\Robo\Git\GitTaskLoader;
@@ -54,6 +55,11 @@ class BehatCommands extends CommandsBase {
       $cmdArgs = [
         escapeshellcmd($behatExecutable),
       ];
+
+      $colorOption = MarvinUtils::getTriStateCliOption($this->getTriStateOptionValue('ansi'), 'colors');
+      if ($colorOption) {
+        $cmdPattern[] = $colorOption;
+      }
 
       $result = $this
         ->taskExec(vsprintf(implode(' ', $cmdPattern), $cmdArgs))
