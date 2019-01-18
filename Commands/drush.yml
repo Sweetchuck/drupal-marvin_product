@@ -10,6 +10,13 @@ command:
       projectType: 'product'
 
       ##
+      # @todo
+      #
+      # @var string
+      ##
+      machineName: 'app'
+
+      ##
       # The keys are custom, the structure of the value is pre-defined.
       #
       # @var array
@@ -22,12 +29,55 @@ command:
           #
           # @var bool[]
           ##
-          modules: {}
-            #devel: true
+          modules:
+            dblog: true
+            devel: true
+            kint: true
+            field_ui: true
+            views_ui: true
 
         prod:
-          modules: {}
-            #devel: false
+          modules:
+            dblog: false
+            devel: false
+            kint: false
+            field_ui: false
+            views_ui: false
+
+      ##
+      # Keys are customs.
+      #
+      # @var array
+      ##
+      migrate:
+        default:
+          ##
+          # Keys are module names.
+          #
+          # @var bool[]
+          ##
+          module: {}
+            # app_dc: true
+
+          ##
+          # Keys are migration_group identifiers.
+          #
+          # @see Config schema migrate_plus.migration.*.mapping.migration_group.
+          #
+          # @var bool[]
+          ##
+          group: {}
+            # default_content: true
+
+          ##
+          # Keys are migration_tags identifiers.
+          #
+          # @see Config schema migrate_plus.migration.*.mapping.migration_tags.
+          #
+          # @var bool[]
+          ##
+          tag: {}
+            # default_content: true
 
     git-hook:
       commit-msg:
