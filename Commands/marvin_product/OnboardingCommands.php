@@ -38,6 +38,7 @@ class OnboardingCommands extends CommandsBase {
     $tasks = [];
 
     if ($input->getOption('dev-mode')) {
+      // @todo Detect all the $docroot/sites/*/settings.php.
       $tasks['marvin.onboarding'] = [
         'weight' => 0,
         'task' => $this->getTaskOnboarding($projectRoot, 'default'),
@@ -58,6 +59,7 @@ class OnboardingCommands extends CommandsBase {
   ): CollectionBuilder {
     $projectRoot = Path::getDirectory($this->getComposerInfo()->getJsonFileName());
 
+    // @todo Bootstrap level config and get the $siteDir.
     return $this->getTaskOnboarding($projectRoot, 'default');
   }
 
@@ -74,15 +76,22 @@ class OnboardingCommands extends CommandsBase {
         });
     }
 
+    $isDeveloperMode = $this->isDeveloperMode($projectRoot);
     $drupalRoot = MarvinUtils::detectDrupalRootDir($composerInfo);
 
-    return $this
-      ->collectionBuilder()
-      ->addTask($this->getTaskOnboardingCreateRequiredDirs($projectRoot, $drupalRoot, $siteDir))
-      ->addCode($this->getTaskOnboardingSettingsLocalPhp($projectRoot, $drupalRoot, $siteDir))
-      ->addTask($this->getTaskOnboardingBehatLocalYml())
-      ->addCode($this->getTaskOnboardingDrushLocalYml($projectRoot))
-      ->addCode($this->getTaskOnboardingHashSaltTxt($projectRoot, $siteDir));
+    $cb = $this->collectionBuilder();
+
+    $cb->addTask($this->getTaskOnboardingCreateRequiredDirs($projectRoot, $drupalRoot, $siteDir));
+    $cb->addCode($this->getTaskOnboardingSettingsLocalPhp($projectRoot, $drupalRoot, $siteDir));
+
+    if ($isDeveloperMode) {
+      $cb->addTask($this->getTaskOnboardingBehatLocalYml());
+    }
+
+    $cb->addCode($this->getTaskOnboardingDrushLocalYml($projectRoot));
+    $cb->addCode($this->getTaskOnboardingHashSaltTxt($projectRoot, $siteDir));
+
+    return $cb;
   }
 
   protected function getTaskOnboardingCreateRequiredDirs(string $projectRoot, string $drupalRoot, string $siteDir): TaskInterface {
@@ -290,6 +299,11 @@ YAML;
     $composerInfo = $this->getComposerInfo();
 
     return sprintf('http://%s.localhost', StaticStringy::dasherize($composerInfo->packageName));
+  }
+
+  protected function isDeveloperMode(string $projectRoot): bool {
+    // @todo Read the tests dir path from configuration.
+    return $this->fs->exists("$projectRoot/tests");
   }
 
 }
