@@ -198,7 +198,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
 
   protected function getTaskComposeBuildDir(string $artifactDir): \Closure {
     return function (RoboStateData $data) use ($artifactDir): int {
-      $data['buildDir'] = "$artifactDir";
+      $data['buildDir'] = "$artifactDir/{$data['nextVersionNumber.semver']}/{$data['artifactType']}";
 
       return 0;
     };
