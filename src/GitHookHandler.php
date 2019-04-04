@@ -164,7 +164,7 @@ class GitHookHandler {
     $context = [
       'cliArgs' => [
         "{$this->binDir}/drush",
-        "--define=command.marvin.settings.gitHook={$this->gitHook}",
+        "--define=marvin.gitHook={$this->gitHook}",
       ],
       'pathToDrush' => "{$this->binDir}/drush",
     ];

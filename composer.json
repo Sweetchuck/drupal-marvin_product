@@ -13,12 +13,12 @@
     },
     "repositories": {
         "drupal/marvin": {
-            "type": "git",
-            "url": "https://github.com/Sweetchuck/drupal-marvin.git"
+            "type": "path",
+            "url": "../drupal-marvin"
         }
     },
     "require": {
-        "drupal/marvin": "dev-8.x-1.x",
+        "drupal/marvin": "dev-8.x-1.x-integration",
         "icecave/semver": "^3.0"
     },
     "require-dev": {

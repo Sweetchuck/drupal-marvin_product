@@ -72,7 +72,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
   public function onEventMarvinArtifactBuild(InputInterface $input): array {
     return $this->getStepsBuildVanilla(
       '.',
-      $this->getConfig()->get('command.marvin.settings.artifactDir'),
+      $this->getConfig()->get('marvin.artifactDir'),
       $input->getOption('version-bump')
     );
   }
@@ -83,7 +83,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
   public function onEventMarvinArtifactBuildVanilla(InputInterface $input): array {
     return $this->getStepsBuildVanilla(
       '.',
-      $this->getConfig()->get('command.marvin.settings.artifactDir'),
+      $this->getConfig()->get('marvin.artifactDir'),
       $input->getOption('version-bump')
     );
   }
