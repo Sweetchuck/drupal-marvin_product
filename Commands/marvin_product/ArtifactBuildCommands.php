@@ -6,7 +6,7 @@ namespace Drush\Commands\marvin_product;
 
 use Drupal\marvin\Robo\VersionNumberTaskLoader;
 use Drupal\marvin\Utils as MarvinUtils;
-use Drush\Commands\marvin\Artifact\ArtifactBuildCommandsBase;
+use Drush\Commands\marvin\ArtifactBuildCommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 use Sweetchuck\Robo\Git\GitTaskLoader;
@@ -198,7 +198,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
 
   protected function getTaskComposeBuildDir(string $artifactDir): \Closure {
     return function (RoboStateData $data) use ($artifactDir): int {
-      $data['buildDir'] = "$artifactDir/{$data['nextVersionNumber.semver']}/{$data['artifactType']}";
+      $data['buildDir'] = "$artifactDir";
 
       return 0;
     };

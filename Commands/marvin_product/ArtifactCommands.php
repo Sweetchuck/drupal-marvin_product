@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drush\Commands\marvin\Artifact\ArtifactCommandsBase;
+use Drush\Commands\marvin\ArtifactCommandsBase;
 use Robo\Collection\CollectionBuilder;
 
 class ArtifactCommands extends ArtifactCommandsBase {

@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drush\Commands\marvin\Build\NpmCommandsBase;
+use Drush\Commands\marvin\NpmCommandsBase;
 use Robo\Collection\CollectionBuilder;
 
 class NpmCommands extends NpmCommandsBase {

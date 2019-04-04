@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drush\Commands\marvin\Lint\ComposerCommandsBase;
+use Drush\Commands\marvin\ComposerCommandsBase;
 use Robo\Collection\CollectionBuilder;
 
 class ComposerCommands extends ComposerCommandsBase {
