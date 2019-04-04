@@ -1,16 +1,19 @@
 
 command:
   marvin:
+    ##
+    # @todo Move "command.marvin.settings.*" to the top level "marvin.*".
+    ##
     settings:
       ##
-      # @todo
+      # @todo Documentation.
       #
       # @var string
       ##
       projectType: 'product'
 
       ##
-      # @todo
+      # @todo Documentation.
       #
       # @var string
       ##
@@ -25,7 +28,8 @@ command:
         dev:
 
           ##
-          # @todo
+          # Key is a module name,
+          # and the value indicates that the module should be installed (true) or uninstalled (false).
           #
           # @var bool[]
           ##

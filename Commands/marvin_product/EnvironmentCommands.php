@@ -78,15 +78,23 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
   }
 
   /**
+   * Installs and uninstalls modules based on the configuration in drush.yml.
+   *
+   * Used configurations:
+   * - command.marvin.settings.environment;
+   * - command.marvin.settings.environments.*.modules;
+   *
    * @command marvin:toggle-modules
    * @bootstrap full
+   *
+   * @todo Create a native Robo task.
    */
   public function toggleModules() {
     $this
       ->toggleModulesInitTodo()
       ->toggleModulesInitModules()
       ->toggleModulesUninstall()
-      ->toggleModulesEnable();
+      ->toggleModulesInstall();
   }
 
   /**
@@ -100,6 +108,9 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     return $this;
   }
 
+  /**
+   * @return $this
+   */
   public function toggleModulesInitModules() {
     $moduleLister = $this->getModuleLister();
     $moduleLister->reset();
@@ -109,6 +120,9 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     return $this;
   }
 
+  /**
+   * @return $this
+   */
   protected function toggleModulesUninstall() {
     $logger = $this->getLogger();
 
@@ -150,13 +164,16 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     return $this;
   }
 
-  protected function toggleModulesEnable() {
+  /**
+   * @return $this
+   */
+  protected function toggleModulesInstall() {
     $logger = $this->getLogger();
 
     $alreadyInstalledModules = array_intersect($this->installedModules, $this->modulesToInstall);
     if ($alreadyInstalledModules) {
       $logger->debug(
-        "Already installed modules: {moduleNames}",
+        'Already installed modules: {moduleNames}',
         [
           'moduleNames' => implode(', ', $alreadyInstalledModules),
         ]
