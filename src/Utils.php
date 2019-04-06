@@ -10,4 +10,8 @@ class Utils {
     return dirname(__DIR__);
   }
 
+  public static function urlsHaveSameScheme(string $a, string $b): bool {
+    return parse_url($a, PHP_URL_SCHEME) === parse_url($b, PHP_URL_SCHEME);
+  }
+
 }

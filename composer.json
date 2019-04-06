@@ -22,8 +22,18 @@
         "icecave/semver": "^3.0"
     },
     "require-dev": {
+        "behat/mink-goutte-driver": "^1.2",
+        "composer/installers": "^1.6",
+        "drupal-composer/drupal-scaffold": "^2.6",
         "drupal/core": "^8.6",
-        "sweetchuck/git-hooks": "^0.0.10"
+        "drush/drush": "^9.6",
+        "mikey179/vfsStream": "^1.6",
+        "phpunit/phpunit": "^6.5",
+        "sweetchuck/git-hooks": "^0.0.10",
+        "weitzman/drupal-test-traits": "^1.1"
+    },
+    "suggest": {
+        "drush/drush": "9.6.*"
     },
     "conflict": {
         "drupal/marvin_incubator": "*"
@@ -36,26 +46,83 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Drush\\Commands\\Tests\\marvin_product\\DrushUnit\\": "tests/src/DrushUnit/",
-            "Drupal\\marvin_product\\Dev\\Composer\\": "src-dev/Composer/",
+            "Drupal\\Dev\\marvin_product\\Composer\\": "src-dev/Composer/",
+
             "Drupal\\Tests\\marvin_product\\Helper\\": "tests/src/Helper/",
-            "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/"
+            "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/",
+            "Drupal\\Tests\\marvin_product\\Integration\\": "tests/src/Integration/",
+            "Unish\\": "vendor/drush/drush/tests/unish/",
+
+            "Drupal\\Tests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/Tests/",
+            "Drupal\\KernelTests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/KernelTests"
         }
     },
     "extra": {
+        "branch-alias": {
+            "dev-8.x-1.x": "1.x.x-dev"
+        },
         "drush": {
             "services": {
-                "drush9.services.yml": "^9"
+                "drush.services.yml": "^9"
+            }
+        },
+        "enable-patching": true,
+        "composer-exit-on-patch-failure": true,
+        "patches": {},
+        "drupal-scaffold": {
+            "excludes": [
+                ".csslintrc",
+                ".editorconfig",
+                ".eslintignore",
+                ".eslintrc.json",
+                ".gitattributes",
+                ".htaccess",
+                "web.config"
+            ]
+        },
+        "installer-paths": {
+            "tests/fixtures/project_01/docroot/core": ["type:drupal-core"],
+            "tests/fixtures/project_01/docroot/libraries/{$name}": ["type:drupal-library"],
+            "tests/fixtures/project_01/docroot/modules/contrib/{$name}": ["type:drupal-module"],
+            "tests/fixtures/project_01/docroot/profiles/contrib/{$name}": ["type:drupal-profile"],
+            "tests/fixtures/project_01/docroot/themes/contrib/{$name}": ["type:drupal-theme"],
+            "tests/fixtures/project_01/drush/contrib/{$name}": ["type:drupal-drush"]
+        },
+        "marvin": {
+            "drushUnish": {
+                "filesToSymlink": {
+                    "etc": true
+                }
             }
         }
     },
     "scripts": {
         "post-install-cmd": [
-            "\\Drupal\\marvin_product\\Dev\\Composer\\Scripts::postInstallCmd"
+            "\\Drupal\\Dev\\marvin_product\\Composer\\Scripts::postInstallCmd"
         ],
         "post-update-cmd": [
-            "\\Drupal\\marvin_product\\Dev\\Composer\\Scripts::postUpdateCmd"
+            "\\Drupal\\Dev\\marvin_product\\Composer\\Scripts::postUpdateCmd"
         ],
-        "clean": "rm -rf bin/ vendor/"
+        "clean": [
+            "rm -rf bin/ reports/ vendor/",
+            "git clean --force -d -x -- tests/",
+            "git clean --force -d -X -- tests/"
+        ],
+        "test": [
+            "rm -rf ./reports/",
+            "@test:unit",
+            "@test:integration"
+        ],
+        "test:unit": [
+            "mkdir -p reports/machine/coverage-php/",
+            "phpunit --testsuite Unit --coverage-html reports/human/coverage/Unit/html --testdox-html reports/human/testdox/Unit.html --coverage-clover reports/machine/coverage-clover/Unit.xml --coverage-php reports/machine/coverage-php/Unit.php --log-junit reports/machine/junit/Unit.xml"
+        ],
+        "test:integration": [
+            "mkdir -p reports/machine/coverage-php/",
+            "phpunit --testsuite Integration --coverage-html reports/human/coverage/Integration/html --testdox-html reports/human/testdox/Integration.html --coverage-clover reports/machine/coverage-clover/Integration.xml --coverage-php reports/machine/coverage-php/Integration.php --log-junit reports/machine/junit/Integration.xml"
+        ],
+        "generate:coverage-html": [
+            "\\Drupal\\Dev\\marvin_product\\Composer\\Scripts::generateCoverageHtml"
+        ]
     }
 }
