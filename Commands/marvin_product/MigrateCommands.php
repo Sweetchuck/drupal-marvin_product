@@ -102,7 +102,7 @@ class MigrateCommands extends CommandsBase {
         $data['modulesToEnable']
       );
 
-      if ($response === FALSE) {
+      if ($response === FALSE || !empty($response['error_status'])) {
         $this->getLogger()->error('pm:enable failed.');
 
         return 1;
@@ -136,7 +136,7 @@ class MigrateCommands extends CommandsBase {
       }
 
       $response = drush_invoke_process($cmdSiteAlias, $cmdName, $cmdArgs, $cmdOptions);
-      if ($response === FALSE) {
+      if ($response === FALSE || !empty($response['error_status'])) {
         $this->getLogger()->error('migrate:import failed.');
 
         return 1;
@@ -162,7 +162,7 @@ class MigrateCommands extends CommandsBase {
         $modulesToUninstall
       );
 
-      if ($response === FALSE) {
+      if ($response === FALSE || !empty($response['error_status'])) {
         $logger->error('pm:uninstall failed.');
 
         return 1;
@@ -183,7 +183,7 @@ class MigrateCommands extends CommandsBase {
       ]
     );
 
-    if ($response === FALSE) {
+    if ($response === FALSE || !empty($response['error_status'])) {
       throw new \RuntimeException('@todo Better error message');
     }
 
