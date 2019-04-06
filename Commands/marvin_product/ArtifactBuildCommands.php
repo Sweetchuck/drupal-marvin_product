@@ -6,7 +6,7 @@ namespace Drush\Commands\marvin_product;
 
 use Drupal\marvin\Robo\VersionNumberTaskLoader;
 use Drupal\marvin\Utils as MarvinUtils;
-use Drush\Commands\marvin\Artifact\ArtifactBuildCommandsBase;
+use Drush\Commands\marvin\ArtifactBuildCommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 use Sweetchuck\Robo\Git\GitTaskLoader;
@@ -72,7 +72,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
   public function onEventMarvinArtifactBuild(InputInterface $input): array {
     return $this->getStepsBuildVanilla(
       '.',
-      $this->getConfig()->get('command.marvin.settings.artifactDir'),
+      $this->getConfig()->get('marvin.artifactDir'),
       $input->getOption('version-bump')
     );
   }
@@ -83,7 +83,7 @@ class ArtifactBuildCommands extends ArtifactBuildCommandsBase {
   public function onEventMarvinArtifactBuildVanilla(InputInterface $input): array {
     return $this->getStepsBuildVanilla(
       '.',
-      $this->getConfig()->get('command.marvin.settings.artifactDir'),
+      $this->getConfig()->get('marvin.artifactDir'),
       $input->getOption('version-bump')
     );
   }

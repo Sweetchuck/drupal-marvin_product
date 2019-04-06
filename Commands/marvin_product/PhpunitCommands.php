@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drush\Commands\marvin\Test\PhpunitCommandsBase;
+use Drush\Commands\marvin\PhpunitCommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Sweetchuck\Robo\PHPUnit\PHPUnitTaskLoader;
 

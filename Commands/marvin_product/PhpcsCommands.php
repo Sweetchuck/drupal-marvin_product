@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drush\Commands\marvin\Lint\PhpcsCommandsBase;
+use Drush\Commands\marvin\PhpcsCommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
