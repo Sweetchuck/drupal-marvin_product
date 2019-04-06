@@ -259,10 +259,11 @@ class GitHooksDeployTask extends BaseTask implements
   }
 
   protected function replaceTemplateVariables(string $content): string {
-    $marvinProductDir = Path::makeRelative(
-      MarvinProductUtils::marvinProductDir(),
-      $this->getProjectRootDir()
-    );
+    $marvinProductDir = MarvinProductUtils::marvinProductDir();
+    $projectRootDir = $this->getProjectRootDir();
+    if (MarvinProductUtils::urlsHaveSameScheme($marvinProductDir, $projectRootDir)) {
+      $marvinProductDir = Path::makeRelative($marvinProductDir, $projectRootDir);
+    }
 
     $variables = [
       '$composerExecutable' => [
