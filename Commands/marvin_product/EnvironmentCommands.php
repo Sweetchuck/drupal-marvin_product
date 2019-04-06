@@ -184,7 +184,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
 
   protected function getEnvironmentModules(): array {
     $env = $this->getEnvironment();
-    $configName = "command.marvin.settings.environments.{$env}.modules";
+    $configName = "marvin.environments.{$env}.modules";
 
     return $this->getConfig()->get($configName, []);
   }

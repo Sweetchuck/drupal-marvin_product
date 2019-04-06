@@ -33,7 +33,7 @@ class MigrateCommands extends CommandsBase {
    * The $groupName doesn't come from "migrate_plus.migration_group.*.yml"
    * config.
    * This kind of $groupName has to be defined in a "drush.yml" file,
-   * under the "command.marvin.settings.migrate.*" key.
+   * under the "marvin.migrate.*" key.
    *
    * @see onPostSiteInstall
    *
@@ -58,7 +58,7 @@ class MigrateCommands extends CommandsBase {
 
   protected function getTaskMigrateImportCollectModulesToEnable(string $groupName): \Closure {
     return function (RoboStateData $data) use ($groupName): int {
-      $configName = "command.marvin.settings.migrate.$groupName.module";
+      $configName = "marvin.migrate.$groupName.module";
       $modulesToEnable = array_keys(
         $this->getConfig()->get($configName, []),
         TRUE,
@@ -119,7 +119,7 @@ class MigrateCommands extends CommandsBase {
       $cmdArgs = [];
       $cmdOptions = [];
 
-      $configNamePrefix = "command.marvin.settings.migrate.$groupName";
+      $configNamePrefix = "marvin.migrate.$groupName";
       $filters = ['group', 'tag'];
       foreach ($filters as $filter) {
         $values = (array) $this->getConfig()->get("$configNamePrefix.$filter", []);
