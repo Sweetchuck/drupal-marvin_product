@@ -14,5 +14,7 @@
     <exclude name="Drupal.Commenting.FunctionComment.MissingReturnComment"/>
   </rule>
 
-  <rule ref="DrupalPractice" />
+  <rule ref="DrupalPractice">
+    <exclude name="DrupalPractice.Objects.GlobalDrupal.GlobalDrupal"/>
+  </rule>
 </ruleset>

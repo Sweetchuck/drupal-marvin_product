@@ -81,8 +81,8 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
    * Installs and uninstalls modules based on the configuration in drush.yml.
    *
    * Used configurations:
-   * - command.marvin.settings.environment;
-   * - command.marvin.settings.environments.*.modules;
+   * - marvin.environment;
+   * - marvin.environments.*.modules;
    *
    * @command marvin:toggle-modules
    * @bootstrap full
@@ -111,7 +111,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
   /**
    * @return $this
    */
-  public function toggleModulesInitModules() {
+  protected function toggleModulesInitModules() {
     $moduleLister = $this->getModuleLister();
     $moduleLister->reset();
     $this->installedModules = array_keys($moduleLister->getAllInstalledInfo());
@@ -190,7 +190,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     $logger->debug(
       "Modules to install: {moduleNames}",
       [
-        'moduleNames' => implode(', ', $modulesToInstall) ,
+        'moduleNames' => implode(', ', $modulesToInstall),
       ]
     );
 
