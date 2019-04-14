@@ -4,11 +4,17 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Closure;
+use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Commands\marvin\CommandsBase;
+use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
+use RuntimeException;
 
-class MigrateCommands extends CommandsBase {
+class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInterface {
+
+  use SiteAliasManagerAwareTrait;
 
   /**
    * @hook post-command site:install
@@ -56,7 +62,7 @@ class MigrateCommands extends CommandsBase {
       ->addCode($this->getTaskMigrateImportUninstallModules());
   }
 
-  protected function getTaskMigrateImportCollectModulesToEnable(string $groupName): \Closure {
+  protected function getTaskMigrateImportCollectModulesToEnable(string $groupName): Closure {
     return function (RoboStateData $data) use ($groupName): int {
       $configName = "marvin.migrate.$groupName.module";
       $modulesToEnable = array_keys(
@@ -68,7 +74,7 @@ class MigrateCommands extends CommandsBase {
       try {
         $data['enabledModules'] = $this->getEnabledModules();
       }
-      catch (\RuntimeException $e) {
+      catch (RuntimeException $e) {
         $this->getLogger()->error($e->getMessage());
 
         return 1;
@@ -88,7 +94,7 @@ class MigrateCommands extends CommandsBase {
     };
   }
 
-  protected function getTaskMigrateImportEnableModules(): \Closure {
+  protected function getTaskMigrateImportEnableModules(): Closure {
     return function (RoboStateData $data): int {
       if (empty($data['modulesToEnable'])) {
         $this->getLogger()->debug('There is no any module to enable.');
@@ -112,7 +118,7 @@ class MigrateCommands extends CommandsBase {
     };
   }
 
-  protected function getTaskMigrateImportDoIt(string $groupName): \Closure {
+  protected function getTaskMigrateImportDoIt(string $groupName): Closure {
     return function () use ($groupName): int {
       $cmdSiteAlias = '@self';
       $cmdName = 'migrate:import';
@@ -146,7 +152,7 @@ class MigrateCommands extends CommandsBase {
     };
   }
 
-  protected function getTaskMigrateImportUninstallModules(): \Closure {
+  protected function getTaskMigrateImportUninstallModules(): Closure {
     return function (RoboStateData $data): int {
       $logger = $this->getLogger();
       $modulesToUninstall = array_diff($this->getEnabledModules(), $data['enabledModules']);
@@ -184,7 +190,7 @@ class MigrateCommands extends CommandsBase {
     );
 
     if ($response === FALSE || !empty($response['error_status'])) {
-      throw new \RuntimeException('@todo Better error message');
+      throw new RuntimeException('@todo Better error message');
     }
 
     return array_keys($response['object']);

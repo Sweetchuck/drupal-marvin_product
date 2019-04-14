@@ -46,6 +46,11 @@ class GitHookCommands extends GitHookCommandsBase {
    * @command marvin:git-hook:post-checkout
    * @bootstrap max
    * @hidden
+   *
+   * @todo Consider to change the @bootstrap to "none", because after `git
+   *       checkout` the code base can be inconsistent.
+   *       (3rd-party packages aren't up to date; composer.lock).
+   *       This can be true for other Git hooks as well.
    */
   public function gitHookPostCheckout(string $refPrevious, string $refHead, bool $isBranchCheckout): CollectionBuilder {
     return $this->delegate('post-checkout');
