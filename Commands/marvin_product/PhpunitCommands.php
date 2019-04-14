@@ -17,11 +17,18 @@ class PhpunitCommands extends PhpunitCommandsBase {
    * @bootstrap none
    */
   public function runUnit(): CollectionBuilder {
-    return $this->getTaskPhpUnit(
-      $this->getTestSuiteNamesByEnvironmentVariant(),
-      $this->getGroupNames(),
-      $this->getPhpVariant()
-    );
+    $testSuite = $this->getTestSuiteNamesByEnvironmentVariant();
+    if ($testSuite === NULL) {
+      // @todo Message.
+      return $this->collectionBuilder();
+    }
+
+    $options = [];
+    if ($testSuite) {
+      $options['testSuite'] = $testSuite;
+    }
+
+    return $this->getTaskPhpUnit($options);
   }
 
   protected function getGroupNames(): array {
