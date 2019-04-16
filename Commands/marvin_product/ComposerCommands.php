@@ -6,6 +6,7 @@ namespace Drush\Commands\marvin_product;
 
 use Drush\Commands\marvin\ComposerCommandsBase;
 use Robo\Collection\CollectionBuilder;
+use Robo\State\Data as RoboStateData;
 
 class ComposerCommands extends ComposerCommandsBase {
 
@@ -17,6 +18,22 @@ class ComposerCommands extends ComposerCommandsBase {
       'marvin:lint:composer-validate' => [
         'weight' => -201,
         'task' => $this->getTaskComposerValidate($this->getProjectRootDir()),
+      ],
+    ];
+  }
+
+  /**
+   * @hook on-event marvin:git-hook:post-checkout
+   */
+  public function onEventMarvinGitHookPostCheckout(): array {
+    return [
+      'marvin:composer-install' => [
+        'weight' => 100,
+        'task' => function (RoboStateData $data): int {
+          var_dump($data['changed.files']);
+
+          return 0;
+        },
       ],
     ];
   }

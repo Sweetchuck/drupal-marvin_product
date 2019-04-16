@@ -15,7 +15,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookApplyPatchMsg(string $commitMsgFileName): CollectionBuilder {
-    return $this->delegate('applypatch-msg');
+    return $this->delegate('applypatch-msg', $commitMsgFileName);
   }
 
   /**
@@ -26,7 +26,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookCommitMsg(string $commitMsgFileName): CollectionBuilder {
-    return $this->delegate('commit-msg');
+    return $this->delegate('commit-msg', $commitMsgFileName);
   }
 
   /**
@@ -53,7 +53,7 @@ class GitHookCommands extends GitHookCommandsBase {
    *       This can be true for other Git hooks as well.
    */
   public function gitHookPostCheckout(string $refPrevious, string $refHead, bool $isBranchCheckout): CollectionBuilder {
-    return $this->delegate('post-checkout');
+    return $this->delegate('post-checkout', $refPrevious, $refHead, $isBranchCheckout);
   }
 
   /**
@@ -75,7 +75,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookPostMerge(bool $isSquashMerge): CollectionBuilder {
-    return $this->delegate('post-merge');
+    return $this->delegate('post-merge', $isSquashMerge);
   }
 
   /**
@@ -97,7 +97,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookPostRewrite(string $commandType): CollectionBuilder {
-    return $this->delegate('post-rewrite');
+    return $this->delegate('post-rewrite', $commandType);
   }
 
   /**
@@ -108,7 +108,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookPostUpdate(array $refNames): CollectionBuilder {
-    return $this->delegate('post-update');
+    return $this->delegate('post-update', $refNames);
   }
 
   /**
@@ -152,7 +152,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookPrePush(string $remoteName, string $remoteUrl): CollectionBuilder {
-    return $this->delegate('pre-push');
+    return $this->delegate('pre-push', $remoteName, $remoteUrl);
   }
 
   /**
@@ -163,7 +163,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookPreRebase(string $upstream, ?string $branch = NULL): CollectionBuilder {
-    return $this->delegate('pre-rebase');
+    return $this->delegate('pre-rebase', $upstream, $branch);
   }
 
   /**
@@ -185,7 +185,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookPrepareCommitMsg(string $commitMsgFileName, string $messageSource = '', string $sha1 = ''): CollectionBuilder {
-    return $this->delegate('prepare-commit-msg');
+    return $this->delegate('prepare-commit-msg', $commitMsgFileName, $messageSource, $sha1);
   }
 
   /**
@@ -196,7 +196,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookPushToCheckout(string $newCommit): CollectionBuilder {
-    return $this->delegate('push-to-checkout');
+    return $this->delegate('push-to-checkout', $newCommit);
   }
 
   /**
@@ -207,7 +207,7 @@ class GitHookCommands extends GitHookCommandsBase {
    * @hidden
    */
   public function gitHookUpdate(string $refName, string $oldObjectName, string $newObjectName): CollectionBuilder {
-    return $this->delegate('update');
+    return $this->delegate('update', $refName, $oldObjectName, $newObjectName);
   }
 
 }
