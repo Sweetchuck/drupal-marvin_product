@@ -26,8 +26,15 @@
         "icecave/semver": "^3.0"
     },
     "require-dev": {
+        "behat/mink-goutte-driver": "^1.2",
+        "composer/installers": "^1.6",
+        "drupal-composer/drupal-scaffold": "^2.6",
         "drupal/core": "^8.6",
-        "sweetchuck/git-hooks": "^0.0.10"
+        "drush/drush": "^9.6",
+        "mikey179/vfsStream": "^1.6",
+        "phpunit/phpunit": "^6.5",
+        "sweetchuck/git-hooks": "^0.0.10",
+        "weitzman/drupal-test-traits": "^1.1"
     },
     "conflict": {
         "drupal/marvin_incubator": "*"

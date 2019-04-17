@@ -4,7 +4,10 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use ArrayIterator;
+use Closure;
 use Drush\Commands\marvin\ComposerCommandsBase;
+use RegexIterator;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 
@@ -29,11 +32,7 @@ class ComposerCommands extends ComposerCommandsBase {
     return [
       'marvin:composer-install' => [
         'weight' => 100,
-        'task' => function (RoboStateData $data): int {
-          var_dump($data['changed.files']);
-
-          return 0;
-        },
+        'task' => $this->getTaskComposerChangedNotification(),
       ],
     ];
   }
@@ -63,7 +62,7 @@ class ComposerCommands extends ComposerCommandsBase {
   /**
    * @todo Check that if $path is empty.
    */
-  protected function getTaskComposerStatus(string $refPrevious, string $refHead, array $paths): \Closure {
+  protected function getTaskComposerStatus(string $refPrevious, string $refHead, array $paths): Closure {
     return function () use ($refPrevious, $refHead, $paths): int {
       $cmdPattern = '%s diff --exit-code --name-only %s..%s --';
       $cmdArgs = [
@@ -86,6 +85,43 @@ class ComposerCommands extends ComposerCommandsBase {
       if (!$result->wasSuccessful()) {
         $this->say('composer.{json,lock} has been changed changed. Run `composer install`');
       }
+
+      return 0;
+    };
+  }
+
+  /**
+   * @todo Write native Task.
+   *
+   * @see \Drush\Commands\marvin_product\NpmCommands::getTaskPackageJsonNotification
+   */
+  protected function getTaskComposerChangedNotification(): Closure {
+    return function (RoboStateData $data): int {
+      $fileNames = new RegexIterator(
+        new ArrayIterator($data['changed.fileNames']),
+        '@(^|/)composer\.(json|lock)$@'
+      );
+
+      $commands = [];
+      foreach ($fileNames as $fileName) {
+        $dirName = dirname($fileName) ?: '.';
+        $commands[$dirName] = sprintf('cd %s && composer install', escapeshellarg($dirName));
+      }
+
+      if (!$commands) {
+        return 0;
+      }
+
+      $message = implode(PHP_EOL, [
+        'One of the composer.{json,lock} has been changed.',
+        'You have to run the following commands:',
+        '{commands}',
+      ]);
+      $context = [
+        'commands' => implode(PHP_EOL, $commands),
+      ];
+
+      $this->getLogger()->warning($message, $context);
 
       return 0;
     };

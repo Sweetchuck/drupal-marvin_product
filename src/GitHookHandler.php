@@ -164,6 +164,7 @@ class GitHookHandler {
     $context = [
       'cliArgs' => [
         "{$this->binDir}/drush",
+        '--define=options.progress-delay=9999',
         "--define=marvin.gitHook={$this->gitHook}",
       ],
       'pathToDrush' => "{$this->binDir}/drush",

@@ -7,7 +7,6 @@ namespace Drush\Commands\marvin_product;
 use Drush\Commands\marvin\CommandsBase;
 use Sweetchuck\Robo\Git\GitTaskLoader;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class MarvinCommands extends CommandsBase {
 
