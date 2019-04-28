@@ -34,7 +34,7 @@
         "mikey179/vfsStream": "^1.6",
         "phpunit/phpunit": "^6.5",
         "sweetchuck/git-hooks": "^0.0.10",
-        "weitzman/drupal-test-traits": "^1.1"
+        "weitzman/drupal-test-traits": "^1.2"
     },
     "conflict": {
         "drupal/marvin_incubator": "*"
@@ -47,10 +47,14 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Drush\\Commands\\Tests\\marvin_product\\DrushUnit\\": "tests/src/DrushUnit/",
-            "Drupal\\marvin_product\\Dev\\Composer\\": "src-dev/Composer/",
+            "Drupal\\Dev\\marvin_product\\Composer\\": "src-dev/Composer/",
+
             "Drupal\\Tests\\marvin_product\\Helper\\": "tests/src/Helper/",
-            "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/"
+            "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/",
+            "Drupal\\Tests\\marvin_product\\Integration\\": "tests/src/Integration/",
+
+            "Drupal\\Tests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/Tests/",
+            "Drupal\\KernelTests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/KernelTests"
         }
     },
     "extra": {

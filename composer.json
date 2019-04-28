@@ -51,7 +51,6 @@
             "Drupal\\Tests\\marvin_product\\Helper\\": "tests/src/Helper/",
             "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/",
             "Drupal\\Tests\\marvin_product\\Integration\\": "tests/src/Integration/",
-            "Unish\\": "vendor/drush/drush/tests/unish/",
 
             "Drupal\\Tests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/Tests/",
             "Drupal\\KernelTests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/KernelTests"

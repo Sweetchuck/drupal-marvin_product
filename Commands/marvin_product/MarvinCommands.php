@@ -4,6 +4,9 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\CommandError;
+use Drupal\marvin\Utils as MarvinUtils;
 use Drush\Commands\marvin\CommandsBase;
 use Sweetchuck\Robo\Git\GitTaskLoader;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,6 +30,44 @@ class MarvinCommands extends CommandsBase {
           ->setAssetNamePrefix('changed.'),
       ],
     ];
+  }
+
+  /**
+   * @hook validate @marvinOptionCommaSeparatedList
+   */
+  public function onHookValidateMarvinOptionCommaSeparatedList(CommandData $commandData): ?CommandError {
+    $annotationKey = 'marvinOptionCommaSeparatedList';
+    $annotationData = $commandData->annotationData();
+    if (!$annotationData->has($annotationKey)) {
+      return NULL;
+    }
+
+    $commandErrors = [];
+    $optionNames = $this->parseMultiValueAnnotation($annotationKey, $annotationData->get($annotationKey));
+    foreach ($optionNames as $optionName) {
+      $commandErrors[] = $this->onHookValidateMarvinOptionCommaSeparatedListSingle($commandData, $optionName);
+    }
+
+    return MarvinUtils::aggregateCommandErrors($commandErrors);
+  }
+
+  protected function onHookValidateMarvinOptionCommaSeparatedListSingle(CommandData $commandData, string $optionName): ?CommandError {
+    $items = $commandData->input()->getOption($optionName);
+
+    $result = [];
+    foreach ($items as $itemList) {
+      foreach (MarvinUtils::explodeCommaSeparatedList($itemList) as $item) {
+        $result[] = $item;
+      }
+    }
+
+    $commandData->input()->setOption($optionName, $result);
+
+    return NULL;
+  }
+
+  protected function parseMultiValueAnnotation(string $name, string $value): array {
+    return MarvinUtils::explodeCommaSeparatedList($value);
   }
 
 }
