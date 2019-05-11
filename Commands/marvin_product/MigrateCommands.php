@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drush\Commands\marvin_product;
 
 use Closure;
+use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Commands\marvin\CommandsBase;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
@@ -21,20 +22,29 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
    *
    * @todo Validate $groupName.
    */
-  public function onPostSiteInstall() {
-    $result = $this
-      ->getTaskMigrateImport('default')
-      ->run();
+  public function onPostSiteInstall($parentResult, CommandData $commandData) {
+    $logger = $this->getLogger();
 
-    if ($result->wasSuccessful()) {
+    $withExistingConfig = !empty($commandData->input()->getOption('existing-config'));
+    if (!$withExistingConfig) {
+      $logger->notice("The 'default' content migration is skipped, because config isn't imported.");
+
       return;
     }
 
-    $this->logger->error('Default content migration failed');
+    $migrateResult = $this
+      ->getTaskMigrateImport('default')
+      ->run();
+
+    if ($migrateResult->wasSuccessful()) {
+      return;
+    }
+
+    $logger->error('Default content migration failed');
   }
 
   /**
-   * This is a shortcut for `drupal migrate:import ...`.
+   * This is a shortcut for `drush migrate:import ...`.
    *
    * The $groupName doesn't come from "migrate_plus.migration_group.*.yml"
    * config.
