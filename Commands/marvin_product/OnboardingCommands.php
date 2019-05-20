@@ -15,6 +15,7 @@ use Sweetchuck\Robo\Git\GitTaskLoader;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 use Webmozart\PathUtil\Path;
 
@@ -35,14 +36,14 @@ class OnboardingCommands extends CommandsBase {
   /**
    * @hook on-event marvin:composer:post-install-cmd
    */
-  public function composerPostInstallCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
+  public function onEventComposerPostInstallCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
     $tasks = [];
 
     if ($input->getOption('dev-mode')) {
       // @todo Detect all the $docroot/sites/*/settings.php.
       $tasks['marvin.onboarding'] = [
         'weight' => 0,
-        'task' => $this->getTaskOnboarding($projectRoot, 'default'),
+        'task' => $this->getTaskOnboarding($projectRoot),
       ];
     }
 
@@ -50,21 +51,18 @@ class OnboardingCommands extends CommandsBase {
   }
 
   /**
+   * Generates some files and directory to setup developer environment.
+   *
    * @command marvin:onboarding
    * @bootstrap none
    */
-  public function onboarding(
-    array $options = [
-      'url' => '',
-    ]
-  ): CollectionBuilder {
+  public function onboarding(): CollectionBuilder {
     $projectRoot = Path::getDirectory($this->getComposerInfo()->getJsonFileName());
 
-    // @todo Bootstrap level config and get the $siteDir.
-    return $this->getTaskOnboarding($projectRoot, 'default');
+    return $this->getTaskOnboarding($projectRoot);
   }
 
-  protected function getTaskOnboarding(string $projectRoot, string $siteDir): CollectionBuilder {
+  protected function getTaskOnboarding(string $projectRoot): CollectionBuilder {
     $composerInfo = $this->getComposerInfo();
 
     if (!empty($composerInfo['scripts']['post-create-project-cmd'])) {
@@ -77,22 +75,77 @@ class OnboardingCommands extends CommandsBase {
         });
     }
 
-    $isDeveloperMode = $this->isDeveloperMode($projectRoot);
     $drupalRoot = MarvinUtils::detectDrupalRootDir($composerInfo);
+    $sitesDir = $this->getSitesDirs("$projectRoot/$drupalRoot");
 
-    $cb = $this->collectionBuilder();
+    $cb = $this
+      ->collectionBuilder()
+      ->addTask($this->delegate('onboarding.project', $projectRoot, $drupalRoot, $sitesDir));
 
-    $cb->addTask($this->getTaskOnboardingCreateRequiredDirs($projectRoot, $drupalRoot, $siteDir));
-    $cb->addCode($this->getTaskOnboardingSettingsLocalPhp($projectRoot, $drupalRoot, $siteDir));
-
-    if ($isDeveloperMode) {
-      $cb->addTask($this->getTaskOnboardingBehatLocalYml());
+    foreach ($sitesDir as $siteDir) {
+      $cb->addTask($this->delegate('onboarding.site', $projectRoot, $drupalRoot, $siteDir));
     }
 
-    $cb->addCode($this->getTaskOnboardingDrushLocalYml($projectRoot));
-    $cb->addCode($this->getTaskOnboardingHashSaltTxt($projectRoot, $siteDir));
-
     return $cb;
+  }
+
+  /**
+   * @hook on-event marvin.onboarding.project
+   */
+  public function onEventMarvinOnboardingProject(
+    InputInterface $input,
+    OutputInterface $output,
+    string $projectRoot,
+    string $drupalRoot,
+    array $sitesDirs
+  ): array {
+    $isDeveloperMode = $this->isDeveloperMode($projectRoot);
+
+    $tasks = [];
+
+    if ($isDeveloperMode) {
+      $tasks['marvin.behatLocalYml'] = [
+        'task' => $this->getTaskOnboardingBehatLocalYml(),
+        'weight' => -700,
+      ];
+    }
+
+    return $tasks;
+  }
+
+  /**
+   * @hook on-event marvin:onboarding.site
+   */
+  public function onEventMarvinOnboardingSite(
+    InputInterface $input,
+    OutputInterface $output,
+    string $projectRoot,
+    string $drupalRoot,
+    string $siteDir
+  ): array {
+    $tasks = [];
+
+    $tasks['marvin.createRequiredDirs'] = [
+      'task' => $this->getTaskOnboardingCreateRequiredDirs($projectRoot, $drupalRoot, $siteDir),
+      'weight' => -800,
+    ];
+
+    $tasks['marvin.settingsLocalPhp'] = [
+      'task' => $this->getTaskOnboardingSettingsLocalPhp($projectRoot, $drupalRoot, $siteDir),
+      'weight' => -750,
+    ];
+
+    $tasks['marvin.drushLocalYml'] = [
+      'task' => $this->getTaskOnboardingDrushLocalYml($projectRoot),
+      'weight' => -700,
+    ];
+
+    $tasks['marvin.hashSaltTxt'] = [
+      'task' => $this->getTaskOnboardingHashSaltTxt($projectRoot, $siteDir),
+      'weight' => -650,
+    ];
+
+    return $tasks;
   }
 
   protected function getTaskOnboardingCreateRequiredDirs(string $projectRoot, string $drupalRoot, string $siteDir): TaskInterface {
@@ -307,6 +360,25 @@ YAML;
   protected function isDeveloperMode(string $projectRoot): bool {
     // @todo Read the tests dir path from configuration.
     return $this->fs->exists("$projectRoot/tests");
+  }
+
+  /**
+   * @return string[]
+   */
+  protected function getSitesDirs(string $drupalRoot): array {
+    $files = (new Finder())
+      ->in("$drupalRoot/sites/*")
+      ->depth(0)
+      ->files()
+      ->name('settings.php');
+
+    $sitesDirs = [];
+    /** @var \Symfony\Component\Finder\SplFileInfo $file */
+    foreach ($files as $file) {
+      $sitesDirs[] = Path::getFilename($file->getPath());
+    }
+
+    return $sitesDirs;
   }
 
 }
