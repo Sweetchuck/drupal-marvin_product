@@ -6,8 +6,10 @@ namespace Drush\Commands\marvin_product;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandResult;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\marvin_product\EnvConfig\DrupalConfigConverter;
 use Drupal\marvin_product\EnvConfig\EnvConfigHandler;
+use Drupal\marvin_product\EnvConfig\SitesPhpGenerator;
 use Drush\Commands\marvin\CommandsBase;
 use Drush\Internal\Config\Yaml\Yaml;
 use RuntimeException;
@@ -81,6 +83,42 @@ class EnvConfigCommands extends CommandsBase {
       );
 
     return CommandResult::data($envConfigSettingsPhp);
+  }
+
+  /**
+   * Generates sites.php from host_name:dir_name mapping.
+   *
+   * ```yaml
+   * hosts:
+   *   a: b
+   * ```
+   *
+   * @command marvin:env-config:sites-php
+   *
+   * @usage drush marvin:env-config:sites-php --env-var-name-pattern='FOO_{{ upper }}_BAR' --parents=hosts /path/to/config.yml
+   *   Reads host_name:dir_name mapping from /path/to/config.yml
+   *   Result: $sites = [getenv('FOO_A_BAR') => 'b'];
+   */
+  public function sitesPhp(
+    string $fileName,
+    array $options = [
+      'env-var-name-pattern' => '',
+      'parents' => [],
+    ]
+  ) {
+    if ($fileName === '') {
+      $fileName = 'php://stdin';
+    }
+
+    $envConfig = (array) Yaml::parse($this->fileGetContents($fileName));
+    $mapping = (array) NestedArray::getValue($envConfig, $options['parents']);
+
+    $sitesPhpContent = (new SitesPhpGenerator())
+      ->setEnvVarNamePattern($options['env-var-name-pattern'])
+      ->setMapping($mapping)
+      ->generate();
+
+    return CommandResult::data($sitesPhpContent);
   }
 
   protected function fileGetContents(string $fileName): string {
