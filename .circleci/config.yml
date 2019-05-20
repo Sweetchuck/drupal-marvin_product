@@ -1,5 +1,8 @@
 
-version: 2
+version: 2.1
+
+orbs:
+  codecov: codecov/codecov@1.0.4
 
 _custom:
   step__run__install_php_extensions: &step__run__install_php_extensions
@@ -61,13 +64,6 @@ _custom:
       bin/phpunit
   step__store_test_results: &step__store_test_results
     path: 'reports/machine/unit/junit.xml'
-  step__run__codecov: &step__run__codecov
-    name: 'Publish the code coverage report on Codecov.io'
-    when: 'always'
-    command: >
-      [ ! -s tests/_output/machine/coverage/*/coverage.xml ]
-      || bash <(curl -s https://codecov.io/bash)
-      || true
 
   job__lint_and_test: &job__lint_and_test
     working_directory: '~/repo'
@@ -101,8 +97,8 @@ _custom:
         store_test_results:
           <<: *step__store_test_results
       -
-        run:
-          <<: *step__run__codecov
+        codecov/upload:
+          file: reports/machine/coverage/overall.xml
 
 jobs:
   php701__lint_and_test:
