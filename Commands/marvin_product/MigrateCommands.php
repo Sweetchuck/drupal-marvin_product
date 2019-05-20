@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drush\Commands\marvin_product;
 
 use Closure;
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Commands\marvin\CommandsBase;
@@ -12,10 +13,27 @@ use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * @todo Validate migration group name.
+ */
 class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInterface {
 
   use SiteAliasManagerAwareTrait;
+
+  /**
+   * @hook option site:install
+   */
+  public function onOptionSiteInstall(Command $command, AnnotationData $annotationData) {
+    $command->addOption(
+      'marvin-migrate',
+      '',
+      InputOption::VALUE_OPTIONAL,
+      'Name of the Marvin migration group (drush.yml#marvin.migrate.*) to import after site install and config import. This option has only effect when the --existing-config is on.'
+    );
+  }
 
   /**
    * @hook post-command site:install
@@ -24,16 +42,29 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
    */
   public function onPostSiteInstall($parentResult, CommandData $commandData) {
     $logger = $this->getLogger();
+    $input = $commandData->input();
 
-    $withExistingConfig = !empty($commandData->input()->getOption('existing-config'));
+    $withExistingConfig = !empty($input->getOption('existing-config'));
+    $migrationGroupName = $input->getOption('marvin-migrate');
+
     if (!$withExistingConfig) {
-      $logger->notice("The 'default' content migration is skipped, because config isn't imported.");
+      if ($migrationGroupName) {
+        $logger->notice("The '$migrationGroupName' content migration is skipped, because the config wasn't imported.");
+      }
+
+      return;
+    }
+
+    if (!$migrationGroupName) {
+      if ($migrationGroupName === '') {
+        $logger->notice("The content migration intentionally skipped.");
+      }
 
       return;
     }
 
     $migrateResult = $this
-      ->getTaskMigrateImport('default')
+      ->getTaskMigrateImport($migrationGroupName)
       ->run();
 
     if ($migrateResult->wasSuccessful()) {
