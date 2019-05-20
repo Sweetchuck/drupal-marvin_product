@@ -100,7 +100,7 @@ class EnvConfigCommands extends CommandsBase {
    *   Result: $sites = [getenv('FOO_A_BAR') => 'b'];
    */
   public function sitesPhp(
-    string $fileName,
+    string $fileName = '',
     array $options = [
       'env-var-name-pattern' => '',
       'parents' => [],
