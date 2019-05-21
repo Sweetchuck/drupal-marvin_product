@@ -282,7 +282,11 @@ YAML;
   }
 
   protected function generateHashSalt(): string {
-    return uniqid('', TRUE);
+    return bin2hex(random_bytes($this->getHashSaltLength()));
+  }
+
+  protected function getHashSaltLength(): int {
+    return random_int(32, 64);
   }
 
   protected function fileGetContents(string $fileName): string {
