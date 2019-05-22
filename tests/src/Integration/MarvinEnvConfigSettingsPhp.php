@@ -16,7 +16,7 @@ class MarvinEnvConfigSettingsPhp extends UnishIntegrationTestCase {
     $options = $this->getCommonCommandLineOptions();
     $envVars = $this->getCommonCommandLineEnvVars();
 
-    $envConfigBase64 = base64_encode(Yaml::dump([
+    $envConfigTop = [
       [
         'sites' => [
           'all' => TRUE,
@@ -37,7 +37,13 @@ class MarvinEnvConfigSettingsPhp extends UnishIntegrationTestCase {
           ],
         ],
       ]
-    ]));
+    ];
+
+    $envConfigTopDeep = [
+      'p1' => [
+        'p2' => $envConfigTop,
+      ],
+    ];
 
     return [
       'envVarNow' => [
@@ -53,7 +59,7 @@ class MarvinEnvConfigSettingsPhp extends UnishIntegrationTestCase {
           'sites' => 'all,default',
         ] + $options,
         [
-          "data://text/plain;base64,$envConfigBase64",
+          'data://text/plain;base64,' . base64_encode(Yaml::dump($envConfigTop)),
         ],
         [
           'APP_A_B_C' => 'all.a.b.c.stage',
@@ -72,10 +78,30 @@ class MarvinEnvConfigSettingsPhp extends UnishIntegrationTestCase {
           'sites' => 'all,default',
         ] + $options,
         [
-          "data://text/plain;base64,$envConfigBase64",
+          'data://text/plain;base64,' . base64_encode(Yaml::dump($envConfigTop)),
         ],
         [
           'APP_A_B_C' => 'all.a.b.c.prod',
+        ] + $envVars,
+      ],
+      'deep' => [
+        [
+          'exitCode' => 0,
+          'stdOutput' => implode("\n", [
+            "\$a['b']['c'] = 'all.a.b.c.stage';",
+          ]),
+          'stdError' => '',
+        ],
+        [
+          'target' => 'stage',
+          'sites' => 'all,default',
+          'parents' => ['p1', 'p2'],
+        ] + $options,
+        [
+          'data://text/plain;base64,' . base64_encode(Yaml::dump($envConfigTopDeep)),
+        ],
+        [
+          'APP_A_B_C' => 'all.a.b.c.stage',
         ] + $envVars,
       ],
     ];

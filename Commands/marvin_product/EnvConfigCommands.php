@@ -18,6 +18,8 @@ class EnvConfigCommands extends CommandsBase {
 
   /**
    * @hook validate marvin:env-config:settings-php
+   *
+   * @todo Validate the yaml content.
    */
   public function exportSettingsPhpValidate(CommandData $commandData) {
     $input = $commandData->input();
@@ -35,7 +37,7 @@ class EnvConfigCommands extends CommandsBase {
    *     all: true
    *   key: [a, b ,c]
    *   value:
-   *     dev:
+   *     local:
    *       type: value
    *       value: my-value
    *     stage:
@@ -46,34 +48,37 @@ class EnvConfigCommands extends CommandsBase {
    *       value: MY_ENV_VAR_02
    * ```
    *
-   * Run `drush marvin:env-config:settings-php --sites=all --target=dev ...`
-   *
-   * ```
-   * $a['b']['c'] = 'my-value';
-   * ```
-   *
    * @command marvin:env-config:settings-php
    * @bootstrap none
    * @marvinOptionCommaSeparatedList sites
+   * @marvinOptionArrayRequired sites
    *
-   * @usage drush marvin:env-config:settings-php --sites=default --target=staging < my-env-config.yml
+   * @usage drush marvin:env-config:settings-php --sites=all --target=local < my-env-config.yml
    *   Read the YAML content from StdInput.
-   * @usage drush marvin:env-config:settings-php --sites=default --target=staging "data://text/plain;base64,${myEnvConfigYamlBase64Encoded}"
+   *   Result: $a['b']['c'] = 'my-value';
+   *
+   * @usage MY_ENV_VAR_01='foo' drush marvin:env-config:settings-php --sites=all --target=stage "data://text/plain;base64,${myEnvConfigYamlBase64Encoded}"
    *   Read YAML content from file.
-   *   https://www.php.net/manual/en/wrappers.data.php
+   *   Result: $a['b']['c'] = 'foo';
+   *
+   * @usage drush marvin:env-config:settings-php --sites=all --target=prod < my-env-config.yml
+   *   Read the YAML content from StdInput.
+   *   Result: $a['b']['c'] = getenv('MY_ENV_VAR_02');
    */
   public function exportSettingsPhp(
     string $fileName = '',
     array $options = [
       'target' => '',
       'sites' => [],
+      'parents' => [],
     ]
   ) {
     if ($fileName === '') {
       $fileName = 'php://stdin';
     }
 
-    $envConfig = Yaml::parse($this->fileGetContents($fileName));
+    $envConfig = (array) Yaml::parse($this->fileGetContents($fileName));
+    $envConfig = (array) NestedArray::getValue($envConfig, $options['parents']);
 
     $envConfigHandler = new EnvConfigHandler();
     $envConfigSettingsPhp = (new DrupalConfigConverter())

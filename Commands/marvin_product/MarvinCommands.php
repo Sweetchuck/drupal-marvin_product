@@ -66,6 +66,27 @@ class MarvinCommands extends CommandsBase {
     return NULL;
   }
 
+  /**
+   * @hook validate @marvinOptionArrayRequired
+   */
+  public function onHookValidateMarvinOptionArrayRequired(CommandData $commandData): ?CommandError {
+    $annotationKey = 'marvinOptionArrayRequired';
+    $annotationData = $commandData->annotationData();
+    if (!$annotationData->has($annotationKey)) {
+      return NULL;
+    }
+
+    $optionNames = $this->parseMultiValueAnnotation($annotationKey, $annotationData->get($annotationKey));
+    foreach ($optionNames as $optionName) {
+      $value = $commandData->input()->getOption($optionName);
+      if (!count($value)) {
+        return new CommandError("The --$optionName option is required.", 1);
+      }
+    }
+
+    return NULL;
+  }
+
   protected function parseMultiValueAnnotation(string $name, string $value): array {
     return MarvinUtils::explodeCommaSeparatedList($value);
   }
