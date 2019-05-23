@@ -12,9 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PhpcsCommands extends PhpcsCommandsBase {
 
   /**
-   * @hook on-event marvin:composer:post-install-cmd marvin:composer:post-update-cmd
+   * @hook on-event marvin:composer-scripts:post-install-cmd
    */
-  public function onEventComposerPostInstallAndUpdateCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
+  public function onEventComposerScriptsPostInstallCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
     $tasks = [];
 
     if ($input->getOption('dev-mode')) {
@@ -25,6 +25,13 @@ class PhpcsCommands extends PhpcsCommandsBase {
     }
 
     return $tasks;
+  }
+
+  /**
+   * @hook on-event marvin:composer-scripts:post-update-cmd
+   */
+  public function onEventComposerScriptsPostUpdateCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
+    return $this->onEventComposerScriptsPostInstallCmd($input, $output, $projectRoot);
   }
 
   /**

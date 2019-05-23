@@ -14,15 +14,22 @@ class GitHooksCommands extends CommandsBase {
   use GitHooksTaskLoader;
 
   /**
-   * @hook on-event marvin:composer:post-install-cmd on-event marvin:composer:post-update-cmd
+   * @hook on-event marvin:composer-scripts:post-install-cmd
    */
-  public function composerPostInstallAndUpdateCmd(): array {
+  public function onEventComposerScriptPostInstallCmd(): array {
     return [
       'marvin.gitHooks.deploy' => [
         'weight' => -200,
         'task' => $this->getTaskDeployGitHooks(),
       ],
     ];
+  }
+
+  /**
+   * @hook on-event marvin:composer-scripts:post-update-cmd
+   */
+  public function onEventComposerScriptPostUpdateCmd(): array {
+    return $this->onEventComposerScriptPostInstallCmd();
   }
 
   /**
