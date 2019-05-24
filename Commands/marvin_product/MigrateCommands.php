@@ -27,12 +27,14 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
    * @hook option site:install
    */
   public function onOptionSiteInstall(Command $command, AnnotationData $annotationData) {
-    $command->addOption(
-      'marvin-migrate',
-      '',
-      InputOption::VALUE_OPTIONAL,
-      'Name of the Marvin migration group (drush.yml#marvin.migrate.*) to import after site install and config import. This option has only effect when the --existing-config is on.'
-    );
+    if (!$command->getDefinition()->hasOption('marvin-migrate')) {
+      $command->addOption(
+        'marvin-migrate',
+        '',
+        InputOption::VALUE_OPTIONAL,
+        'Name of the Marvin migration group (drush.yml#marvin.migrate.*) to import after site install and config import. This option has only effect when the --existing-config is on.'
+      );
+    }
   }
 
   /**
