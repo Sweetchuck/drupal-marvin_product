@@ -249,10 +249,8 @@ YAML;
       }
 
       $localContent = [
-        'command' => [
-          'options' => [
-            'uri' => $uri,
-          ],
+        'options' => [
+          'uri' => $uri,
         ],
       ];
 
