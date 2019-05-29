@@ -44,7 +44,7 @@ class GitHookCommitMsgCommands extends CommandsBase {
   protected function getRules(): array {
     return $this
       ->getConfig()
-      ->get('command.marvin.git-hook.commit-msg.settings.rules', []);
+      ->get('marvin.git-hook.commit-msg.settings.rules', []);
   }
 
 }
