@@ -683,7 +683,7 @@
             "version": "8.3.5",
             "source": {
                 "type": "git",
-                "url": "https://git.drupal.org/project/coder.git",
+                "url": "https://git.drupalcode.org/project/coder.git",
                 "reference": "35277fc8675b6a2cbb194f8880145a9c85c845c4"
             },
             "require": {
@@ -1539,12 +1539,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/robo-git.git",
-                "reference": "066214d87ce6b75bebab98ebb21b57c75ff51a71"
+                "reference": "2c856c5b0fe7bd6c2e20b598a710c3fad60a2fd2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sweetchuck/robo-git/zipball/066214d87ce6b75bebab98ebb21b57c75ff51a71",
-                "reference": "066214d87ce6b75bebab98ebb21b57c75ff51a71",
+                "url": "https://api.github.com/repos/Sweetchuck/robo-git/zipball/2c856c5b0fe7bd6c2e20b598a710c3fad60a2fd2",
+                "reference": "2c856c5b0fe7bd6c2e20b598a710c3fad60a2fd2",
                 "shasum": ""
             },
             "require": {
@@ -1571,7 +1571,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Robo task to read the content of the staged files",
-            "time": "2019-08-05T19:42:41+00:00"
+            "time": "2019-08-11T10:59:08+00:00"
         },
         {
             "name": "sweetchuck/robo-nvm",
