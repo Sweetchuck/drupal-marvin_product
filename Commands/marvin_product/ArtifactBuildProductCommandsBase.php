@@ -259,6 +259,8 @@ abstract class ArtifactBuildProductCommandsBase extends ArtifactBuildCommandsBas
     return $this
       ->taskComposerUpdate()
       ->noDev()
+      ->noInteraction()
+      ->option('no-progress')
       ->option('lock')
       ->deferTaskConfiguration('dir', 'buildDir');
   }

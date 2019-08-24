@@ -721,7 +721,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/drupal-marvin.git",
-                "reference": "e60a126e02dd1ab9f4c2dcbb5af463b74ca72249"
+                "reference": "d3802fb4a47d5250a5107683e16ffa22f1ec25d0"
             },
             "require": {
                 "danielstjules/stringy": "^3.1",
@@ -864,7 +864,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Set of developer helper Drush commands",
-            "time": "2019-04-28T16:54:20+00:00"
+            "time": "2019-08-11T13:55:33+00:00"
         },
         {
             "name": "grasmash/expander",
