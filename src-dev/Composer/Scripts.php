@@ -16,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
-use Sweetchuck\GitHooks\Composer\Scripts as GitHooks;
 use Sweetchuck\Utils\Filter\ArrayFilterFileSystemExists;
 
 class Scripts {
@@ -28,7 +27,6 @@ class Scripts {
     $self = new static($event);
 
     $self
-      ->gitHooksDeploy()
       ->phpcsConfigSet()
       ->preparePhpunitXml()
       ->prepareProject();
@@ -43,7 +41,6 @@ class Scripts {
     $self = new static($event);
 
     $self
-      ->gitHooksDeploy()
       ->phpcsConfigSet()
       ->preparePhpunitXml()
       ->prepareProject();
@@ -146,17 +143,6 @@ class Scripts {
       $this->processCallbackWrapper = function (string $type, string $buffer) {
         $this->processCallback($type, $buffer);
       };
-    }
-
-    return $this;
-  }
-
-  /**
-   * @return $this
-   */
-  protected function gitHooksDeploy() {
-    if ($this->event->isDevMode()) {
-      GitHooks::deploy($this->event);
     }
 
     return $this;
@@ -410,7 +396,7 @@ $databases = [
     'default' => [
       'driver' => 'sqlite',
       'namespace' => '\Drupal\Core\Database\Driver\sqlite',
-      'database' => __DIR__ . '/db.default.default.sqlite',
+      'database' => 'sites/default/db.default.default.sqlite',
     ],
   ],
 ];

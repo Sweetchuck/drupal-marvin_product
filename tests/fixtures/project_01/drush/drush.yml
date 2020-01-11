@@ -10,3 +10,19 @@ drush:
 
 marvin:
   projectType: 'integrationTest'
+
+  environments:
+    local:
+      modules:
+        dblog: true
+        devel: false
+        kint: false
+        field_ui: true
+        views_ui: true
+    prod:
+      modules:
+        dblog: false
+        devel: false
+        kint: false
+        field_ui: false
+        views_ui: false

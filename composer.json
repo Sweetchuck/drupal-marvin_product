@@ -1,8 +1,24 @@
 {
+    "type": "drupal-drush",
     "name": "drupal/marvin_product",
     "description": "Drush commands to manage contrib development",
-    "type": "drupal-drush",
     "license": "GPL-3.0-or-later",
+    "keywords": [
+        "drupal",
+        "drush"
+    ],
+    "homepage": "https://github.com/Sweetchuck/drupal-marvin_product",
+    "authors": [
+        {
+            "name": "Dávid Andor",
+            "role": "Maintainer",
+            "homepage": "https://github.com/Sweetchuck"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/Sweetchuck/drupal-marvin_product",
+        "issues": "https://github.com/Sweetchuck/drupal-marvin_product/issues"
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
@@ -19,6 +35,7 @@
     },
     "require": {
         "ext-json": "*",
+        "consolidation/robo": "^2.0",
         "drupal/marvin": "dev-8.x-1.x",
         "icecave/semver": "^3.0"
     },
@@ -26,15 +43,16 @@
         "behat/mink-goutte-driver": "^1.2",
         "composer/installers": "^1.6",
         "drupal-composer/drupal-scaffold": "^2.6",
-        "drupal/core": "^8.6",
-        "drush/drush": "^9.6",
+        "drupal/core-recommended": "^8.8",
+        "drush/drush": "^10.1",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^6.5",
-        "sweetchuck/git-hooks": "^0.0.10",
-        "weitzman/drupal-test-traits": "^1.1"
+        "phpunit/phpunit": "^7.5",
+        "weitzman/drupal-test-traits": "^1.1",
+        "oomphinc/composer-installers-extender": "^1.1",
+        "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "suggest": {
-        "drush/drush": "9.6.*"
+        "drush/drush": "^10.1"
     },
     "conflict": {
         "drupal/marvin_incubator": "*"

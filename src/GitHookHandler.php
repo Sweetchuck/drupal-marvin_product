@@ -132,7 +132,7 @@ class GitHookHandler {
   protected function getDrushCommandPrefix(): string {
     $cmdPattern = '%s';
     $cmdArgs = [
-      escapeshellcmd("{$this->binDir}/drush")
+      escapeshellcmd("{$this->binDir}/drush"),
     ];
 
     $cmdPattern .= str_repeat(' --config=%s', count($this->drushConfigPaths));
@@ -218,4 +218,3 @@ class GitHookHandler {
   }
 
 }
-
