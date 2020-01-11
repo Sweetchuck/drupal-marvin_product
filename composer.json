@@ -34,6 +34,7 @@
         }
     },
     "require": {
+        "php": ">=7.2",
         "ext-json": "*",
         "consolidation/robo": "^2.0",
         "drupal/marvin": "dev-8.x-1.x",
