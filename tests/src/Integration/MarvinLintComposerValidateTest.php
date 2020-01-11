@@ -13,7 +13,7 @@ class MarvinLintComposerValidateTest extends UnishIntegrationTestCase {
   public function testMarvinStatusReport(): void {
     $expected = [
       'stdError' => implode(PHP_EOL, [
-        '[notice] Validating composer.json: composer validate',
+        ' [Composer\Validate] Running composer validate in ' . $this->getMarvinProductRootDir(),
       ]),
       'stdOutput' => './composer.json is valid',
       'exitCode' => 0,

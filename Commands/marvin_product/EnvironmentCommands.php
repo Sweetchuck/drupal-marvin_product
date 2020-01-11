@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Drupal;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -136,7 +137,23 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
       );
     }
 
+    $missingModules = array_diff(
+      $this->modulesToUninstall,
+      $this->installedModules,
+      $this->uninstalledModules
+    );
+
+    if ($missingModules) {
+      $logger->debug(
+        "Following modules are marked to uninstall, but they are missing: {moduleNames}",
+        [
+          'moduleNames' => implode(', ', $missingModules),
+        ]
+      );
+    }
+
     $modulesToUninstall = array_intersect($this->installedModules, $this->modulesToUninstall);
+    $modulesToUninstall = array_diff($modulesToUninstall, $missingModules);
     if (!$modulesToUninstall) {
       $logger->debug('There is no module to uninstall');
 
@@ -200,49 +217,44 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
   }
 
   protected function getEnvironmentModules(): array {
-    $env = $this->getEnvironment();
-    $configName = "marvin.environments.{$env}.modules";
+    // @todo Something wrong with the config management.
+    // Config overrides do not take effects.
+    $config = $this->getConfig()->export();
 
-    return $this->getConfig()->get($configName, []);
+    return $config['marvin']['environments'][$this->getEnvironment()]['modules'] ?? [];
   }
 
   protected function getModuleInstaller(): ModuleInstallerInterface {
-    $serviceName = 'module_installer';
-    if (!$this->moduleInstaller && $this->getContainer()->has($serviceName)) {
-      $this->moduleInstaller = $this->getContainer()->get($serviceName);
-    }
-
     if (!$this->moduleInstaller) {
-      $this->moduleInstaller = \Drupal::service($serviceName);
+      $this->moduleInstaller = $this->service('module_installer');
     }
 
     return $this->moduleInstaller;
   }
 
   protected function getModuleHandler(): ModuleHandlerInterface {
-    $serviceName = 'module_handler';
-    if (!$this->moduleHandler && $this->getContainer()->has($serviceName)) {
-      $this->moduleHandler = $this->getContainer()->get($serviceName);
-    }
-
     if (!$this->moduleHandler) {
-      $this->moduleHandler = \Drupal::service($serviceName);
+      $this->moduleHandler = $this->service('module_handler');
     }
 
     return $this->moduleHandler;
   }
 
   protected function getModuleLister(): ModuleExtensionList {
-    $serviceName = 'extension.list.module';
-    if (!$this->moduleLister && $this->getContainer()->has($serviceName)) {
-      $this->moduleLister = $this->getContainer()->get($serviceName);
-    }
-
     if (!$this->moduleLister) {
-      $this->moduleLister = \Drupal::service($serviceName);
+      $this->moduleLister = $this->service('extension.list.module');
     }
 
     return $this->moduleLister;
+  }
+
+  protected function service(string $serviceName) {
+    if ($this->getContainer()->has($serviceName)) {
+      return $this->getContainer()->get($serviceName);
+    }
+
+    // phpcs:ignore DrupalPractice.Objects.GlobalDrupal.GlobalDrupal
+    return Drupal::hasService($serviceName) ? Drupal::service($serviceName) : NULL;
   }
 
 }

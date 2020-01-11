@@ -15,8 +15,8 @@ use Symfony\Component\Finder\Finder;
 use Webmozart\PathUtil\Path;
 
 class GitHooksDeployTask extends BaseTask implements
-  ContainerAwareInterface,
-  OutputAwareInterface {
+    ContainerAwareInterface,
+    OutputAwareInterface {
 
   use ContainerAwareTrait;
   use IO;
@@ -68,7 +68,7 @@ class GitHooksDeployTask extends BaseTask implements
   }
 
   /**
-   * @var string getProjectRootDir
+   * @var string
    */
   protected $projectRootDir = '';
 
@@ -318,4 +318,3 @@ class GitHooksDeployTask extends BaseTask implements
   }
 
 }
-

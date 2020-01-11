@@ -9,6 +9,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
 use Drush\Commands\marvin\CommandsBase;
+use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
@@ -145,13 +146,16 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
         return 0;
       }
 
-      $response = drush_invoke_process(
-        '@self',
+      $process = Drush::drush(
+        $this->siteAliasManager()->getSelf(),
         'pm:enable',
         $data['modulesToEnable']
       );
+      $exitCode = $process
+        ->setTimeout(NULL)
+        ->run();
 
-      if ($response === FALSE || !empty($response['error_status'])) {
+      if ($exitCode) {
         $this->getLogger()->error('pm:enable failed.');
 
         return 1;
@@ -163,7 +167,6 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
 
   protected function getTaskMigrateImportDoIt(string $groupName): Closure {
     return function () use ($groupName): int {
-      $cmdSiteAlias = '@self';
       $cmdName = 'migrate:import';
       $cmdArgs = [];
       $cmdOptions = [];
@@ -184,8 +187,17 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
         return 0;
       }
 
-      $response = drush_invoke_process($cmdSiteAlias, $cmdName, $cmdArgs, $cmdOptions);
-      if ($response === FALSE || !empty($response['error_status'])) {
+      $process = Drush::drush(
+        $this->siteAliasManager()->getSelf(),
+        $cmdName,
+        $cmdArgs,
+        $cmdOptions
+      );
+      $exitCode = $process
+        ->setTimeout(NULL)
+        ->run();
+
+      if ($exitCode) {
         $this->getLogger()->error('migrate:import failed.');
 
         return 1;
@@ -205,13 +217,16 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
         return 0;
       }
 
-      $response = drush_invoke_process(
-        '@self',
+      $process = Drush::drush(
+        $this->siteAliasManager()->getSelf(),
         'pm:uninstall',
         $modulesToUninstall
       );
+      $exitCode = $process
+        ->setTimeout(NULL)
+        ->run();
 
-      if ($response === FALSE || !empty($response['error_status'])) {
+      if ($exitCode) {
         $logger->error('pm:uninstall failed.');
 
         return 1;
@@ -221,22 +236,26 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
     };
   }
 
+  /**
+   * @return string[]
+   */
   protected function getEnabledModules(): array {
-    $response = drush_invoke_process(
-      '@self',
+    $process = Drush::drush(
+      $this->siteAliasManager()->getSelf(),
       'pm:list',
       [],
       [
         'status' => 'enabled',
-        'field' => 'name',
+        'format' => 'json',
       ]
     );
+    $exitCode = $process->run();
 
-    if ($response === FALSE || !empty($response['error_status'])) {
-      throw new RuntimeException('@todo Better error message');
+    if ($exitCode) {
+      throw new RuntimeException('to retrieve the enabled modules is failed');
     }
 
-    return array_keys($response['object']);
+    return array_keys(json_decode($process->getOutput(), TRUE));
   }
 
 }

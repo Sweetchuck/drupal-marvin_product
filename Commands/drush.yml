@@ -20,7 +20,7 @@ marvin:
   # @var array
   ##
   environments:
-    dev:
+    local:
 
       ##
       # @todo

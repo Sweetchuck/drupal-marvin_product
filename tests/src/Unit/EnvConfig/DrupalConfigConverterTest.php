@@ -100,7 +100,7 @@ class DrupalConfigConverterTest extends TestCase {
           'all' => TRUE,
           'site-01' => TRUE,
           'site-02' => FALSE,
-        ]
+        ],
       ],
     ];
   }

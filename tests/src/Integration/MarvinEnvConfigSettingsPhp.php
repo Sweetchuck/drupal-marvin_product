@@ -36,7 +36,7 @@ class MarvinEnvConfigSettingsPhp extends UnishIntegrationTestCase {
             'value' => 'APP_A_B_C',
           ],
         ],
-      ]
+      ],
     ];
 
     $envConfigTopDeep = [

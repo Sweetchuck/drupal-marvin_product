@@ -53,7 +53,6 @@ class SitesPhpGenerator {
       ]);
     }
 
-
     $lines = [
       '<?php',
       '',
