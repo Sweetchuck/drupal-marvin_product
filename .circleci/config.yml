@@ -78,7 +78,7 @@ commands:
       -
         run:
           name: 'Composer - install'
-          command: >
+          command: |
             if [[ -d "$(composer config vendor-dir)" ]]; then
               composer run post-install-cmd
             else
