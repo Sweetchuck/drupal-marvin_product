@@ -60,6 +60,14 @@ class ComposerCommands extends ComposerCommandsBase {
   }
 
   /**
+   * @command marvin:composer:remove-indirect-dependencies
+   * @bootstrap none
+   */
+  public function composerRemoveIndirectDependencies(): CollectionBuilder {
+    return $this->getTaskComposerRemoveIndirectDependencies('.');
+  }
+
+  /**
    * @todo Check that if $path is empty.
    */
   protected function getTaskComposerStatus(string $refPrevious, string $refHead, array $paths): Closure {

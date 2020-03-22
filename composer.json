@@ -38,7 +38,8 @@
         "ext-json": "*",
         "consolidation/robo": "^2.0",
         "drupal/marvin": "dev-8.x-1.x",
-        "icecave/semver": "^3.0"
+        "icecave/semver": "^3.0",
+        "sweetchuck/utils": "^0.1.2"
     },
     "require-dev": {
         "behat/mink-goutte-driver": "^1.2",

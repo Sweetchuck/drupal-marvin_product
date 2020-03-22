@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c27fc66266e61f711e276b5b120c21ce",
+    "content-hash": "4ff0c798dd2d8087069ef64970ae0db4",
     "packages": [
         {
             "name": "composer/xdebug-handler",
@@ -2077,20 +2077,20 @@
         },
         {
             "name": "sweetchuck/utils",
-            "version": "v0.1.0",
+            "version": "v0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/utils.git",
-                "reference": "6e6af42672526a8a468ca126dadbcef8756f224e"
+                "reference": "e44c71eeb6852ed07ad8c375e96d9c7aa3a9e1ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Sweetchuck/utils/zipball/6e6af42672526a8a468ca126dadbcef8756f224e",
-                "reference": "6e6af42672526a8a468ca126dadbcef8756f224e",
+                "url": "https://api.github.com/repos/Sweetchuck/utils/zipball/e44c71eeb6852ed07ad8c375e96d9c7aa3a9e1ac",
+                "reference": "e44c71eeb6852ed07ad8c375e96d9c7aa3a9e1ac",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1",
+                "php": ">=7.2",
                 "symfony/filesystem": "^4.1",
                 "webmozart/path-util": "^2.3"
             },
@@ -2116,7 +2116,7 @@
                 "GPL-2.0-or-later"
             ],
             "description": "Common utils",
-            "time": "2019-12-31T19:42:57+00:00"
+            "time": "2020-03-08T21:04:46+00:00"
         },
         {
             "name": "symfony/config",

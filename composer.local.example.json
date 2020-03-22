@@ -12,29 +12,68 @@
         "sort-packages": true
     },
     "repositories": {
+        "drupal/marvin": {
+            "type": "path",
+            "url": "../../drupal/marvin"
+        },
+        "sweetchuck/robo-composer": {
+            "type": "path",
+            "url": "../../sweetchuck/robo-composer"
+        },
         "sweetchuck/robo-git": {
             "type": "path",
             "url": "../../sweetchuck/robo-git"
         },
-        "drupal/marvin": {
+        "sweetchuck/robo-nvm": {
             "type": "path",
-            "url": "../../drupal/marvin"
+            "url": "../../sweetchuck/robo-nvm"
+        },
+        "sweetchuck/robo-phpcs": {
+            "type": "path",
+            "url": "../../sweetchuck/robo-phpcs"
+        },
+        "sweetchuck/robo-phpmd": {
+            "type": "path",
+            "url": "../../sweetchuck/robo-phpmd"
+        },
+        "sweetchuck/robo-phpunit": {
+            "type": "path",
+            "url": "../../sweetchuck/robo-phpunit"
+        },
+        "sweetchuck/robo-stringy": {
+            "type": "path",
+            "url": "../../sweetchuck/robo-stringy"
+        },
+        "sweetchuck/robo-yarn": {
+            "type": "path",
+            "url": "../../sweetchuck/robo-yarn"
         }
     },
     "require": {
         "drupal/marvin": "dev-8.x-1.x",
-        "icecave/semver": "^3.0"
+        "icecave/semver": "^3.0",
+        "sweetchuck/robo-composer": "dev-master as 0.1.0",
+        "sweetchuck/robo-git": "dev-master as 0.2.0",
+        "sweetchuck/robo-nvm": "dev-master as 0.1.0",
+        "sweetchuck/robo-phpcs": "dev-master as 0.1.0",
+        "sweetchuck/robo-phpmd": "dev-master as 0.1.0",
+        "sweetchuck/robo-phpunit": "dev-master as 0.1.3",
+        "sweetchuck/robo-stringy": "dev-master as 0.1.0",
+        "sweetchuck/robo-yarn": "dev-master as 0.2.3"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "behat/mink-goutte-driver": "^1.2",
         "composer/installers": "^1.6",
         "drupal-composer/drupal-scaffold": "^2.6",
-        "drupal/core": "^8.6",
-        "drush/drush": "^9.6",
-        "mikey179/vfsStream": "^1.6",
-        "phpunit/phpunit": "^6.5",
-        "sweetchuck/git-hooks": "^0.0.10",
-        "weitzman/drupal-test-traits": "^1.2"
+        "drupal/core-recommended": "^8.8",
+        "drush/drush": "^10.1",
+        "mikey179/vfsstream": "^1.6",
+        "oomphinc/composer-installers-extender": "^1.1",
+        "phpunit/phpunit": "^7.5",
+        "sweetchuck/git-hooks": "^0.0",
+        "weitzman/drupal-test-traits": "^1.2",
+        "zaporylie/composer-drupal-optimizations": "^1.0"
     },
     "conflict": {
         "drupal/marvin_incubator": "*"
@@ -48,11 +87,9 @@
     "autoload-dev": {
         "psr-4": {
             "Drupal\\Dev\\marvin_product\\Composer\\": "src-dev/Composer/",
-
             "Drupal\\Tests\\marvin_product\\Helper\\": "tests/src/Helper/",
             "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/",
             "Drupal\\Tests\\marvin_product\\Integration\\": "tests/src/Integration/",
-
             "Drupal\\Tests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/Tests/",
             "Drupal\\KernelTests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/KernelTests"
         }
