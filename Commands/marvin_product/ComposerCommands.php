@@ -60,6 +60,12 @@ class ComposerCommands extends ComposerCommandsBase {
   }
 
   /**
+   * Remove indirect dependencies from composer.lock#packages.
+   *
+   * This is a workaround for https://github.com/composer/composer/issues/8355
+   *
+   * @link https://github.com/composer/composer/issues/8355
+   *
    * @command marvin:composer:remove-indirect-dependencies
    * @bootstrap none
    */
