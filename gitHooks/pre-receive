@@ -1,4 +1,12 @@
-#!/usr/bin/env php
-<?php
+#!/usr/bin/env sh
 
-require dirname($GLOBALS['argv'][0]) . '/_common.php';
+CONTAINER_DIR=$(grep CONTAINER_DIR .env | cut -d '=' -f2)
+PHP_CONTAINER="$(grep PROJECT_NAME .env | cut -d '=' -f2)_php"
+
+dir_path="$(dirname "$0")"
+
+if [ -f /.dockerenv ]; then
+  /usr/bin/env php "$dir_path"/_common.php $0
+else
+  docker exec -w $CONTAINER_DIR -i $PHP_CONTAINER /usr/local/bin/php "$dir_path"/_common.php $0
+fi

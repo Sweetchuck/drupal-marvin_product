@@ -8,6 +8,18 @@
 use Drupal\marvin_product\GitHookHandler;
 
 call_user_func(function () {
+  $originalGitHookArgs = $GLOBALS['argv'][1];
+  $gitHook = basename($originalGitHookArgs);
+
+  // Use a text file with a line break separated list of applicable hooks (_githooks-config.txt)
+  $gitHooksConfigFilePath = '_githooks-config.txt';
+  if (file_exists(__DIR__ . "/$gitHooksConfigFilePath")) {
+    $gitHooksConfigFile = file_get_contents(__DIR__ . "/$gitHooksConfigFilePath");
+    if (strpos($gitHooksConfigFile, $gitHook) === false) {
+      exit();
+    }
+  }
+
   $composerExecutable = '';
   $gitHookHandlerPath = '';
   $drushConfigPaths = [];
@@ -21,7 +33,7 @@ call_user_func(function () {
 
   $context = $gitHookHandler
     ->init(
-      $GLOBALS['argv'],
+      array($originalGitHookArgs),
       $composerExecutable,
       $drushConfigPaths
     )
