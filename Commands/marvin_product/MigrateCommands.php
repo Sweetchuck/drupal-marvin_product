@@ -149,14 +149,20 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
       $process = Drush::drush(
         $this->siteAliasManager()->getSelf(),
         'pm:enable',
-        $data['modulesToEnable']
+        $data['modulesToEnable'],
+        [
+          'yes' => NULL,
+        ]
       );
       $exitCode = $process
         ->setTimeout(NULL)
         ->run();
 
       if ($exitCode) {
-        $this->getLogger()->error('pm:enable failed.');
+        $this->getLogger()->error(
+          "pm:enable failed.{nl}{command}{nl}{stdOutput}{nl}{stdError}",
+          $this->logArgsFromProcess($process)
+        );
 
         return 1;
       }
@@ -198,7 +204,10 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
         ->run();
 
       if ($exitCode) {
-        $this->getLogger()->error('migrate:import failed.');
+        $this->getLogger()->error(
+          'migrate:import failed.{nl}{command}{nl}{stdOutput}{nl}{stdError}',
+          $this->logArgsFromProcess($process)
+        );
 
         return 1;
       }
@@ -227,7 +236,10 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
         ->run();
 
       if ($exitCode) {
-        $logger->error('pm:uninstall failed.');
+        $logger->error(
+          'pm:uninstall failed.{nl}{command}{nl}{stdOutput}{nl}{stdError}',
+          $this->logArgsFromProcess($process)
+        );
 
         return 1;
       }
