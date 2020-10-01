@@ -229,7 +229,10 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
       $process = Drush::drush(
         $this->siteAliasManager()->getSelf(),
         'pm:uninstall',
-        $modulesToUninstall
+        $modulesToUninstall,
+        [
+          'yes' => NULL,
+        ]
       );
       $exitCode = $process
         ->setTimeout(NULL)
