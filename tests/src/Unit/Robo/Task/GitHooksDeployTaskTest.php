@@ -17,43 +17,120 @@ class GitHooksDeployTaskTest extends TaskTestBase {
   public function casesRunSuccess(): array {
     $taskName = 'Marvin - Deploy Git hooks';
 
+    $logDeployFrom = [
+      'notice',
+      'Deploy Git hooks from <info>{hookFilesSourceDir}</info>',
+      [
+        'hookFilesSourceDir' => "vfs://testRunSuccess/src/gitHooks",
+        'name' => $taskName,
+      ],
+    ];
+
+    $logNoSubscriber = [
+      'notice',
+      'Git hook script deployment is skipped because there is no subscriber',
+      [
+        'name' => $taskName,
+      ],
+    ];
+
+    $logDeploy = [
+      'notice',
+      'Deploy scripts for the following Git hooks: {gitHooks}',
+      [
+        'gitHooks' => 'pre-commit',
+        'name' => 'Marvin - Deploy Git hooks',
+      ],
+    ];
+
     return [
-      'basic' => [
+      'no hooks to deploy; already existing files should not be touched' => [
         [
           'exitCode' => 0,
           'stdOutput' => '',
           'stdError' => '',
           'logEntries' => [
-            [
-              'notice',
-              'Deploy Git hooks from <info>{hookFilesSourceDir}</info>',
-              [
-                'hookFilesSourceDir' => "vfs://testRunSuccess/src/gitHooks",
-                'name' => $taskName,
-              ],
-            ],
+            $logDeployFrom,
+            $logNoSubscriber,
           ],
           'files' => [
-            "dst/.git/hooks/_common.php" => 'a',
-            "dst/.git/hooks/pre-commit" => 'b',
+            "dst/.git/hooks/_common.php" => 'old:common',
+            "dst/.git/hooks/pre-commit" => 'old:pre-commit',
+          ],
+        ],
+        [
+          'hookFilesSourceDir' => 'src/gitHooks',
+          'commonTemplateFileName' => 'src/gitHooks/_common.php',
+          'projectRootDir' => 'dst',
+          'drushConfigPaths' => [
+            'a.yml',
+            'b.yml',
           ],
         ],
         [
           'dst' => [
             '.git' => [
               'hooks' => [
-                '_common.php' => 'c',
+                '_common.php' => 'old:common',
+                'pre-commit' => 'old:pre-commit',
               ],
             ],
           ],
           'src' => [
             'gitHooks' => [
-              '_common.php' => 'a',
-              'pre-commit' => 'b',
+              '_common.php' => 'new:common',
+              'pre-commit' => 'new:pre-commit',
             ],
           ],
         ],
-        'dst',
+      ],
+      'one hook to deploy; already existing files should be removed' => [
+        [
+          'exitCode' => 0,
+          'stdOutput' => '',
+          'stdError' => '',
+          'logEntries' => [
+            $logDeployFrom,
+            $logDeploy,
+          ],
+          'files' => [
+            "dst/.git/hooks/_common.php" => 'new:common',
+            "dst/.git/hooks/pre-commit" => 'new:pre-commit',
+            "dst/.git/hooks/pre-push" => NULL,
+            "dst/.git/hooks/pre-rebase" => NULL,
+          ],
+        ],
+        [
+          'hookFilesSourceDir' => 'src/gitHooks',
+          'commonTemplateFileName' => 'src/gitHooks/_common.php',
+          'projectRootDir' => 'dst',
+          'gitHooksToDeploy' => [
+            'pre-commit' => TRUE,
+          ],
+          'drushConfigPaths' => [
+            'a.yml',
+            'b.yml',
+          ],
+        ],
+        [
+          'dst' => [
+            '.git' => [
+              'hooks' => [
+                '_common.php' => 'old:common',
+                'pre-commit' => 'old:pre-commit',
+                'pre-push' => 'old:pre-push',
+              ],
+            ],
+          ],
+          'src' => [
+            'gitHooks' => [
+              '_common.php' => 'new:common',
+              'pre-commit' => 'new:pre-commit',
+              'pre-push' => 'new:pre-push',
+              'pre-rebase' => 'new:pre-rebase',
+            ],
+          ],
+        ],
       ],
     ];
   }
@@ -61,21 +138,26 @@ class GitHooksDeployTaskTest extends TaskTestBase {
   /**
    * @dataProvider casesRunSuccess
    */
-  public function testRunSuccess(array $expected, array $vfsStructure, string $projectRootDir) {
+  public function testRunSuccess(array $expected, array $options, array $vfsStructure) {
     $vfs = vfsStream::setup(__FUNCTION__, NULL, $vfsStructure);
     $rootDir = $vfs->url();
+
+    $pathOptions = [
+      'hookFilesSourceDir',
+      'commonTemplateFileName',
+      'projectRootDir',
+    ];
+    foreach ($pathOptions as $pathOption) {
+      if (array_key_exists($pathOption, $options)) {
+        $options[$pathOption] = $rootDir . '/' . $options[$pathOption];
+      }
+    }
 
     $task = $this
       ->taskBuilder
       ->taskMarvinGitHooksDeploy()
       ->setContainer($this->container)
-      ->setHookFilesSourceDir("$rootDir/src/gitHooks")
-      ->setCommonTemplateFileName("$rootDir/src/gitHooks/_common.php")
-      ->setProjectRootDir("$rootDir/$projectRootDir")
-      ->setDrushConfigPaths([
-        'a.yml',
-        'b.yml',
-      ]);
+      ->setOptions($options);
 
     $result = $task->run();
 
@@ -100,8 +182,18 @@ class GitHooksDeployTaskTest extends TaskTestBase {
 
     if (array_key_exists('files', $expected)) {
       foreach ($expected['files'] as $fileName => $fileContent) {
+        if ($fileContent === NULL) {
+          static::assertFileNotExists("$rootDir/$fileName");
+
+          continue;
+        }
+
         static::assertFileExists("$rootDir/$fileName");
-        static::assertStringEqualsFile("$rootDir/$fileName", $fileContent);
+        static::assertStringEqualsFile(
+          "$rootDir/$fileName",
+          $fileContent,
+          "file content $fileName"
+        );
       }
     }
   }

@@ -123,6 +123,29 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
+  /**
+   * Keys are Git hook names.
+   *
+   * Values indicate that if it should be deployed or not.
+   * Default value is TRUE.
+   *
+   * @var bool[]
+   */
+  protected $gitHooksToDeploy = [];
+
+  public function getGitHooksToDeploy(): array {
+    return $this->gitHooksToDeploy;
+  }
+
+  /**
+   * @return $this
+   */
+  public function setGitHooksToDeploy(array $gitHooksToDeploy) {
+    $this->gitHooksToDeploy = $gitHooksToDeploy;
+
+    return $this;
+  }
+
   public function setOptions(array $options) {
     parent::setOptions($options);
 
@@ -144,6 +167,10 @@ class GitHooksDeployTask extends BaseTask implements
 
     if (array_key_exists('drushConfigPaths', $options)) {
       $this->setDrushConfigPaths($options['drushConfigPaths']);
+    }
+
+    if (array_key_exists('gitHooksToDeploy', $options)) {
+      $this->setGitHooksToDeploy($options['gitHooksToDeploy']);
     }
 
     return $this;
@@ -200,6 +227,20 @@ class GitHooksDeployTask extends BaseTask implements
       return $this;
     }
 
+    $gitHooksToDeploy = array_keys($this->getGitHooksToDeploy(), TRUE);
+    if (!$gitHooksToDeploy) {
+      $this->printTaskInfo('Git hook script deployment is skipped because there is no subscriber');
+
+      return $this;
+    }
+
+    $this->printTaskInfo(
+      'Deploy scripts for the following Git hooks: {gitHooks}',
+      [
+        'gitHooks' => implode(', ', $gitHooksToDeploy),
+      ]
+    );
+
     return $this
       ->runActionPrepareDestinationDir()
       ->runActionCopyHookFiles()
@@ -239,7 +280,13 @@ class GitHooksDeployTask extends BaseTask implements
     $hookFiles = $this->getHookFiles($this->getHookFilesSourceDir());
     $destinationDir = $this->getDestinationDir();
 
+    $gitHooksToDeploy = $this->getGitHooksToDeploy();
     foreach ($hookFiles as $hookFile) {
+      $gitHookName = $hookFile->getFilename();
+      if (empty($gitHooksToDeploy[$gitHookName])) {
+        continue;
+      }
+
       $this->fs->copy($hookFile, Path::join($destinationDir, $hookFile->getFilename()));
     }
 

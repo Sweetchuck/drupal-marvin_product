@@ -5,6 +5,12 @@ namespace Drush\Commands\marvin_product;
 use Drush\Commands\marvin\GitHookCommandsBase;
 use Robo\Collection\CollectionBuilder;
 
+/**
+ * Git hook callback commands.
+ *
+ * These commands only receive the original Git hook events and delegate to the
+ * subscribers. The real magic happens there.
+ */
 class GitHookCommands extends GitHookCommandsBase {
 
   /**
