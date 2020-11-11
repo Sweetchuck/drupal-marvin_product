@@ -257,7 +257,7 @@ abstract class ArtifactBuildProductCommandsBase extends ArtifactBuildCommandsBas
    */
   protected function getTaskComposerUpdate() {
     return $this
-      ->taskComposerUpdate()
+      ->taskComposerUpdate($this->getConfig()->get('marvin.composerExecutable'))
       ->noDev()
       ->noInteraction()
       ->option('no-progress')
