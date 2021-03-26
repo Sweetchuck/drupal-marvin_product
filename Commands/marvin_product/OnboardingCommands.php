@@ -71,9 +71,9 @@ class OnboardingCommands extends CommandsBase {
       return $this
         ->collectionBuilder()
         ->addCode(function (): int {
-          $this->getLogger()->debug('Onboarding is skipped, because this project is still in template phase.');
+          $this->getLogger()->error('Onboarding is skipped, because this project is still in template phase.');
 
-          return 0;
+          return 1;
         });
     }
 
