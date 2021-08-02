@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\marvin_product\Unit;
+namespace Drupal\Tests\marvin_product\Unit\EnvConfig;
 
 use Drupal\marvin_product\EnvConfig\DrupalConfigConverter;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +22,7 @@ class DrupalConfigConverterTest extends TestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->converter = new DrupalConfigConverter();

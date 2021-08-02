@@ -34,24 +34,27 @@
         }
     },
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-json": "*",
         "consolidation/robo": "^2.0",
-        "drupal/marvin": "dev-8.x-1.x",
+        "drupal/marvin": "2.x-dev",
         "icecave/semver": "^3.0",
-        "sweetchuck/utils": "^0.1.2"
+        "sweetchuck/utils": "1.x-dev"
     },
     "require-dev": {
         "behat/mink-goutte-driver": "^1.2",
-        "composer/installers": "^1.6",
-        "drupal-composer/drupal-scaffold": "^2.6",
-        "drupal/core-recommended": "^8.8",
+        "cweagans/composer-patches": "^1.6",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+        "drupal/core-composer-scaffold": "^9.0",
+        "drupal/core-recommended": "^9.0",
         "drush/drush": "^10.1",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^7.5",
-        "weitzman/drupal-test-traits": "^1.1",
-        "oomphinc/composer-installers-extender": "^1.1",
-        "zaporylie/composer-drupal-optimizations": "^1.0"
+        "oomphinc/composer-installers-extender": "^2.0",
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpunit/phpunit": "^9.5",
+        "sweetchuck/composer-suite": "^1.1",
+        "symfony/phpunit-bridge": "^5.3",
+        "weitzman/drupal-test-traits": "^1.1"
     },
     "suggest": {
         "drush/drush": "^10.1"
@@ -69,17 +72,17 @@
         "psr-4": {
             "Drupal\\Dev\\marvin_product\\Composer\\": "src-dev/Composer/",
 
-            "Drupal\\Tests\\marvin_product\\Helper\\": "tests/src/Helper/",
-            "Drupal\\Tests\\marvin_product\\Unit\\": "tests/src/Unit/",
-            "Drupal\\Tests\\marvin_product\\Integration\\": "tests/src/Integration/",
+            "Drupal\\Tests\\marvin_product\\": "tests/src/",
 
             "Drupal\\Tests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/Tests/",
+            "Drupal\\TestTools\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/TestTools/",
             "Drupal\\KernelTests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/KernelTests"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-8.x-1.x": "1.x.x-dev"
+            "dev-8.x-1.x": "1.x-dev",
+            "dev-9.x-2.x": "2.x-dev"
         },
         "drush": {
             "services": {
@@ -88,25 +91,113 @@
         },
         "enable-patching": true,
         "composer-exit-on-patch-failure": true,
-        "patches": {},
-        "drupal-scaffold": {
-            "excludes": [
-                ".csslintrc",
-                ".editorconfig",
-                ".eslintignore",
-                ".eslintrc.json",
-                ".gitattributes",
-                ".htaccess",
-                "web.config"
+        "patches": {
+            "drupal/core": {
+                "https://www.drupal.org/project/drupal/issues/3182103": "https://git.drupalcode.org/project/drupal/-/merge_requests/28/diffs.patch"
+            }
+        },
+        "installer-types": [
+            "bower-asset",
+            "npm-asset"
+        ],
+        "installer-paths": {
+            "tests/fixtures/project_01/docroot/core": [
+                "type:drupal-core"
+            ],
+            "tests/fixtures/project_01/docroot/libraries/{$name}": [
+                "type:bower-asset",
+                "type:npm-asset",
+                "type:drupal-library"
+            ],
+            "tests/fixtures/project_01/docroot/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "tests/fixtures/project_01/docroot/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "tests/fixtures/project_01/docroot/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "tests/fixtures/project_01/drush/Commands/contrib/{$name}": [
+                "type:drupal-drush"
             ]
         },
-        "installer-paths": {
-            "tests/fixtures/project_01/docroot/core": ["type:drupal-core"],
-            "tests/fixtures/project_01/docroot/libraries/{$name}": ["type:drupal-library"],
-            "tests/fixtures/project_01/docroot/modules/contrib/{$name}": ["type:drupal-module"],
-            "tests/fixtures/project_01/docroot/profiles/contrib/{$name}": ["type:drupal-profile"],
-            "tests/fixtures/project_01/docroot/themes/contrib/{$name}": ["type:drupal-theme"],
-            "tests/fixtures/project_01/drush/contrib/{$name}": ["type:drupal-drush"]
+        "drupal-scaffold": {
+            "locations": {
+                "web-root": "tests/fixtures/project_01/docroot"
+            },
+            "file-mapping": {
+                "[web-root]/modules/.gitignore": {
+                    "mode": "skip"
+                },
+                "[web-root]/modules/README.txt": {
+                    "mode": "skip"
+                },
+                "[web-root]/profiles/.gitignore": {
+                    "mode": "skip"
+                },
+                "[web-root]/profiles/README.txt": {
+                    "mode": "skip"
+                },
+                "[web-root]/themes/.gitignore": {
+                    "mode": "skip"
+                },
+                "[web-root]/themes/README.txt": {
+                    "mode": "skip"
+                },
+                "[web-root]/sites/example.settings.local.php": {
+                    "mode": "skip"
+                },
+                "[web-root]/sites/.gitignore": {
+                    "mode": "skip"
+                },
+                "[web-root]/sites/README.txt": {
+                    "mode": "skip"
+                },
+                "[web-root]/.csslintrc": {
+                    "mode": "skip"
+                },
+                "[web-root]/.editorconfig": {
+                    "mode": "skip"
+                },
+                "[web-root]/.eslintignore": {
+                    "mode": "skip"
+                },
+                "[web-root]/.eslintrc.json": {
+                    "mode": "skip"
+                },
+                "[web-root]/.gitattributes": {
+                    "mode": "skip"
+                },
+                "[web-root]/.gitignore": {
+                    "mode": "skip"
+                },
+                "[web-root]/.ht.router.php": {
+                    "mode": "skip"
+                },
+                "[web-root]/example.gitignore": {
+                    "mode": "skip"
+                },
+                "[web-root]/INSTALL.txt": {
+                    "mode": "skip"
+                },
+                "[web-root]/README.txt": {
+                    "mode": "skip"
+                },
+                "[web-root]/.htaccess": {
+                    "mode": "skip"
+                },
+                "[web-root]/web.config": {
+                    "mode": "skip"
+                },
+                "[project-root]/.editorconfig": {
+                    "mode": "skip"
+                }
+            },
+            "initial": {
+                "sites/default/default.services.yml": "sites/default/services.yml",
+                "sites/default/default.settings.php": "sites/default/settings.php"
+            }
         },
         "marvin": {
             "drushUnish": {
@@ -135,7 +226,7 @@
         ],
         "test:unit": [
             "mkdir -p reports/machine/coverage-php/",
-            "phpunit --testsuite Unit --coverage-html reports/human/coverage/Unit/html --testdox-html reports/human/testdox/Unit.html --coverage-clover reports/machine/coverage-clover/Unit.xml --coverage-php reports/machine/coverage-php/Unit.php --log-junit reports/machine/junit/Unit.xml"
+            "XDEBUG_MODE=coverage phpunit --testsuite Unit --coverage-html reports/human/coverage/Unit/html --testdox-html reports/human/testdox/Unit.html --coverage-clover reports/machine/coverage-clover/Unit.xml --coverage-php reports/machine/coverage-php/Unit.php --log-junit reports/machine/junit/Unit.xml"
         ],
         "test:integration": [
             "mkdir -p reports/machine/coverage-php/",

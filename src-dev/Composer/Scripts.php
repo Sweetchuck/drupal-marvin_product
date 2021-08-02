@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Dev\marvin_product\Composer;
 
-use Composer\IO\IOInterface;
 use Composer\Script\Event;
-use DrupalComposer\DrupalScaffold\Handler as DrupalScaffoldHandler;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -27,7 +27,6 @@ class Scripts {
     $self = new static($event);
 
     $self
-      ->phpcsConfigSet()
       ->preparePhpunitXml()
       ->prepareProject();
 
@@ -41,13 +40,15 @@ class Scripts {
     $self = new static($event);
 
     $self
-      ->phpcsConfigSet()
       ->preparePhpunitXml()
       ->prepareProject();
 
     return 0;
   }
 
+  /**
+   * @todo Implement.
+   */
   public static function generateCoverageHtml(Event $event): int {
     $self = new static($event);
 
@@ -68,39 +69,24 @@ class Scripts {
 
   /**
    * Current event.
-   *
-   * @var \Composer\Script\Event
    */
-  protected $event;
+  protected Event $event;
 
   /**
    * CLI process callback.
-   *
-   * @var \Closure
    */
-  protected $processCallbackWrapper;
+  protected \Closure $processCallbackWrapper;
 
-  /**
-   * @var string
-   */
-  protected $projectRoot = 'tests/fixtures/project_01';
+  protected string $projectRoot = 'tests/fixtures/project_01';
 
-  /**
-   * @var \Symfony\Component\Filesystem\Filesystem
-   */
-  protected $fs;
+  protected Filesystem $fs;
 
-  /**
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
+  protected LoggerInterface $logger;
 
   /**
    * Current working directory.
-   *
-   * @var string
    */
-  protected $cwd = '.';
+  protected string $cwd = '.';
 
   protected function __construct(Event $event, ?LoggerInterface $logger = NULL, ?Filesystem $fs = NULL, string $cwd = '.') {
     $this->cwd = $cwd ?: '.';
@@ -138,53 +124,7 @@ class Scripts {
   /**
    * @return $this
    */
-  protected function initProcessCallbackWrapper() {
-    if (!$this->processCallbackWrapper) {
-      $this->processCallbackWrapper = function (string $type, string $buffer) {
-        $this->processCallback($type, $buffer);
-      };
-    }
-
-    return $this;
-  }
-
-  /**
-   * @return $this
-   */
-  protected function phpcsConfigSet() {
-    /** @var \Composer\Config $config */
-    $config = $this->event->getComposer()->getConfig();
-
-    $phpcsExecutable = $config->get('bin-dir') . '/phpcs';
-    if (!$this->fs->exists($phpcsExecutable)) {
-      $this->logger->info("phpcs executable not exists: '$phpcsExecutable'");
-
-      return $this;
-    }
-
-    $rulesDir = $config->get('vendor-dir') . '/drupal/coder/coder_sniffer';
-    if (!$this->fs->exists($rulesDir)) {
-      $this->logger->info("phpcs rules not exists: '$rulesDir'");
-
-      return $this;
-    }
-
-    $cmdPattern = '%s --config-set installed_paths %s';
-    $cmdArgs = [
-      escapeshellcmd($phpcsExecutable),
-      escapeshellcmd($rulesDir),
-    ];
-
-    $this->processRun('.', vsprintf($cmdPattern, $cmdArgs));
-
-    return $this;
-  }
-
-  /**
-   * @return $this
-   */
   protected function preparePhpunitXml() {
-    /** @var \Composer\Config $config */
     $config = $this->event->getComposer()->getConfig();
 
     $phpunitExecutable = $config->get('bin-dir') . '/phpunit';
@@ -233,7 +173,6 @@ class Scripts {
       ->prepareProjectComposerJson()
       ->prepareProjectSelf()
       ->prepareProjectDirs()
-      ->prepareProjectScaffold()
       ->prepareProjectSettingsPhp();
 
     return $this;
@@ -342,28 +281,6 @@ class Scripts {
     return $this;
   }
 
-  /**
-   * @return $this
-   */
-  protected function prepareProjectScaffold() {
-    $indexPhp = $this->projectRoot . '/docroot/index.php';
-    $io = $this->event->getIO();
-    if ($this->fs->exists("{$this->cwd}/$indexPhp")) {
-      $io->write(
-        "File '<info>$indexPhp</info>' already exists.",
-        IOInterface::VERBOSE
-      );
-
-      return $this;
-    }
-
-    $handler = new DrupalScaffoldHandler($this->event->getComposer(), $io);
-    $handler->downloadScaffold();
-    $handler->generateAutoload();
-
-    return $this;
-  }
-
   protected function prepareProjectSettingsPhp() {
     $src = "{$this->projectRoot}/docroot/sites/default/default.settings.php";
     if (!$this->fs->exists($src)) {
@@ -408,7 +325,7 @@ PHP;
   }
 
   protected function getProjectSelfDestination(): string {
-    return "{$this->projectRoot}/drush/custom/" . $this->getComposerPackageName();
+    return "{$this->projectRoot}/drush/Commands/custom/" . $this->getComposerPackageName();
   }
 
   protected function getComposerPackageName(): string {
@@ -449,7 +366,7 @@ PHP;
     ];
   }
 
-  protected function processRun(string $workingDirectory, string $command): Process {
+  protected function processRun(string $workingDirectory, array $command): Process {
     $this->event->getIO()->write("Run '$command' in '$workingDirectory'");
     $process = new Process($command, NULL, NULL, NULL, 0);
     $process->setWorkingDirectory($workingDirectory);
