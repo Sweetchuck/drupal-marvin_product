@@ -13,6 +13,8 @@ class PhpcsCommands extends PhpcsCommandsBase {
 
   /**
    * @hook on-event marvin:composer-scripts:post-install-cmd
+   *
+   * @todo Remove this. dealerdirect/phpcodesniffer-composer-installer.
    */
   public function onEventComposerScriptsPostInstallCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
     $tasks = [];
@@ -63,6 +65,8 @@ class PhpcsCommands extends PhpcsCommandsBase {
    *
    * @command marvin:lint:phpcs
    * @bootstrap none
+   *
+   * @initLintReporters
    */
   public function lintPhpcs(): CollectionBuilder {
     return $this->getTaskLintPhpcsExtension('.');

@@ -4,15 +4,18 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Drupal\marvin\ComposerInfo;
 use Robo\Collection\CollectionBuilder;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ArtifactBuildVanillaCommands extends ArtifactBuildProductCommandsBase {
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $artifactType = 'vanilla';
+  public function __construct(?ComposerInfo $composerInfo = NULL, ?Filesystem $fs = NULL) {
+    $this->artifactType = 'vanilla';
+
+    parent::__construct($composerInfo, $fs);
+  }
 
   /**
    * @hook on-event marvin:artifact:types
@@ -24,8 +27,8 @@ class ArtifactBuildVanillaCommands extends ArtifactBuildProductCommandsBase {
 
     return [
       $this->artifactType => [
-        'label' => dt('Vanilla'),
-        'description' => dt('Not customized'),
+        'label' => 'Vanilla',
+        'description' => 'Not customized',
       ],
     ];
   }

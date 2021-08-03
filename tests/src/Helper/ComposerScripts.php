@@ -2,12 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Dev\marvin_product\Composer;
+namespace Drupal\Tests\marvin_product\Helper;
 
 use Composer\Script\Event;
-use Exception;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
 use SebastianBergmann\CodeCoverage\Report\Html\Facade as HtmlCodeCoverageReporter;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -18,7 +16,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Sweetchuck\Utils\Filter\ArrayFilterFileSystemExists;
 
-class Scripts {
+class ComposerScripts {
 
   /**
    * Composer event callback.
@@ -331,7 +329,7 @@ PHP;
   protected function getComposerPackageName(): string {
     $parts = explode('/', $this->event->getComposer()->getPackage()->getName(), 2);
     if (empty($parts[1])) {
-      throw new Exception('Invalid package name', 1);
+      throw new \Exception('Invalid package name', 1);
     }
 
     return $parts[1];
@@ -388,7 +386,7 @@ PHP;
   protected function fileGetContents(string $fileName): string {
     $content = file_get_contents($fileName);
     if ($content === FALSE) {
-      throw new RuntimeException("File '$fileName' is not readable.", 1);
+      throw new \RuntimeException("File '$fileName' is not readable.", 1);
     }
 
     return $content;

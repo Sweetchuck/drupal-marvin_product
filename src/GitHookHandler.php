@@ -6,30 +6,18 @@ namespace Drupal\marvin_product;
 
 class GitHookHandler {
 
-  /**
-   * @var string
-   */
-  protected $composerExecutable = '';
+  protected string $composerExecutable = '';
 
   /**
    * @var string[]
    */
-  protected $drushConfigPaths = [];
+  protected array $drushConfigPaths = [];
 
-  /**
-   * @var string
-   */
-  protected $gitHook = '';
+  protected string $gitHook = '';
 
-  /**
-   * @var string
-   */
-  protected $drushCommand = '';
+  protected string $drushCommand = '';
 
-  /**
-   * @var string
-   */
-  protected $binDir = '';
+  protected string $binDir = '';
 
   /**
    * @var resource
@@ -41,10 +29,7 @@ class GitHookHandler {
    */
   protected $stdError;
 
-  /**
-   * @var array
-   */
-  protected $originalGitHookArgs = [];
+  protected array $originalGitHookArgs = [];
 
   /**
    * @param resource $stdOutput

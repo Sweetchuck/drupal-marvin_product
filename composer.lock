@@ -684,7 +684,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Sweetchuck/drupal-marvin.git",
-                "reference": "325551271972c11e2aab3d87dc7c4a3f68ca26f0"
+                "reference": "fba4b5ffc47161780e277901b270a901d39df21d"
             },
             "require": {
                 "consolidation/robo": "^2.0",
@@ -713,9 +713,8 @@
                 "behat/mink-goutte-driver": "^1.2",
                 "cweagans/composer-patches": "^1.6",
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-                "drupal/core-composer-scaffold": "^9.0",
-                "drupal/core-dev": "^9.0",
-                "drupal/core-recommended": "^9.0",
+                "drupal/core-composer-scaffold": "^9.2",
+                "drupal/core-recommended": "^9.2",
                 "drush/drush": "^10.1",
                 "ext-dom": "*",
                 "ext-pdo": "*",
@@ -725,6 +724,7 @@
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "^9.0",
                 "sweetchuck/composer-suite": "^1.1",
+                "symfony/phpunit-bridge": "^5.3",
                 "weitzman/drupal-test-traits": "^1.1"
             },
             "suggest": {
@@ -745,7 +745,7 @@
                 "composer-exit-on-patch-failure": true,
                 "patches": {
                     "drupal/core": {
-                        "https://www.drupal.org/project/drupal/issues/3182103": "https://git.drupalcode.org/project/drupal/-/merge_requests/28/diffs.patch"
+                        "https://www.drupal.org/project/drupal/issues/3182103": "https://www.drupal.org/files/issues/2021-08-08/drupal-3182103-9-test-setup-teardown-compatibility.patch"
                     }
                 },
                 "installer-types": [
@@ -1012,7 +1012,7 @@
                 ],
                 "clean:composer": [
                     "rm -rf bin/ vendor/",
-                    "chmod -R u+w tests/fixtures/project_01/docroot/sites/default/",
+                    "[[ ! -d tests/fixtures/project_01/docroot/sites/default/ ]] || chmod -R u+w tests/fixtures/project_01/docroot/sites/default/",
                     "git clean --force -d -x -- tests/",
                     "git clean --force -d -X -- tests/"
                 ],
@@ -1057,7 +1057,7 @@
                 "source": "https://github.com/Sweetchuck/drupal-marvin",
                 "issues": "https://github.com/Sweetchuck/drupal-marvin/issues"
             },
-            "time": "2021-08-02T08:53:49+00:00"
+            "time": "2021-08-03T21:20:15+00:00"
         },
         {
             "name": "grasmash/expander",

@@ -13,20 +13,16 @@ use Webmozart\PathUtil\Path;
 
 abstract class ArtifactBuildProductCommandsBase extends ArtifactBuildCommandsBase {
 
-  /**
-   * @var string
-   */
-  protected $drupalRootDir = '';
+  protected string $drupalRootDir = '';
+
+  protected Filesystem $fs;
 
   /**
-   * @var \Symfony\Component\Filesystem\Filesystem
+   * @todo Move this to a base class.
+   *
+   * @see \Drush\Commands\marvin\CommandsBase
    */
-  protected $fs;
-
-  /**
-   * @var int
-   */
-  protected $jsonEncodeFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT;
+  protected int $jsonEncodeFlags = \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES | \JSON_PRETTY_PRINT;
 
   public function __construct(?ComposerInfo $composerInfo = NULL, ?Filesystem $fs = NULL) {
     parent::__construct($composerInfo);
@@ -34,16 +30,10 @@ abstract class ArtifactBuildProductCommandsBase extends ArtifactBuildCommandsBas
     $this->fs = $fs ?: new Filesystem();
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function isApplicable(string $projectType): bool {
     return $projectType === 'product';
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function getBuildSteps(): array {
     return parent::getBuildSteps() + [
       'resolveRelativePackagePaths.marvin_product' => [
@@ -69,9 +59,6 @@ abstract class ArtifactBuildProductCommandsBase extends ArtifactBuildCommandsBas
     ];
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function getInitialStateData(): array {
     $data = parent::getInitialStateData();
 

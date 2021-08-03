@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drupal;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -15,40 +14,31 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EnvironmentCommands extends CommandsBase implements ContainerInjectionInterface {
 
-  /**
-   * @var \Drupal\Core\Extension\ModuleInstallerInterface
-   */
-  protected $moduleInstaller;
+  protected ?ModuleInstallerInterface $moduleInstaller;
 
-  /**
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
-   */
-  protected $moduleHandler;
+  protected ?ModuleHandlerInterface $moduleHandler;
 
-  /**
-   * @var \Drupal\Core\Extension\ModuleExtensionList
-   */
-  protected $moduleLister;
+  protected ?ModuleExtensionList $moduleLister;
 
   /**
    * @var string[]
    */
-  protected $modulesToUninstall = [];
+  protected array $modulesToUninstall = [];
 
   /**
    * @var string[]
    */
-  protected $modulesToInstall = [];
+  protected array $modulesToInstall = [];
 
   /**
    * @var string[]
    */
-  protected $installedModules = [];
+  protected array $installedModules = [];
 
   /**
    * @var string[]
    */
-  protected $uninstalledModules = [];
+  protected array $uninstalledModules = [];
 
   /**
    * {@inheritdoc}
@@ -62,9 +52,6 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
   public function __construct(
     ?ComposerInfo $composerInfo = NULL,
     ?ModuleInstallerInterface $moduleInstaller = NULL,
@@ -254,7 +241,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     }
 
     // phpcs:ignore DrupalPractice.Objects.GlobalDrupal.GlobalDrupal
-    return Drupal::hasService($serviceName) ? Drupal::service($serviceName) : NULL;
+    return \Drupal::hasService($serviceName) ? \Drupal::service($serviceName) : NULL;
   }
 
 }

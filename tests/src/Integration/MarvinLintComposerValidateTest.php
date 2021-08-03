@@ -33,8 +33,8 @@ class MarvinLintComposerValidateTest extends UnishIntegrationTestCase {
     $actualStdError = $this->getErrorOutput();
     $actualStdOutput = $this->getOutput();
 
-    static::assertContains($expected['stdError'], $actualStdError, 'StdError');
-    static::assertContains($expected['stdOutput'], $actualStdOutput, 'StdOutput');
+    static::assertStringContainsString($expected['stdError'], $actualStdError, 'StdError');
+    static::assertStringContainsString($expected['stdOutput'], $actualStdOutput, 'StdOutput');
   }
 
 }

@@ -4,10 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use ArrayIterator;
-use Closure;
 use Drush\Commands\marvin\ComposerCommandsBase;
-use RegexIterator;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 
@@ -76,7 +73,7 @@ class ComposerCommands extends ComposerCommandsBase {
   /**
    * @todo Check that if $path is empty.
    */
-  protected function getTaskComposerStatus(string $refPrevious, string $refHead, array $paths): Closure {
+  protected function getTaskComposerStatus(string $refPrevious, string $refHead, array $paths): \Closure {
     return function () use ($refPrevious, $refHead, $paths): int {
       $cmdPattern = '%s diff --exit-code --name-only %s..%s --';
       $cmdArgs = [
@@ -109,10 +106,10 @@ class ComposerCommands extends ComposerCommandsBase {
    *
    * @see \Drush\Commands\marvin_product\NpmCommands::getTaskPackageJsonNotification
    */
-  protected function getTaskComposerChangedNotification(): Closure {
+  protected function getTaskComposerChangedNotification(): \Closure {
     return function (RoboStateData $data): int {
-      $fileNames = new RegexIterator(
-        new ArrayIterator($data['changed.fileNames']),
+      $fileNames = new \RegexIterator(
+        new \ArrayIterator($data['changed.fileNames']),
         '@(^|/)composer\.(json|lock)$@'
       );
 

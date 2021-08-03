@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Closure;
 use Drupal\marvin\ComposerInfo;
 use Drupal\marvin\Utils as MarvinUtils;
 use Drush\Commands\marvin\CommandsBase;
@@ -22,10 +21,7 @@ class OnboardingCommands extends CommandsBase {
 
   use GitTaskLoader;
 
-  /**
-   * @var \Symfony\Component\Filesystem\Filesystem
-   */
-  protected $fs;
+  protected Filesystem $fs;
 
   public function __construct(?ComposerInfo $composerInfo = NULL, ?Filesystem $fs = NULL) {
     parent::__construct($composerInfo);
@@ -107,7 +103,7 @@ class OnboardingCommands extends CommandsBase {
       ->mkdir("$projectRoot/sites/$siteDir/backup");
   }
 
-  protected function getTaskOnboardingSettingsLocalPhp(string $projectRoot, string $drupalRoot, string $siteDir): Closure {
+  protected function getTaskOnboardingSettingsLocalPhp(string $projectRoot, string $drupalRoot, string $siteDir): \Closure {
     return function () use ($projectRoot, $drupalRoot, $siteDir) {
       $logger = $this->getLogger();
       $dst = "$projectRoot/$drupalRoot/sites/$siteDir/settings.local.php";
@@ -136,7 +132,7 @@ class OnboardingCommands extends CommandsBase {
     };
   }
 
-  protected function getTaskOnboardingHashSaltTxt(string $projectRoot, string $siteDir): Closure {
+  protected function getTaskOnboardingHashSaltTxt(string $projectRoot, string $siteDir): \Closure {
     return function () use ($projectRoot, $siteDir): int {
       $fileName = "$projectRoot/sites/$siteDir/hash_salt.txt";
       if ($this->fs->exists($fileName)) {
@@ -174,7 +170,7 @@ class OnboardingCommands extends CommandsBase {
       );
   }
 
-  protected function getTaskOnboardingBehatLocalYmlSingle(string $baseFileName): Closure {
+  protected function getTaskOnboardingBehatLocalYmlSingle(string $baseFileName): \Closure {
     return function () use ($baseFileName): int {
       $behatDir = Path::getDirectory($baseFileName);
       $exampleFileName = "$behatDir/behat.local.example.yml";
@@ -216,7 +212,7 @@ YAML;
     };
   }
 
-  protected function getTaskOnboardingDrushLocalYml(string $projectRoot): Closure {
+  protected function getTaskOnboardingDrushLocalYml(string $projectRoot): \Closure {
     return function () use ($projectRoot): int {
       $localFileName = "$projectRoot/drush/drush.local.yml";
       if ($this->fs->exists($localFileName)) {

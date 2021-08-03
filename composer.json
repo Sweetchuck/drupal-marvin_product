@@ -70,8 +70,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Drupal\\Dev\\marvin_product\\Composer\\": "src-dev/Composer/",
-
             "Drupal\\Tests\\marvin_product\\": "tests/src/",
 
             "Drupal\\Tests\\": "tests/fixtures/project_01/docroot/core/tests/Drupal/Tests/",
@@ -209,10 +207,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "\\Drupal\\Dev\\marvin_product\\Composer\\Scripts::postInstallCmd"
+            "\\Drupal\\Tests\\marvin_product\\Helper\\ComposerScripts::postInstallCmd"
         ],
         "post-update-cmd": [
-            "\\Drupal\\Dev\\marvin_product\\Composer\\Scripts::postUpdateCmd"
+            "\\Drupal\\Tests\\marvin_product\\Helper\\ComposerScripts::postUpdateCmd"
         ],
         "clean": [
             "rm -rf bin/ reports/ vendor/",
@@ -233,7 +231,7 @@
             "phpunit --testsuite Integration --coverage-html reports/human/coverage/Integration/html --testdox-html reports/human/testdox/Integration.html --coverage-clover reports/machine/coverage-clover/Integration.xml --coverage-php reports/machine/coverage-php/Integration.php --log-junit reports/machine/junit/Integration.xml"
         ],
         "generate:coverage-html": [
-            "\\Drupal\\Dev\\marvin_product\\Composer\\Scripts::generateCoverageHtml"
+            "\\Drupal\\Tests\\marvin_product\\Helper\\ComposerScripts::generateCoverageHtml"
         ]
     }
 }

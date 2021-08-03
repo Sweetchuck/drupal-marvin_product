@@ -12,7 +12,6 @@ use Drupal\marvin_product\EnvConfig\EnvConfigHandler;
 use Drupal\marvin_product\EnvConfig\SitesPhpGenerator;
 use Drush\Commands\marvin\CommandsBase;
 use Drush\Internal\Config\Yaml\Yaml;
-use RuntimeException;
 
 class EnvConfigCommands extends CommandsBase {
 
@@ -129,7 +128,7 @@ class EnvConfigCommands extends CommandsBase {
   protected function fileGetContents(string $fileName): string {
     $content = file_get_contents($fileName);
     if ($content === FALSE) {
-      throw new RuntimeException("file '$fileName' could not be read", 1);
+      throw new \RuntimeException("file '$fileName' could not be read", 1);
     }
 
     return $content;

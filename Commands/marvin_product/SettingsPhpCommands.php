@@ -12,14 +12,8 @@ use Drush\Commands\marvin\CommandsBase;
 
 class SettingsPhpCommands extends CommandsBase {
 
-  /**
-   * @var \Drupal\Component\Serialization\SerializationInterface
-   */
-  protected $yaml;
+  protected SerializationInterface $yaml;
 
-  /**
-   * {@inheritdoc}
-   */
   public function __construct(
     ?ComposerInfo $composerInfo = NULL,
     ?SerializationInterface $yaml = NULL

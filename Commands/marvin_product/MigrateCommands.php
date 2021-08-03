@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use Closure;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
@@ -13,7 +12,6 @@ use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -106,7 +104,7 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
       ->addCode($this->getTaskMigrateImportUninstallModules());
   }
 
-  protected function getTaskMigrateImportCollectModulesToEnable(string $groupName): Closure {
+  protected function getTaskMigrateImportCollectModulesToEnable(string $groupName): \Closure {
     return function (RoboStateData $data) use ($groupName): int {
       $configName = "marvin.migrate.$groupName.module";
       $modulesToEnable = array_keys(
@@ -118,7 +116,7 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
       try {
         $data['enabledModules'] = $this->getEnabledModules();
       }
-      catch (RuntimeException $e) {
+      catch (\RuntimeException $e) {
         $this->getLogger()->error($e->getMessage());
 
         return 1;
@@ -138,7 +136,7 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
     };
   }
 
-  protected function getTaskMigrateImportEnableModules(): Closure {
+  protected function getTaskMigrateImportEnableModules(): \Closure {
     return function (RoboStateData $data): int {
       if (empty($data['modulesToEnable'])) {
         $this->getLogger()->debug('There is no any module to enable.');
@@ -171,7 +169,7 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
     };
   }
 
-  protected function getTaskMigrateImportDoIt(string $groupName): Closure {
+  protected function getTaskMigrateImportDoIt(string $groupName): \Closure {
     return function () use ($groupName): int {
       $cmdName = 'migrate:import';
       $cmdArgs = [];
@@ -216,7 +214,7 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
     };
   }
 
-  protected function getTaskMigrateImportUninstallModules(): Closure {
+  protected function getTaskMigrateImportUninstallModules(): \Closure {
     return function (RoboStateData $data): int {
       $logger = $this->getLogger();
       $modulesToUninstall = array_diff($this->getEnabledModules(), $data['enabledModules']);
@@ -267,7 +265,7 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
     $exitCode = $process->run();
 
     if ($exitCode) {
-      throw new RuntimeException('to retrieve the enabled modules is failed');
+      throw new \RuntimeException('to retrieve the enabled modules is failed');
     }
 
     return array_keys(json_decode($process->getOutput(), TRUE));

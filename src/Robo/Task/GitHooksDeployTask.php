@@ -4,12 +4,12 @@ declare(strict_types = 1);
 
 namespace Drupal\marvin_product\Robo\Task;
 
+use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
 use Drupal\marvin_product\Utils as MarvinProductUtils;
 use Drupal\marvin\Robo\Task\BaseTask;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Common\IO;
-use Robo\Contract\OutputAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Webmozart\PathUtil\Path;
@@ -21,20 +21,13 @@ class GitHooksDeployTask extends BaseTask implements
   use ContainerAwareTrait;
   use IO;
 
-  /**
-   * {@inheritdoc}
-   */
-  protected $taskName = 'Marvin - Deploy Git hooks';
+  protected Filesystem $fs;
 
-  /**
-   * @var \Symfony\Component\Filesystem\Filesystem
-   */
-  protected $fs;
+  protected string $hookFilesSourceDir = '';
 
-  /**
-   * @var string
-   */
-  protected $hookFilesSourceDir = '';
+  public function __construct() {
+    $this->taskName = 'Marvin - Deploy Git hooks';
+  }
 
   public function getHookFilesSourceDir(): string {
     return $this->hookFilesSourceDir;
@@ -49,10 +42,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  /**
-   * @var string
-   */
-  protected $commonTemplateFileName = '';
+  protected string $commonTemplateFileName = '';
 
   public function getCommonTemplateFileName(): string {
     return $this->commonTemplateFileName;
@@ -67,10 +57,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  /**
-   * @var string
-   */
-  protected $projectRootDir = '';
+  protected string $projectRootDir = '';
 
   public function getProjectRootDir(): string {
     return $this->projectRootDir;
@@ -87,10 +74,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  /**
-   * @var string
-   */
-  protected $composerExecutable = 'composer';
+  protected string $composerExecutable = 'composer';
 
   public function getComposerExecutable(): string {
     return $this->composerExecutable;
@@ -108,7 +92,7 @@ class GitHooksDeployTask extends BaseTask implements
   /**
    * @var string[]
    */
-  protected $drushConfigPaths = [];
+  protected array $drushConfigPaths = [];
 
   public function getDrushConfigPaths(): array {
     return $this->drushConfigPaths;

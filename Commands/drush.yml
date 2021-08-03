@@ -85,9 +85,10 @@ marvin:
             enabled: true
             name: 'subjectLine'
             pattern: "/^(Issue #[0-9]+ - .{3,})|(Merge( remote-tracking){0,1} branch '[^\\s]+?'(, '[^\\s]+?'){0,} into [^\\s]+?)(\\n|$)/u"
-            description: >
-              Subject line contains reference to the issue number followed by an at least three characters long description,
-              or the subject line is an automatically generated message for merge commits
+            ##
+            # @see https://github.com/drush-ops/drush/issues/4808
+            ##
+            description: "Subject line contains reference to the issue number followed by an at least three characters long description, or the subject line is an automatically generated message for merge commits"
             examples:
               'Issue #42 - Something': true
               "Merge branch 'issue-42' into master": true

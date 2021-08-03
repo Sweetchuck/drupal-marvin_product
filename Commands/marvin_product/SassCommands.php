@@ -11,6 +11,8 @@ class SassCommands extends CommandsBase {
   /**
    * @command marvin:lint:sass
    * @bootstrap none
+   *
+   * @initLintReporters
    */
   public function lint() {
     return $this->delegate('lint:sass');

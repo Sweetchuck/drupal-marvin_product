@@ -4,10 +4,7 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
-use ArrayIterator;
-use Closure;
 use Drush\Commands\marvin\NpmCommandsBase;
-use RegexIterator;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 
@@ -56,10 +53,10 @@ class NpmCommands extends NpmCommandsBase {
    *
    * @see \Drush\Commands\marvin_product\ComposerCommands::getTaskComposerChangedNotification
    */
-  protected function getTaskPackageJsonNotification(): Closure {
+  protected function getTaskPackageJsonNotification(): \Closure {
     return function (RoboStateData $data): int {
-      $fileNames = new RegexIterator(
-        new ArrayIterator($data['changed.fileNames']),
+      $fileNames = new \RegexIterator(
+        new \ArrayIterator($data['changed.fileNames']),
         '@(^|/)(package\.json|yarn\.lock)$@'
       );
 
