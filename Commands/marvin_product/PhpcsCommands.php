@@ -37,6 +37,13 @@ class PhpcsCommands extends PhpcsCommandsBase {
   }
 
   /**
+   * @hook pre-command marvin:git-hook:pre-commit
+   */
+  public function onEventPreCommandMarvinGitHookPreCommit() {
+    $this->initLintReporters();
+  }
+
+  /**
    * @hook on-event marvin:git-hook:pre-commit
    */
   public function onEventMarvinGitHookPreCommit(): array {
