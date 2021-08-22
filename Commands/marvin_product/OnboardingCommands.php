@@ -74,7 +74,7 @@ class OnboardingCommands extends CommandsBase {
     }
 
     $isDeveloperMode = $this->isDeveloperMode($projectRoot);
-    $drupalRoot = MarvinUtils::detectDrupalRootDir($composerInfo);
+    $drupalRoot = $composerInfo->getDrupalRootDir();
 
     $cb = $this->collectionBuilder();
 
@@ -96,7 +96,7 @@ class OnboardingCommands extends CommandsBase {
       ->taskFilesystemStack()
       ->mkdir("$projectRoot/$drupalRoot/sites/$siteDir/files")
       ->mkdir("$projectRoot/sites/all/translations")
-      ->mkdir("$projectRoot/sites/$siteDir/config/sync")
+      ->mkdir("$projectRoot/sites/$siteDir/config/prod")
       ->mkdir("$projectRoot/sites/$siteDir/php_storage")
       ->mkdir("$projectRoot/sites/$siteDir/private")
       ->mkdir("$projectRoot/sites/$siteDir/temporary")
@@ -173,6 +173,10 @@ class OnboardingCommands extends CommandsBase {
   protected function getTaskOnboardingBehatLocalYmlSingle(string $baseFileName): \Closure {
     return function () use ($baseFileName): int {
       $behatDir = Path::getDirectory($baseFileName);
+      if ($behatDir === '') {
+        $behatDir = '.';
+      }
+
       $exampleFileName = "$behatDir/behat.local.example.yml";
       $localFileName = "$behatDir/behat.local.yml";
 
@@ -188,7 +192,7 @@ class OnboardingCommands extends CommandsBase {
       $localFileContent = <<<YAML
 default:
   extensions:
-    Behat\MinkExtension:
+    Drupal\MinkExtension:
       base_url: 'http://localhost'
 
 YAML;
