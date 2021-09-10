@@ -228,36 +228,34 @@ YAML;
         return 0;
       }
 
+
       $exampleFileName = "$projectRoot/drush/drush.local.example.yml";
       if ($this->fs->exists($exampleFileName)) {
         $this->fs->copy($exampleFileName, $localFileName);
-
-        return 0;
       }
 
-      $baseFileName = "$projectRoot/drush/drush.yml";
-      if (!$this->fs->exists($baseFileName)) {
-        return 0;
+      $localChanged = FALSE;
+      $localContent = Yaml::parseFile($localFileName);
+
+      $baseFileName = "$projectRoot/drush/drush.app.yml";
+      $baseContent = [];
+      if ($this->fs->exists($baseFileName)) {
+        $baseContent = Yaml::parseFile($baseFileName);
       }
 
       $uri = $this->getLocalUri();
-      $baseContent = Yaml::parseFile($baseFileName);
-      if (isset($baseContent['command']['options']['uri'])
-        && $baseContent['command']['options']['uri'] === $uri
-      ) {
-        return 0;
+      $baseUri = $baseContent['options']['uri'] ?? NULL;
+      if ($baseUri != $uri) {
+        $localContent['options']['uri'] = $uri;
+        $localChanged = TRUE;
       }
 
-      $localContent = [
-        'options' => [
-          'uri' => $uri,
-        ],
-      ];
-
-      $this->fs->dumpFile(
-        $localFileName,
-        Yaml::dump($localContent, 42, 2)
-      );
+      if ($localChanged) {
+        $this->fs->dumpFile(
+          $localFileName,
+          Yaml::dump($localContent, 42, 2)
+        );
+      }
 
       return 0;
     };
