@@ -91,7 +91,7 @@
         "composer-exit-on-patch-failure": true,
         "patches": {
             "drupal/core": {
-                "https://www.drupal.org/project/drupal/issues/3182103": "https://git.drupalcode.org/project/drupal/-/merge_requests/28/diffs.patch"
+                "https://www.drupal.org/project/drupal/issues/3182103": "https://www.drupal.org/files/issues/2021-10-28/3182103-25-void-and-protected.patch"
             }
         },
         "installer-types": [

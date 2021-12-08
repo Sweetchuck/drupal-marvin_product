@@ -228,7 +228,6 @@ YAML;
         return 0;
       }
 
-
       $exampleFileName = "$projectRoot/drush/drush.local.example.yml";
       if ($this->fs->exists($exampleFileName)) {
         $this->fs->copy($exampleFileName, $localFileName);

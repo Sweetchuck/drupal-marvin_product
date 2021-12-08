@@ -273,6 +273,7 @@ class ComposerScripts {
       "$drushSutRoot/docroot/libraries",
       "$drushSutRoot/docroot/profiles",
       "$drushSutRoot/docroot/themes",
+      "$drushSutRoot/docroot/modules",
     ];
     $this->fs->mkdir($dirs, 0777 - umask());
 
