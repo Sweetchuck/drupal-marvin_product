@@ -32,6 +32,6 @@ call_user_func(function () {
     $_SERVER['argv'] = $GLOBALS['argv'] = $context['cliArgs'];
     $_SERVER['argc'] = $GLOBALS['argc'] = count($context['cliArgs']);
 
-    require $context['pathToDrush'];
+    require $context['pathToDrushPhp'];
   }
 });

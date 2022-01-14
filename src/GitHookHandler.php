@@ -19,6 +19,8 @@ class GitHookHandler {
 
   protected string $binDir = '';
 
+  protected string $vendorDir = 'vendor';
+
   /**
    * @var resource
    */
@@ -51,7 +53,7 @@ class GitHookHandler {
     return $this
       ->initGitHook()
       ->initDrushCommand()
-      ->initBinDir();
+      ->initComposerDirs();
   }
 
   /**
@@ -75,13 +77,28 @@ class GitHookHandler {
   /**
    * @return $this
    */
-  protected function initBinDir() {
-    $output = exec(sprintf(
-      '%s config bin-dir 2>/dev/null',
-      escapeshellcmd($this->composerExecutable)
-    ));
+  protected function initComposerDirs() {
+    $this
+      ->initComposerDirVendor()
+      ->initComposerDirBin();
 
-    $this->binDir = $this->getLastLine($output) ?: 'vendor/bin';
+    return $this;
+  }
+
+  /**
+   * @return $this
+   */
+  protected function initComposerDirVendor() {
+    $this->vendorDir = $this->getComposerConfig('vendor-dir') ?? 'vendor';
+
+    return $this;
+  }
+
+  /**
+   * @return $this
+   */
+  protected function initComposerDirBin() {
+    $this->binDir = $this->getComposerConfig('bin-dir') ?? "$this->vendorDir/bin";
 
     return $this;
   }
@@ -153,6 +170,7 @@ class GitHookHandler {
         "--define=marvin.gitHook={$this->gitHook}",
       ],
       'pathToDrush' => "{$this->binDir}/drush",
+      'pathToDrushPhp' => "{$this->vendorDir}/drush/drush/drush.php",
     ];
 
     foreach ($this->drushConfigPaths as $drushConfigPath) {
@@ -194,6 +212,18 @@ class GitHookHandler {
     fwrite($output, $message . PHP_EOL);
 
     return $this;
+  }
+
+  protected function getComposerConfig(string $name): ?string {
+    $output = exec(sprintf(
+      '%s config %s 2>/dev/null',
+      escapeshellcmd($this->composerExecutable),
+      escapeshellarg($name),
+    ));
+
+    $value = $this->getLastLine($output);
+
+    return strlen($value) > 0 ? $value : NULL;
   }
 
   protected function getLastLine(string $string): string {
