@@ -15,24 +15,12 @@ use org\bovigo\vfs\vfsStream;
 class GitHooksDeployTaskTest extends TaskTestBase {
 
   public function casesRunSuccess(): array {
-    $taskName = 'Marvin - Deploy Git hooks';
-
     return [
       'basic' => [
         [
           'exitCode' => 0,
           'stdOutput' => '',
-          'stdError' => '',
-          'logEntries' => [
-            [
-              'notice',
-              'Deploy Git hooks from <info>{hookFilesSourceDir}</info>',
-              [
-                'hookFilesSourceDir' => "vfs://testRunSuccess/src/gitHooks",
-                'name' => $taskName,
-              ],
-            ],
-          ],
+          'stdError' => " [Marvin - Deploy Git hooks] Deploy Git hooks from vfs://testRunSuccess/src/gitHooks\n",
           'files' => [
             "dst/.git/hooks/_common.php" => 'a',
             "dst/.git/hooks/pre-commit" => 'b',
@@ -87,15 +75,19 @@ class GitHooksDeployTaskTest extends TaskTestBase {
     $stdOutput = $this->container->get('output');
 
     if (array_key_exists('stdOutput', $expected)) {
-      static::assertSame($expected['stdOutput'], $stdOutput->output);
+      static::assertSame(
+        $expected['stdOutput'],
+        $stdOutput->output,
+        'stdOutput',
+      );
     }
 
     if (array_key_exists('stdError', $expected)) {
-      static::assertSame($expected['stdError'], $stdOutput->getErrorOutput()->output);
-    }
-
-    if (array_key_exists('logEntries', $expected)) {
-      static::assertRoboTaskLogEntries($expected['logEntries'], $task->logger()->cleanLogs());
+      static::assertSame(
+        $expected['stdError'],
+        $stdOutput->getErrorOutput()->output,
+        'stdError',
+      );
     }
 
     if (array_key_exists('files', $expected)) {
