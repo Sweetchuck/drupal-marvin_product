@@ -77,7 +77,7 @@ class SettingsPhpCommands extends CommandsBase {
   protected function getEntry(): string {
     $entry = $this->input()->getArgument('entry');
 
-    return $entry !== NULL ? $entry : stream_get_contents($this->getStdInputFileHandler());
+    return $entry ?? stream_get_contents($this->getStdInputFileHandler());
   }
 
   /**

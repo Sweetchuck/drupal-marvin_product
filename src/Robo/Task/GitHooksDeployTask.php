@@ -220,11 +220,12 @@ class GitHooksDeployTask extends BaseTask implements
    * @return $this
    */
   protected function runActionCopyHookFiles() {
+    /** @var \Symfony\Component\Finder\SplFileInfo[] $hookFiles */
     $hookFiles = $this->getHookFiles($this->getHookFilesSourceDir());
     $destinationDir = $this->getDestinationDir();
 
     foreach ($hookFiles as $hookFile) {
-      $this->fs->copy($hookFile, Path::join($destinationDir, $hookFile->getFilename()));
+      $this->fs->copy($hookFile->getPathname(), Path::join($destinationDir, $hookFile->getFilename()));
     }
 
     return $this;
