@@ -68,12 +68,11 @@ class TaskTestBase extends TestCase {
   }
 
   public static function assertRoboTaskLogEntries(array $expected, array $actual) {
-    static::assertSameSize($expected, $actual, 'Number of log messages');
-
-    foreach ($actual as $key => $log) {
+    foreach ($actual as &$log) {
       unset($log[2]['task']);
-      static::assertSame($expected[$key], $log, "Log entry '$key'");
     }
+
+    static::assertSame($expected, $actual);
   }
 
   protected function getRootDir(string $name = ''): string {
