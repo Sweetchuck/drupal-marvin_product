@@ -12,8 +12,11 @@ use League\Container\ContainerAwareTrait;
 use Robo\Common\IO;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
+/**
+ * @deprecated
+ */
 class GitHooksDeployTask extends BaseTask implements
     ContainerAwareInterface,
     OutputAwareInterface {
@@ -107,7 +110,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  public function setOptions(array $options) {
+  public function setOptions(array $options): static {
     parent::setOptions($options);
 
     if (array_key_exists('hookFilesSourceDir', $options)) {
@@ -133,7 +136,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  protected function runPrepare() {
+  protected function runPrepare(): static {
     parent::runPrepare();
 
     $this->fs = new Filesystem();
@@ -141,7 +144,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  protected function runHeader() {
+  protected function runHeader(): static {
     $this->printTaskInfo(
       'Deploy Git hooks from <info>{hookFilesSourceDir}</info>',
       [
@@ -155,7 +158,7 @@ class GitHooksDeployTask extends BaseTask implements
   /**
    * {@inheritdoc}
    */
-  protected function runAction() {
+  protected function runAction(): static {
     $context = [
       'getHookFilesSourceDir' => $this->getHookFilesSourceDir(),
       'commonTemplateFileName' => $this->getCommonTemplateFileName(),

@@ -24,9 +24,9 @@ class SettingsPhpCommands extends CommandsBase {
   }
 
   /**
-   * @validate marvin:settings-php:add-entry
+   * @hook validate marvin:settings-php:add-entry
    */
-  public function validateSettingsPhpAddEntry(CommandData $commandData) {
+  public function cmdMarvinSettingsPhpAddEntryValidate(CommandData $commandData) {
     if (mb_strlen($commandData->input()->getArgument('entry')) > 0
       || is_resource($this->getStdInputFileHandler())
     ) {
@@ -41,7 +41,7 @@ class SettingsPhpCommands extends CommandsBase {
    *
    * @bootstrap site
    */
-  public function settingsPhpAddEntry(
+  public function cmdMarvinSettingsPhpAddEntryExecute(
     string $entry = '',
     array $options = [
       'dst' => 'settings.local.php',

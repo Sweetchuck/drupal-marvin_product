@@ -5,40 +5,16 @@ declare(strict_types = 1);
 namespace Drupal\Tests\marvin_product\Integration;
 
 use Drush\TestTraits\DrushTestTrait;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 class UnishIntegrationTestCase extends ExistingSiteBase {
 
   use DrushTestTrait;
 
-  /**
-   * @var string
-   */
-  protected $projectName = 'project_01';
+  protected string $projectName = 'project_01';
 
-  /**
-   * {@inheritdoc}
-   */
-  protected function convertKeyValueToFlag($key, $value) {
-    if ($value === NULL) {
-      return "--$key";
-    }
-
-    $options = [];
-
-    if (!is_iterable($value)) {
-      $value = [$value];
-    }
-
-    foreach ($value as $item) {
-      $options[] = sprintf('--%s=%s', $key, static::escapeshellarg($item));
-    }
-
-    return implode(' ', $options);
-  }
-
-  protected function getCommonCommandLineOptions() {
+  protected function getCommonCommandLineOptions(): array {
     return [
       'config' => [
         Path::join($this->getDrupalRoot(), '..', 'drush'),
@@ -46,7 +22,7 @@ class UnishIntegrationTestCase extends ExistingSiteBase {
     ];
   }
 
-  protected function getCommonCommandLineEnvVars() {
+  protected function getCommonCommandLineEnvVars(): array {
     return [
       'HOME' => '/dev/null',
     ];

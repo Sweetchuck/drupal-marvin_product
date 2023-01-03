@@ -45,7 +45,7 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.1",
         "ext-json": "*",
         "consolidation/robo": "^3.0",
         "drupal/marvin": "2.x-dev",
@@ -66,7 +66,7 @@
         "sweetchuck/composer-repo-path": "1.x-dev",
         "sweetchuck/composer-suite": "1.x-dev",
         "symfony/phpunit-bridge": "^5.3",
-        "weitzman/drupal-test-traits": "dev-master#b902b579a99393dabd7eaad4f0041c9da7e29152"
+        "weitzman/drupal-test-traits": "2.x-dev"
     },
     "suggest": {
         "drush/drush": "^11.0"
@@ -106,7 +106,7 @@
                 "https://github.com/danielstjules/Stringy/issues/209 - PHP 8.1 compatibility": "https://patch-diff.githubusercontent.com/raw/danielstjules/Stringy/pull/211.patch"
             },
             "drupal/core": {
-                "https://www.drupal.org/project/drupal/issues/3182103": "https://www.drupal.org/files/issues/2021-10-28/3182103-25-void-and-protected.patch"
+                "https://www.drupal.org/project/drupal/issues/3182103 - PhpUnit typehints": "https://www.drupal.org/files/issues/2022-12-28/drupal-3182103-0905-39-phpunit-typehints.patch"
             }
         },
         "installer-types": [

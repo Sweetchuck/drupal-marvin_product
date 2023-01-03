@@ -73,13 +73,16 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
    * - marvin.environments.*.modules;
    *
    * @command marvin:toggle-modules
+   *
    * @bootstrap full
    *
    * @todo Create a native Robo task.
    */
-  public function toggleModules() {
+  public function toggleModules(string $environment = '') {
+    $environment = $environment ?: $this->getEnvironment();
+
     $this
-      ->toggleModulesInitTodo()
+      ->toggleModulesInitTodo($environment)
       ->toggleModulesInitModules()
       ->toggleModulesUninstall()
       ->toggleModulesInstall();
@@ -88,8 +91,8 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
   /**
    * @return $this
    */
-  protected function toggleModulesInitTodo() {
-    $environmentModules = $this->getEnvironmentModules();
+  protected function toggleModulesInitTodo(string $environment) {
+    $environmentModules = $this->getEnvironmentModules($environment);
     $this->modulesToUninstall = array_keys($environmentModules, FALSE, TRUE);
     $this->modulesToInstall = array_keys($environmentModules, TRUE, TRUE);
 
@@ -203,12 +206,12 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     return $this;
   }
 
-  protected function getEnvironmentModules(): array {
+  protected function getEnvironmentModules(string $environment): array {
     // @todo Something wrong with the config management.
     // Config overrides do not take effects.
     $config = $this->getConfig()->export();
 
-    return $config['marvin']['environments'][$this->getEnvironment()]['modules'] ?? [];
+    return $config['marvin']['environments'][$environment]['modules'] ?? [];
   }
 
   protected function getModuleInstaller(): ModuleInstallerInterface {

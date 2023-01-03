@@ -36,23 +36,23 @@ abstract class ArtifactBuildProductCommandsBase extends ArtifactBuildCommandsBas
 
   protected function getBuildSteps(): array {
     return parent::getBuildSteps() + [
-      'resolveRelativePackagePaths.marvin_product' => [
+      'marvin_product.resolveRelativePackagePaths' => [
         'weight' => $this->incrementBuildStepWeight(),
         'task' => $this->getTaskResolveRelativePackagePaths(),
       ],
-      'moveDocroot.marvin_product' => [
+      'marvin_product.moveDocroot' => [
         'weight' => $this->incrementBuildStepWeight(),
         'task' => $this->getTaskMoveDocroot(),
       ],
-      'composerUpdate.marvin_product' => [
+      'marvin_product.composerUpdate' => [
         'weight' => $this->incrementBuildStepWeight(),
         'task' => $this->getTaskComposerUpdate(),
       ],
-      'gitignoreEntries.marvin_product' => [
+      'marvin_product.gitignoreEntries' => [
         'weight' => $this->incrementBuildStepWeight(),
         'task' => $this->getTaskGitIgnoreEntries(),
       ],
-      'gitignoreDump.marvin_product' => [
+      'marvin_product.gitignoreDump' => [
         'weight' => $this->incrementBuildStepWeight(),
         'task' => $this->getTaskGitIgnoreDump(),
       ],

@@ -11,6 +11,8 @@ trait GitHooksTaskLoader {
 
   /**
    * @return \Robo\Collection\CollectionBuilder|\Drupal\marvin_product\Robo\Task\GitHooksDeployTask
+   *
+   * @deprecated
    */
   protected function taskMarvinGitHooksDeploy(array $options = []): CollectionBuilder {
     /** @var \Drupal\marvin_product\Robo\Task\GitHooksDeployTask $task */

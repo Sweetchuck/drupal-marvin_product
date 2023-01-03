@@ -18,6 +18,8 @@ marvin:
   # The keys are custom, the structure of the value is pre-defined.
   #
   # @var array
+  #
+  # @todo Rename "environments" because it is too similar to "runtimeEnvironments"
   ##
   environments:
     local:
@@ -41,6 +43,19 @@ marvin:
         kint: false
         field_ui: false
         views_ui: false
+
+  ##
+  # Keys are directory names under DRUPAL_ROOT/sites/.
+  #
+  # @todo Maybe the keys should in the same format as the $site_path variable
+  # in the settings.php.
+  #
+  # @var array
+  ##
+  sites: {}
+    #default:
+    #  uris:
+    #    - 'http://example.com'
 
   ##
   # Keys are customs.
@@ -77,21 +92,4 @@ marvin:
       tag: {}
         # app: true
 
-  git-hook:
-    commit-msg:
-      settings:
-        rules:
-          subjectLine:
-            enabled: true
-            name: 'subjectLine'
-            pattern: "/^(Issue #[0-9]+ - .{3,})|(Merge( remote-tracking){0,1} branch '[^\\s]+?'(, '[^\\s]+?'){0,} into [^\\s]+?)(\\n|$)/u"
-            ##
-            # @see https://github.com/drush-ops/drush/issues/4808
-            ##
-            description: "Subject line contains reference to the issue number followed by an at least three characters long description, or the subject line is an automatically generated message for merge commits"
-            examples:
-              'Issue #42 - Something': true
-              "Merge branch 'issue-42' into master": true
-              "Merge branch 'issue-42', 'issue-43' into master": true
-              "Merge remote-tracking branch 'issue-42' into master": true
-              "Merge remote-tracking branch 'issue-42', 'issue-43' into master": true
+
