@@ -14,6 +14,9 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Webmozart\PathUtil\Path;
 
+/**
+ * @deprecated
+ */
 class GitHooksDeployTask extends BaseTask implements
     ContainerAwareInterface,
     OutputAwareInterface {

@@ -8,18 +8,16 @@ use Drupal\marvin\ComposerInfo;
 use Drupal\marvin\Utils as MarvinUtils;
 use Drush\Commands\marvin\CommandsBase;
 use Robo\Collection\CollectionBuilder;
-use Robo\Contract\TaskInterface;
+use Robo\Contract\CommandInterface;
+use Robo\State\Data as RoboState;
 use Stringy\StaticStringy;
-use Sweetchuck\Robo\Git\GitTaskLoader;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
-use Webmozart\PathUtil\Path;
 
 class OnboardingCommands extends CommandsBase {
-
-  use GitTaskLoader;
 
   protected Filesystem $fs;
 
@@ -31,239 +29,255 @@ class OnboardingCommands extends CommandsBase {
   /**
    * @hook on-event marvin:composer:post-install-cmd
    */
-  public function composerPostInstallCmd(InputInterface $input, OutputInterface $output, string $projectRoot): array {
-    $tasks = [];
-
-    if ($input->getOption('dev-mode')) {
-      // @todo Detect all the $docroot/sites/*/settings.php.
-      $tasks['marvin.onboarding'] = [
-        'weight' => 0,
-        'task' => $this->getTaskOnboarding($projectRoot, 'default'),
-      ];
-    }
-
-    return $tasks;
+  public function onEventMarvinComposerPostInstallCmd(
+    InputInterface $input,
+    OutputInterface $output,
+    string $projectRoot
+  ): array {
+    return $this->onEventMarvinOnboarding();
   }
 
   /**
+   * @hook on-event marvin:onboarding
+   */
+  public function onEventMarvinOnboarding(): array {
+    return $this->getTaskDefsOnboardingInit()
+      + $this->getTaskDefsOnboardingCreateRequiredDirs()
+      + $this->getTaskDefsOnboardingSettingsLocalPhp()
+      + $this->getTaskDefsOnboardingDrushLocalYml()
+      + $this->getTaskDefsOnboardingHashSaltTxt();
+  }
+
+  /**
+   * Setup the required files and configuration.
+   *
    * @command marvin:onboarding
+   *
    * @bootstrap none
    */
-  public function onboarding(
-    array $options = [
-      'url' => '',
-    ]
-  ): CollectionBuilder {
-    $projectRoot = Path::getDirectory($this->getComposerInfo()->getJsonFileName());
-
-    // @todo Bootstrap level config and get the $siteDir.
-    return $this->getTaskOnboarding($projectRoot, 'default');
+  public function cmdMarvinOnboardingExecute(array $options = []): CommandInterface {
+    return $this->delegate('onboarding');
   }
 
-  protected function getTaskOnboarding(string $projectRoot, string $siteDir): CollectionBuilder {
-    $composerInfo = $this->getComposerInfo();
+  protected function getTaskDefsOnboardingInit(): array {
+    return [
+      'marvin_product.init' => [
+        'weight' => -999,
+        'task' => function (RoboState $state): int {
+          $composerInfo = $this->getComposerInfo();
+          $composerInfo->getDrupalRootDir();
+          $state['cwd'] = getcwd();
+          $state['projectRoot'] = Path::getDirectory($composerInfo->getJsonFileName());
+          $state['isDeveloperMode'] = $this->isDeveloperMode($state['projectRoot']);
+          if ($state['cwd'] === $state['projectRoot']) {
+            $state['projectRoot'] = '.';
+          }
+          $state['drupalRoot'] = $composerInfo->getDrupalRootDir();
+          $state['siteDirs'] = MarvinUtils::collectDrupalSiteDirs("{$state['projectRoot']}/{$state['drupalRoot']}");
 
-    if (!empty($composerInfo['scripts']['post-create-project-cmd'])) {
-      return $this
-        ->collectionBuilder()
-        ->addCode(function (): int {
-          $this->getLogger()->error('Onboarding is skipped, because this project is still in template phase.');
+          return 0;
+        },
+      ],
+    ];
+  }
 
-          return 1;
+  protected function getTaskDefsOnboardingCreateRequiredDirs(): array {
+    $taskForEach = $this->taskForEach();
+    $taskForEach
+      ->iterationMessage('Create required directories for site: {key}')
+      ->deferTaskConfiguration('setIterable', 'siteDirs')
+      ->withBuilder(function (CollectionBuilder $builder, string $key, $siteDir) use ($taskForEach): void {
+        if (!($siteDir instanceof \SplFileInfo)) {
+          $builder->addCode(function (): int { return 0; });
+
+          return;
+        }
+
+        /** @var \Symfony\Component\Finder\SplFileInfo $siteDir */
+        $state = $taskForEach->getState();
+        $projectRoot = $state['projectRoot'];
+        $drupalRoot = $state['drupalRoot'];
+        $site = $siteDir->getBasename();
+
+        $builder
+          ->addTask(
+            // @todo Get these directory paths from the actual configuration.
+            $this
+              ->taskFilesystemStack()
+              ->mkdir("$projectRoot/$drupalRoot/sites/$site/files")
+              ->mkdir("$projectRoot/sites/all/translations")
+              ->mkdir("$projectRoot/sites/$site/config/prod")
+              ->mkdir("$projectRoot/sites/$site/php_storage")
+              ->mkdir("$projectRoot/sites/$site/private")
+              ->mkdir("$projectRoot/sites/$site/temporary")
+              ->mkdir("$projectRoot/sites/$site/backup")
+          );
+      });
+
+    return [
+      'marvin_product.create_required_directories' => [
+        'weight' => 100,
+        'task' => $taskForEach,
+      ],
+    ];
+  }
+
+  protected function getTaskDefsOnboardingSettingsLocalPhp(): array {
+    $taskForEach = $this->taskForEach();
+    $taskForEach
+      ->iterationMessage('Create settings.host.php for site: {key}')
+      ->deferTaskConfiguration('setIterable', 'siteDirs')
+      ->withBuilder(function (CollectionBuilder $builder, string $key, $siteDir) use ($taskForEach): void {
+        if (!($siteDir instanceof \SplFileInfo)) {
+          $builder->addCode(function (): int { return 0; });
+
+          return;
+        }
+
+        /** @var \Symfony\Component\Finder\SplFileInfo $siteDir */
+        $state = $taskForEach->getState();
+        $projectRoot = $state['projectRoot'];
+        $drupalRoot = $state['drupalRoot'];
+        $site = $siteDir->getBasename();
+
+        $builder->addCode(function () use ($projectRoot, $drupalRoot, $site) {
+          $logger = $this->getLogger();
+          $dst = "$projectRoot/$drupalRoot/sites/$site/settings.host.php";
+          if ($this->fs->exists($dst)) {
+            $logger->debug(
+              'File "<info>{fileName}</info>" already exists',
+              [
+                'fileName' => $dst,
+              ],
+            );
+
+            return 0;
+          }
+
+          $src = $this->getExampleSettingsLocalPhp($projectRoot, $drupalRoot, $site);
+          if (!$src) {
+            $logger->debug('There is no source for "settings.host.php"');
+
+            return 0;
+          }
+
+          $result = $this
+            ->taskFilesystemStack()
+            ->copy($src, $dst)
+            ->run();
+
+          return $result->wasSuccessful() ? 0 : 1;
         });
-    }
+      });
 
-    $isDeveloperMode = $this->isDeveloperMode($projectRoot);
-    $drupalRoot = $composerInfo->getDrupalRootDir();
-
-    $cb = $this->collectionBuilder();
-
-    $cb->addTask($this->getTaskOnboardingCreateRequiredDirs($projectRoot, $drupalRoot, $siteDir));
-    $cb->addCode($this->getTaskOnboardingSettingsLocalPhp($projectRoot, $drupalRoot, $siteDir));
-
-    if ($isDeveloperMode) {
-      $cb->addTask($this->getTaskOnboardingBehatLocalYml());
-    }
-
-    $cb->addCode($this->getTaskOnboardingDrushLocalYml($projectRoot));
-    $cb->addCode($this->getTaskOnboardingHashSaltTxt($projectRoot, $siteDir));
-
-    return $cb;
+    return [
+      'marvin_product.settings_local_php' => [
+        'weight' => 101,
+        'task' => $taskForEach,
+      ],
+    ];
   }
 
-  protected function getTaskOnboardingCreateRequiredDirs(string $projectRoot, string $drupalRoot, string $siteDir): TaskInterface {
-    return $this
-      ->taskFilesystemStack()
-      ->mkdir("$projectRoot/$drupalRoot/sites/$siteDir/files")
-      ->mkdir("$projectRoot/sites/all/translations")
-      ->mkdir("$projectRoot/sites/$siteDir/config/prod")
-      ->mkdir("$projectRoot/sites/$siteDir/php_storage")
-      ->mkdir("$projectRoot/sites/$siteDir/private")
-      ->mkdir("$projectRoot/sites/$siteDir/temporary")
-      ->mkdir("$projectRoot/sites/$siteDir/backup");
+  protected function getTaskDefsOnboardingDrushLocalYml(): array {
+    return [
+      'marvin_product.drush_local_yml' => [
+        'weight' => 103,
+        'task' => function (RoboState $state): int {
+          $localFileName = "{$state['projectRoot']}/drush/drush.host.yml";
+          if ($this->fs->exists($localFileName)) {
+            $this->getLogger()->debug(
+              'File "<info>{fileName}</info>" already exists',
+              ['fileName' => $localFileName]
+            );
+
+            return 0;
+          }
+
+          $exampleFileName = "{$state['projectRoot']}/drush/drush.local.example.yml";
+          if ($this->fs->exists($exampleFileName)) {
+            $this->fs->copy($exampleFileName, $localFileName);
+          }
+
+          $localChanged = FALSE;
+          $localContent = Yaml::parseFile($localFileName);
+
+          $baseFileName = "{$state['projectRoot']}/drush/drush.app.yml";
+          $baseContent = [];
+          if ($this->fs->exists($baseFileName)) {
+            $baseContent = Yaml::parseFile($baseFileName);
+          }
+
+          $uri = $this->getLocalUri();
+          $baseUri = $baseContent['options']['uri'] ?? NULL;
+          if ($baseUri != $uri) {
+            $localContent['options']['uri'] = $uri;
+            $localChanged = TRUE;
+          }
+
+          if ($localChanged) {
+            $this->fs->dumpFile(
+              $localFileName,
+              Yaml::dump($localContent, 42, 2)
+            );
+          }
+
+          return 0;
+        },
+      ],
+    ];
   }
 
-  protected function getTaskOnboardingSettingsLocalPhp(string $projectRoot, string $drupalRoot, string $siteDir): \Closure {
-    return function () use ($projectRoot, $drupalRoot, $siteDir) {
-      $logger = $this->getLogger();
-      $dst = "$projectRoot/$drupalRoot/sites/$siteDir/settings.local.php";
-      if ($this->fs->exists($dst)) {
-        $logger->debug(
-          'File "<info>{fileName}</info>" already exists',
-          ['fileName' => $dst]
-        );
+  protected function getTaskDefsOnboardingHashSaltTxt(): array {
+    $taskForEach = $this->taskForEach();
+    $taskForEach
+      ->iterationMessage('Create hash_salt.txt file for site: {key}')
+      ->deferTaskConfiguration('setIterable', 'siteDirs')
+      ->withBuilder(function (CollectionBuilder $builder, string $key, $siteDir) use ($taskForEach): void {
+        if (!($siteDir instanceof \SplFileInfo)) {
+          $builder->addCode(function (): int { return 0; });
 
-        return 0;
-      }
+          return;
+        }
 
-      $src = $this->getExampleSettingsLocalPhp($projectRoot, $drupalRoot, $siteDir);
-      if (!$src) {
-        $logger->debug('There is no source for "settings.local.php"');
+        $state = $taskForEach->getState();
+        $projectRoot = $state['projectRoot'];
 
-        return 0;
-      }
+        $builder->addCode(function () use ($projectRoot, $siteDir): int {
+          $site = $siteDir->getBasename();
+          $fileName = "$projectRoot/sites/$site/hash_salt.txt";
+          if ($this->fs->exists($fileName)) {
+            $this->getLogger()->debug(
+              'File "<info>{fileName}</info>" already exists',
+              [
+                'fileName' => $fileName,
+              ],
+            );
 
-      $result = $this
-        ->taskFilesystemStack()
-        ->copy($src, $dst)
-        ->run();
+            return 0;
+          }
 
-      return $result->wasSuccessful() ? 0 : 1;
-    };
+          $result = $this
+            ->taskWriteToFile($fileName)
+            ->text(MarvinUtils::generateHashSalt())
+            ->run();
+
+          // @todo Error handling.
+          return $result->wasSuccessful() ? 0 : 1;
+        });
+      });
+
+    return [
+      'marvin_product.create_hash_salt_txt' => [
+        'weight' => 102,
+        'task' => $taskForEach,
+      ],
+    ];
   }
 
-  protected function getTaskOnboardingHashSaltTxt(string $projectRoot, string $siteDir): \Closure {
-    return function () use ($projectRoot, $siteDir): int {
-      $fileName = "$projectRoot/sites/$siteDir/hash_salt.txt";
-      if ($this->fs->exists($fileName)) {
-        $this->getLogger()->debug(
-          'File "<info>{fileName}</info>" already exists',
-          ['fileName' => $fileName]
-        );
-
-        return 0;
-      }
-
-      $this
-        ->taskWriteToFile($fileName)
-        ->text($this->generateHashSalt())
-        ->run()
-        ->stopOnFail();
-
-      return 0;
-    };
-  }
-
-  protected function getTaskOnboardingBehatLocalYml(): CollectionBuilder {
-    return $this
-      ->collectionBuilder()
-      ->addTask($this
-        ->taskGitListFiles()
-        ->setPaths(['behat.yml', '*/behat.yml'])
-      )
-      ->addTask($this
-        ->taskForEach()
-        ->deferTaskConfiguration('setIterable', 'files')
-        ->withBuilder(function (CollectionBuilder $builder, string $baseFileName) {
-          $builder->addCode($this->getTaskOnboardingBehatLocalYmlSingle($baseFileName));
-        })
-      );
-  }
-
-  protected function getTaskOnboardingBehatLocalYmlSingle(string $baseFileName): \Closure {
-    return function () use ($baseFileName): int {
-      $behatDir = Path::getDirectory($baseFileName);
-      if ($behatDir === '') {
-        $behatDir = '.';
-      }
-
-      $exampleFileName = "$behatDir/behat.local.example.yml";
-      $localFileName = "$behatDir/behat.local.yml";
-
-      if ($this->fs->exists("$localFileName")) {
-        $this->getLogger()->debug(
-          'File "<info>{fileName}</info>" already exists',
-          ['fileName' => $localFileName]
-        );
-
-        return 0;
-      }
-
-      $localFileContent = <<<YAML
-default:
-  extensions:
-    Drupal\MinkExtension:
-      base_url: 'http://localhost'
-
-YAML;
-
-      if ($this->fs->exists($exampleFileName)) {
-        $localFileContent = $this->fileGetContents($exampleFileName);
-      }
-
-      // @todo This is not bullet proof.
-      $localFileContent = preg_replace(
-        '/(?<=\n      base_url:).*?(?=\n)/u',
-        ' ' . MarvinUtils::escapeYamlValueString($this->getLocalUri()),
-        $localFileContent,
-        -1,
-        $count
-      );
-
-      $this->fs->dumpFile($localFileName, $localFileContent);
-
-      return 0;
-    };
-  }
-
-  protected function getTaskOnboardingDrushLocalYml(string $projectRoot): \Closure {
-    return function () use ($projectRoot): int {
-      $localFileName = "$projectRoot/drush/drush.local.yml";
-      if ($this->fs->exists($localFileName)) {
-        $this->getLogger()->debug(
-          'File "<info>{fileName}</info>" already exists',
-          ['fileName' => $localFileName]
-        );
-
-        return 0;
-      }
-
-      $exampleFileName = "$projectRoot/drush/drush.local.example.yml";
-      if ($this->fs->exists($exampleFileName)) {
-        $this->fs->copy($exampleFileName, $localFileName);
-      }
-
-      $localChanged = FALSE;
-      $localContent = Yaml::parseFile($localFileName);
-
-      $baseFileName = "$projectRoot/drush/drush.app.yml";
-      $baseContent = [];
-      if ($this->fs->exists($baseFileName)) {
-        $baseContent = Yaml::parseFile($baseFileName);
-      }
-
-      $uri = $this->getLocalUri();
-      $baseUri = $baseContent['options']['uri'] ?? NULL;
-      if ($baseUri != $uri) {
-        $localContent['options']['uri'] = $uri;
-        $localChanged = TRUE;
-      }
-
-      if ($localChanged) {
-        $this->fs->dumpFile(
-          $localFileName,
-          Yaml::dump($localContent, 42, 2)
-        );
-      }
-
-      return 0;
-    };
-  }
-
-  protected function getExampleSettingsLocalPhp(string $projectRoot, string $drupalRoot, string $siteDir): ?string {
+  protected function getExampleSettingsLocalPhp(string $projectRoot, string $drupalRoot, string $site): ?string {
     $fileNames = [
-      "$projectRoot/$drupalRoot/sites/$siteDir/settings.local.example.php",
-      "$projectRoot/$drupalRoot/sites/$siteDir/example.settings.local.php",
+      "$projectRoot/$drupalRoot/sites/$site/settings.local.example.php",
+      "$projectRoot/$drupalRoot/sites/$site/example.settings.local.php",
       "$projectRoot/$drupalRoot/sites/example.settings.local.php",
     ];
 
@@ -274,23 +288,6 @@ YAML;
     }
 
     return NULL;
-  }
-
-  protected function generateHashSalt(): string {
-    return bin2hex(random_bytes($this->getHashSaltLength()));
-  }
-
-  protected function getHashSaltLength(): int {
-    return random_int(32, 64);
-  }
-
-  protected function fileGetContents(string $fileName): string {
-    $content = file_get_contents($fileName);
-    if ($content === FALSE) {
-      throw new \Exception('@todo');
-    }
-
-    return $content;
   }
 
   protected function getLocalUri(): string {
