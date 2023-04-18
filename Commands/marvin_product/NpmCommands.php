@@ -4,15 +4,19 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\marvin\NpmCommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 
 class NpmCommands extends NpmCommandsBase {
 
-  /**
-   * @hook on-event marvin:build
-   */
+  #[CLI\Hook(
+    type: HookManager::ON_EVENT,
+    target: 'marvin:build',
+  )]
   public function onEventMarvinBuild(): array {
     return [
       'marvin.build.npm' => [
@@ -25,9 +29,10 @@ class NpmCommands extends NpmCommandsBase {
     ];
   }
 
-  /**
-   * @hook on-event marvin:git-hook:post-checkout
-   */
+  #[CLI\Hook(
+    type: HookManager::ON_EVENT,
+    target: 'marvin:git-hook:post-checkout',
+  )]
   public function onEventMarvinGitHookPostCheckout(): array {
     return [
       'marvin:yarn-install' => [
@@ -38,13 +43,14 @@ class NpmCommands extends NpmCommandsBase {
   }
 
   /**
-   * @command marvin:build:npm
-   * @bootstrap none
+   * Builds frontend related codes.
    */
-  public function npmInstall(): CollectionBuilder {
+  #[CLI\Command(name: 'marvin:build:npm')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+  public function cmdMarvinBuildNpmExecute(): CollectionBuilder {
     return $this->getTaskNpmInstallPackage(
       $this->getComposerInfo()->name,
-      $this->getProjectRootDir()
+      $this->getProjectRootDir(),
     );
   }
 

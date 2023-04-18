@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Drupal\marvin_product\EnvConfig;
 
-use Sweetchuck\Utils\Filter\ArrayFilterEnabled;
+use Sweetchuck\Utils\Filter\EnabledFilter;
 
 class EnvConfigHandler {
 
@@ -19,7 +19,7 @@ class EnvConfigHandler {
   public function normalize(array $envConfig, string $target): array {
     $return = [];
 
-    foreach (array_filter($envConfig, new ArrayFilterEnabled()) as $item) {
+    foreach (array_filter($envConfig, new EnabledFilter()) as $item) {
       $item += [
         'sites' => ['default' => TRUE],
         'value' => [],

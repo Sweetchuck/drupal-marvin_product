@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
-<ruleset name="DrupalCustom"
+<ruleset name="Custom"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="./vendor/squizlabs/php_codesniffer/phpcs.xsd">
+  xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xsd">
 
   <file>./Commands/</file>
   <file>./src/</file>
   <file>./tests/src/</file>
-  <file>./RoboFile.php</file>
 
   <arg
     name="extensions"
@@ -24,8 +23,4 @@
   </rule>
 
   <rule ref="DrupalPractice" />
-
-  <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
-    <exclude-pattern>./RoboFile.php</exclude-pattern>
-  </rule>
 </ruleset>

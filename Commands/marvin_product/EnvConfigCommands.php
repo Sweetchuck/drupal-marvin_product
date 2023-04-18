@@ -6,21 +6,27 @@ namespace Drush\Commands\marvin_product;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandResult;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Component\Utility\NestedArray;
+use Drupal\marvin\Attributes as MarvinCLI;
 use Drupal\marvin_product\EnvConfig\DrupalConfigConverter;
 use Drupal\marvin_product\EnvConfig\EnvConfigHandler;
 use Drupal\marvin_product\EnvConfig\SitesPhpGenerator;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\marvin\CommandsBase;
-use Drush\Internal\Config\Yaml\Yaml;
+use Symfony\Component\Yaml\Yaml;
 
 class EnvConfigCommands extends CommandsBase {
 
   /**
-   * @hook validate marvin:env-config:settings-php
-   *
    * @todo Validate the yaml content.
    */
-  public function exportSettingsPhpValidate(CommandData $commandData) {
+  #[CLI\Hook(
+    type: HookManager::ARGUMENT_VALIDATOR,
+    target: 'marvin:env-config:settings-php',
+  )]
+  public function cmdMarvinExportSettingsPhpValidate(CommandData $commandData): void {
     $input = $commandData->input();
     if (!$input->getOption('target')) {
       $input->setOption('target', (string) $this->getConfig()->get('marvin.environment'));
@@ -47,10 +53,10 @@ class EnvConfigCommands extends CommandsBase {
    *       value: MY_ENV_VAR_02
    * ```
    *
-   * @command marvin:env-config:settings-php
-   * @bootstrap none
+   * @phpstan-param array<string, mixed> $options
+   *   Extra CLI options.
+   *
    * @marvinOptionCommaSeparatedList sites
-   * @marvinOptionArrayRequired sites
    *
    * @usage drush marvin:env-config:settings-php --sites=all --target=local < my-env-config.yml
    *   Read the YAML content from StdInput.
@@ -64,19 +70,48 @@ class EnvConfigCommands extends CommandsBase {
    *   Read the YAML content from StdInput.
    *   Result: $a['b']['c'] = getenv('MY_ENV_VAR_02');
    */
-  public function exportSettingsPhp(
-    string $fileName = '',
+  #[CLI\Command(name: 'marvin:env-config:settings-php')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+  #[CLI\Argument(
+    name: 'filePath',
+    description: 'File path to the YAML.',
+  )]
+  #[CLI\Option(
+    name: 'target',
+    description: 'Documentation @todo',
+  )]
+  #[CLI\Option(
+    name: 'sites',
+    description: 'Documentation @todo',
+  )]
+  #[CLI\Option(
+    name: 'parents',
+    description: 'Documentation @todo',
+  )]
+  #[MarvinCLI\ValidateExplode(
+    type: 'option',
+    name: 'sites',
+  )]
+  #[MarvinCLI\ValidateArrayLength(
+    type: 'option',
+    name: 'sites',
+    config: [
+      'required' => TRUE,
+    ],
+  )]
+  public function cmdMarvinExportSettingsPhpExecute(
+    string $filePath = '',
     array $options = [
       'target' => '',
       'sites' => [],
       'parents' => [],
-    ]
+    ],
   ) {
-    if ($fileName === '') {
-      $fileName = 'php://stdin';
+    if ($filePath === '') {
+      $filePath = 'php://stdin';
     }
 
-    $envConfig = (array) Yaml::parse($this->fileGetContents($fileName));
+    $envConfig = (array) Yaml::parse($this->fileGetContents($filePath));
     $envConfig = (array) NestedArray::getValue($envConfig, $options['parents']);
 
     $envConfigHandler = new EnvConfigHandler();
@@ -96,20 +131,23 @@ class EnvConfigCommands extends CommandsBase {
    * hosts:
    *   a: b
    * ```
-   *
-   * @command marvin:env-config:sites-php
-   *
-   * @usage drush marvin:env-config:sites-php --env-var-name-pattern='FOO_{{ upper }}_BAR' --parents=hosts /path/to/config.yml
-   *   Reads host_name:dir_name mapping from /path/to/config.yml
-   *   Result: $sites = [getenv('FOO_A_BAR') => 'b'];
    */
-  public function sitesPhp(
+  #[CLI\Command(name: 'marvin:env-config:sites-php')]
+  #[CLI\Argument(
+    name: 'fileName',
+    description: 'File name to read the YAML content from.',
+  )]
+  #[CLI\Usage(
+    name: "drush marvin:env-config:sites-php --env-var-name-pattern='FOO_{{ upper }}_BAR' --parents=hosts /path/to/config.yml",
+    description: "Reads host_name:dir_name mapping from /path/to/config.yml\nResult: \$sites = [getenv('FOO_A_BAR') => 'b'];",
+  )]
+  public function cmdMarvinEnvConfigSitesPhpExecute(
     string $fileName = '',
     array $options = [
       'env-var-name-pattern' => '',
       'parents' => [],
-    ]
-  ) {
+    ],
+  ): CommandResult {
     if ($fileName === '') {
       $fileName = 'php://stdin';
     }

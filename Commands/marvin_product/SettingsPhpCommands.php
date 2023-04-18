@@ -5,9 +5,12 @@ declare(strict_types = 1);
 namespace Drush\Commands\marvin_product;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Component\Serialization\SerializationInterface;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\marvin\ComposerInfo;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\marvin\CommandsBase;
 
 class SettingsPhpCommands extends CommandsBase {
@@ -23,9 +26,10 @@ class SettingsPhpCommands extends CommandsBase {
     $this->yaml = $yaml ?: new Yaml();
   }
 
-  /**
-   * @hook validate marvin:settings-php:add-entry
-   */
+  #[CLI\Hook(
+    type: HookManager::ARGUMENT_VALIDATOR,
+    target: 'marvin:settings-php:add-entry',
+  )]
   public function cmdMarvinSettingsPhpAddEntryValidate(CommandData $commandData) {
     if (mb_strlen($commandData->input()->getArgument('entry')) > 0
       || is_resource($this->getStdInputFileHandler())
@@ -37,16 +41,23 @@ class SettingsPhpCommands extends CommandsBase {
   }
 
   /**
-   * @command marvin:settings-php:add-entry
+   * Not finished.
    *
-   * @bootstrap site
+   * @phpstan-param array<string, mixed> $options
+   *   Not used.
    */
+  #[CLI\Command(name: 'marvin:settings-php:add-entry')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::SITE)]
+  #[CLI\Argument(
+    name: 'entry',
+    description: 'YAML encoded entry definition.',
+  )]
   public function cmdMarvinSettingsPhpAddEntryExecute(
     string $entry = '',
     array $options = [
       'dst' => 'settings.local.php',
     ]
-  ) {
+  ): void {
     $entry = $this->getEntry();
     $phpFragment = $this->parseEntry($entry);
 
@@ -81,7 +92,7 @@ class SettingsPhpCommands extends CommandsBase {
   }
 
   /**
-   * @return resource|null
+   * @return null|resource
    */
   protected function getStdInputFileHandler() {
     if (ftell(STDIN) === 0) {

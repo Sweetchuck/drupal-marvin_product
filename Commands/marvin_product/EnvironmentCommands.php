@@ -9,9 +9,14 @@ use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\marvin\ComposerInfo;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Attributes as CLI;
 use Drush\Commands\marvin\CommandsBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * @todo Delete these commands.
+ */
 class EnvironmentCommands extends CommandsBase implements ContainerInjectionInterface {
 
   protected ?ModuleInstallerInterface $moduleInstaller;
@@ -72,13 +77,15 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
    * - marvin.environment;
    * - marvin.environments.*.modules;
    *
-   * @command marvin:toggle-modules
-   *
-   * @bootstrap full
-   *
    * @todo Create a native Robo task.
    */
-  public function toggleModules(string $environment = '') {
+  #[CLI\Command(name: 'marvin:toggle-modules')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+  #[CLI\Argument(
+    name: 'environment',
+    description: 'Environment identifier',
+  )]
+  public function cmdMarvinToggleModulesExecute(string $environment = '') {
     $environment = $environment ?: $this->getEnvironment();
 
     $this
@@ -88,10 +95,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
       ->toggleModulesInstall();
   }
 
-  /**
-   * @return $this
-   */
-  protected function toggleModulesInitTodo(string $environment) {
+  protected function toggleModulesInitTodo(string $environment): static {
     $environmentModules = $this->getEnvironmentModules($environment);
     $this->modulesToUninstall = array_keys($environmentModules, FALSE, TRUE);
     $this->modulesToInstall = array_keys($environmentModules, TRUE, TRUE);
@@ -99,10 +103,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     return $this;
   }
 
-  /**
-   * @return $this
-   */
-  protected function toggleModulesInitModules() {
+  protected function toggleModulesInitModules(): static {
     $moduleLister = $this->getModuleLister();
     $moduleLister->reset();
     $this->installedModules = array_keys($moduleLister->getAllInstalledInfo());
@@ -111,10 +112,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     return $this;
   }
 
-  /**
-   * @return $this
-   */
-  protected function toggleModulesUninstall() {
+  protected function toggleModulesUninstall(): static {
     $logger = $this->getLogger();
 
     $alreadyUninstalledModules = array_intersect($this->uninstalledModules, $this->modulesToUninstall);
@@ -171,10 +169,7 @@ class EnvironmentCommands extends CommandsBase implements ContainerInjectionInte
     return $this;
   }
 
-  /**
-   * @return $this
-   */
-  protected function toggleModulesInstall() {
+  protected function toggleModulesInstall(): static {
     $logger = $this->getLogger();
 
     $alreadyInstalledModules = array_intersect($this->installedModules, $this->modulesToInstall);

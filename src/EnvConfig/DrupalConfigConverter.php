@@ -5,14 +5,14 @@ declare(strict_types = 1);
 namespace Drupal\marvin_product\EnvConfig;
 
 use Drupal\marvin_product\Utils as MarvinProductUtils;
-use Sweetchuck\Utils\Filter\ArrayFilterEnabled;
+use Sweetchuck\Utils\Filter\EnabledFilter;
 
 class DrupalConfigConverter {
 
   public function getKeyValuePairs(iterable $envConfig, array $sites): string {
     $sites = array_filter(
       MarvinProductUtils::booleanArray($sites),
-      new ArrayFilterEnabled()
+      new EnabledFilter(),
     );
 
     $lines = [];

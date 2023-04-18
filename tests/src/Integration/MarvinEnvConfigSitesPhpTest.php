@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
  * @group marvin_product
  * @group drush-command
  */
-class MarvinEnvConfigSitesPhp extends UnishIntegrationTestCase {
+class MarvinEnvConfigSitesPhpTest extends UnishIntegrationTestCase {
 
   public function casesMarvinEnvConfigSitesPhp(): array {
     $options = $this->getCommonCommandLineOptions();
@@ -59,7 +59,7 @@ class MarvinEnvConfigSitesPhp extends UnishIntegrationTestCase {
       NULL,
       $expected['exitCode'],
       NULL,
-      $envVars
+      $envVars,
     );
 
     $actualStdError = $this->getErrorOutput();

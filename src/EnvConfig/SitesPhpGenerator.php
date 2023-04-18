@@ -15,10 +15,7 @@ class SitesPhpGenerator {
     return $this->mapping;
   }
 
-  /**
-   * @return $this
-   */
-  public function setMapping(array $mapping) {
+  public function setMapping(array $mapping): static {
     $this->mapping = $mapping;
 
     return $this;
@@ -33,10 +30,7 @@ class SitesPhpGenerator {
     return $this->envVarNamePattern;
   }
 
-  /**
-   * @return $this
-   */
-  public function setEnvVarNamePattern(string $envVarNamePattern) {
+  public function setEnvVarNamePattern(string $envVarNamePattern): static {
     $this->envVarNamePattern = $envVarNamePattern ?: '{{ original }}';
 
     return $this;

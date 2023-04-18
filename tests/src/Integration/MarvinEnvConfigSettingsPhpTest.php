@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
  * @group marvin_product
  * @group drush-command
  */
-class MarvinEnvConfigSettingsPhp extends UnishIntegrationTestCase {
+class MarvinEnvConfigSettingsPhpTest extends UnishIntegrationTestCase {
 
   public function casesMarvinEnvConfigSettingsPhp(): array {
     $options = $this->getCommonCommandLineOptions();

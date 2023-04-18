@@ -4,18 +4,19 @@ declare(strict_types = 1);
 
 namespace Drush\Commands\marvin_product;
 
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\marvin\ComposerInfo;
 use Drupal\marvin\Utils as MarvinUtils;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\marvin\CommandsBase;
 use Robo\Collection\CollectionBuilder;
-use Robo\Contract\CommandInterface;
 use Robo\State\Data as RoboState;
-use Stringy\StaticStringy;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\String\UnicodeString;
 
 class OnboardingCommands extends CommandsBase {
 
@@ -26,26 +27,29 @@ class OnboardingCommands extends CommandsBase {
     $this->fs = $fs ?: new Filesystem();
   }
 
-  /**
-   * @hook on-event marvin:composer:post-install-cmd
-   */
+  #[CLI\Hook(
+    type: HookManager::ON_EVENT,
+    target: 'marvin:composer:post-install-cmd',
+  )]
   public function onEventMarvinComposerPostInstallCmd(
     InputInterface $input,
     OutputInterface $output,
-    string $projectRoot
+    string $projectRoot,
   ): array {
     return $this->onEventMarvinOnboarding();
   }
 
-  /**
-   * @hook on-event marvin:onboarding
-   */
+  #[CLI\Hook(
+    type: HookManager::ON_EVENT,
+    target: 'marvin:onboarding',
+  )]
   public function onEventMarvinOnboarding(): array {
     return $this->getTaskDefsOnboardingInit()
       + $this->getTaskDefsOnboardingCreateRequiredDirs()
+      + $this->getTaskDefsOnboardingHashSaltTxt()
       + $this->getTaskDefsOnboardingSettingsLocalPhp()
-      + $this->getTaskDefsOnboardingDrushLocalYml()
-      + $this->getTaskDefsOnboardingHashSaltTxt();
+      + $this->getTaskDefsOnboardingDrushHostYml()
+      + $this->getTaskDefsOnboardingRteSwitch();
   }
 
   /**
@@ -53,13 +57,14 @@ class OnboardingCommands extends CommandsBase {
    *
    * The main goal is to make a working instance from the project after the
    * `composer install` command.
-   *
-   * @command marvin:onboarding
-   *
-   * @bootstrap none
    */
-  public function cmdMarvinOnboardingExecute(array $options = []): CommandInterface {
-    return $this->delegate('onboarding');
+  #[CLI\Command(name: 'marvin:onboarding')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+  public function cmdMarvinOnboardingExecute(array $options = []): CollectionBuilder {
+    $cb = $this->delegate('onboarding');
+    $cb->setProgressIndicator(NULL);
+
+    return $cb;
   }
 
   protected function getTaskDefsOnboardingInit(): array {
@@ -78,7 +83,9 @@ class OnboardingCommands extends CommandsBase {
           }
           $state['drupalRoot'] = $composerInfo->getDrupalRootDir();
           $state['siteDirs'] = MarvinUtils::collectDrupalSiteDirs("{$state['projectRoot']}/{$state['drupalRoot']}");
-          $state['runtime_environments'] = $this->getRuntimeEnvironments();
+          $state['runtimeEnvironments'] = $this->getRuntimeEnvironments();
+          $state['runtimeEnvironment'] = $this->getCurrentRuntimeEnvironment();
+          $state['primaryUri'] = $this->getLocalUri();
 
           return 0;
         },
@@ -93,7 +100,9 @@ class OnboardingCommands extends CommandsBase {
       ->deferTaskConfiguration('setIterable', 'siteDirs')
       ->withBuilder(function (CollectionBuilder $builder, string $key, $siteDir) use ($taskForEach): void {
         if (!($siteDir instanceof \SplFileInfo)) {
-          $builder->addCode(function (): int { return 0; });
+          $builder->addCode(function (): int {
+            return 0;
+          });
 
           return;
         }
@@ -127,6 +136,21 @@ class OnboardingCommands extends CommandsBase {
     ];
   }
 
+  protected function getTaskDefsOnboardingHashSaltTxt(): array {
+    $taskForEach = $this->taskForEach();
+    $taskForEach
+      ->iterationMessage('Create hash_salt.txt file for site: {key}')
+      ->deferTaskConfiguration('setIterable', 'siteDirs')
+      ->withBuilder($this->getTaskBuilderOnboardingHashSaltTxt($taskForEach));
+
+    return [
+      'marvin_product.create_hash_salt_txt' => [
+        'weight' => 102,
+        'task' => $taskForEach,
+      ],
+    ];
+  }
+
   protected function getTaskDefsOnboardingSettingsLocalPhp(): array {
     $taskForEach = $this->taskForEach();
     $taskForEach
@@ -134,7 +158,9 @@ class OnboardingCommands extends CommandsBase {
       ->deferTaskConfiguration('setIterable', 'siteDirs')
       ->withBuilder(function (CollectionBuilder $builder, string $key, $siteDir) use ($taskForEach): void {
         if (!($siteDir instanceof \SplFileInfo)) {
-          $builder->addCode(function (): int { return 0; });
+          $builder->addCode(function (): int {
+            return 0;
+          });
 
           return;
         }
@@ -183,9 +209,9 @@ class OnboardingCommands extends CommandsBase {
     ];
   }
 
-  protected function getTaskDefsOnboardingDrushLocalYml(): array {
+  protected function getTaskDefsOnboardingDrushHostYml(): array {
     return [
-      'marvin_product.drush_local_yml' => [
+      'marvin_product.drush_host_yml' => [
         'weight' => 103,
         'task' => function (RoboState $state): int {
           $logger = $this->getLogger();
@@ -196,8 +222,8 @@ class OnboardingCommands extends CommandsBase {
             'exampleFilePath' => $exampleFilePath,
           ];
 
-          $runtime_environments = $this->getConfig()->get('marvin.runtime_environments');
-          if (!isset($runtime_environments['host'])) {
+          $runtimeEnvironment = $state['runtimeEnvironment'];
+          if ($runtimeEnvironment['id'] !== 'host') {
             $logger->info(
               '{hostFilePath} skipped because there is no "host" runtime environment',
               $loggerArgs,
@@ -237,9 +263,7 @@ class OnboardingCommands extends CommandsBase {
             $content = $this->getDrushLocalYmlContent();
           }
 
-          $sites = $this->getConfig()->get('marvin.sites');
-          $site = (array) reset($sites);
-          $uri = (string) reset($site['uris']);
+          $uri = $state['primaryUri'];
           if ($uri === '${options.uri}') {
             $uri = $this->getLocalUri();
           }
@@ -258,17 +282,11 @@ class OnboardingCommands extends CommandsBase {
     ];
   }
 
-  protected function getTaskDefsOnboardingHashSaltTxt(): array {
-    $taskForEach = $this->taskForEach();
-    $taskForEach
-      ->iterationMessage('Create hash_salt.txt file for site: {key}')
-      ->deferTaskConfiguration('setIterable', 'siteDirs')
-      ->withBuilder($this->getTaskBuilderOnboardingHashSaltTxt($taskForEach));
-
+  protected function getTaskDefsOnboardingRteSwitch(): array {
     return [
-      'marvin_product.create_hash_salt_txt' => [
-        'weight' => 102,
-        'task' => $taskForEach,
+      'marvin_product.runtime_environment.switch' => [
+        'weight' => 999,
+        'task' => $this->delegate('runtime-environment:switch', $this->getCurrentRuntimeEnvironment()),
       ],
     ];
   }
@@ -276,7 +294,9 @@ class OnboardingCommands extends CommandsBase {
   protected function getTaskBuilderOnboardingHashSaltTxt($taskForEach): \Closure {
     return function (CollectionBuilder $builder, string $key, $siteDir) use ($taskForEach): void {
       if (!($siteDir instanceof \SplFileInfo)) {
-        $builder->addCode(function (): int { return 0; });
+        $builder->addCode(function (): int {
+          return 0;
+        });
 
         return;
       }
@@ -352,9 +372,6 @@ class OnboardingCommands extends CommandsBase {
     return NULL;
   }
 
-  /**
-   * @return string
-   */
   protected function getLocalUri(): string {
     if ($this->input()->getOption('uri')) {
       return $this->input()->getOption('uri');
@@ -364,8 +381,14 @@ class OnboardingCommands extends CommandsBase {
 
     return sprintf(
       'https://%s.%s.localhost',
-      StaticStringy::dasherize($composerInfo->packageName),
-      StaticStringy::dasherize($composerInfo->packageVendor),
+      (new UnicodeString($composerInfo->packageName))
+        ->snake()
+        ->replace('_', '-')
+        ->toString(),
+      (new UnicodeString($composerInfo->packageVendor))
+        ->snake()
+        ->replace('_', '-')
+        ->toString(),
     );
   }
 
@@ -377,15 +400,12 @@ class OnboardingCommands extends CommandsBase {
   protected function getDrushLocalYmlContent(): string {
     return <<<'YAML'
 options:
-  uri: 'http://APP_DOMAIN'
+  uri: 'APP_PRIMARY_URI'
 
 marvin:
   runtime_environments:
     host:
       enabled: true
-      sites:
-        default:
-          uri: '${options.uri}'
 YAML;
   }
 

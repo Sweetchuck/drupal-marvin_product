@@ -1,0 +1,8 @@
+parameters:
+	typeAliases:
+		marvin-incubator-managed-drupal-extension: '''
+			array{
+				name: string,
+				path: string,
+			}
+		'''

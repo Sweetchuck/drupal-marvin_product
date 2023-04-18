@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Drush\Commands\marvin_product;
 
 use Consolidation\SiteAlias\SiteAliasManagerAwareTrait;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\marvin\CommandsBase;
 use Drush\Drush;
 use Drush\SiteAlias\SiteAliasManagerAwareInterface;
@@ -26,12 +28,21 @@ class MigrateCommands extends CommandsBase implements SiteAliasManagerAwareInter
    * This kind of $groupName has to be defined in a "drush.yml" file,
    * under the "marvin.migrate.*" key.
    *
-   * @command marvin:migrate
-   *
-   * @usage drush marvin:migrate default
-   *
    * @todo Validate $groupName.
+   *
+   * @todo Remove these commands.
+   * @todo The concept of "marvin.environment.modules" also not a good idea.
    */
+  #[CLI\Command(name: 'marvin:migrate')]
+  #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+  #[CLI\Argument(
+    name: 'groupName',
+    description: 'Name of the migration group defined in the "drush.yml#.marvin.migrate".',
+  )]
+  #[CLI\Usage(
+    name: 'drush marvin:migrate default',
+    description: 'Basic usage',
+  )]
   public function cmdMigrateImportExecute(string $groupName): CollectionBuilder {
     return $this->getTaskMigrateImport($groupName);
   }

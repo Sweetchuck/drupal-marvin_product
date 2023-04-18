@@ -9,7 +9,7 @@ use Drush\Commands\marvin\ArtifactBuildCommandsBase;
 use Robo\State\Data as RoboStateData;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 abstract class ArtifactBuildProductCommandsBase extends ArtifactBuildCommandsBase {
 

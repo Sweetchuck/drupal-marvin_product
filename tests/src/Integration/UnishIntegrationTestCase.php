@@ -37,7 +37,30 @@ class UnishIntegrationTestCase extends ExistingSiteBase {
   }
 
   public function getDrupalRoot(): string {
-    return Path::join($this->getMarvinProductRootDir(), "tests/fixtures/{$this->projectName}/docroot");
+    return Path::join(
+      $this->getMarvinProductRootDir(),
+      "tests/fixtures/{$this->projectName}/docroot",
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function convertKeyValueToFlag(string $key, mixed $value): string {
+    if (!isset($value) || $value === TRUE) {
+      return "--$key";
+    }
+
+    if (!is_array($value)) {
+      return "--$key=" . self::escapeshellarg((string) $value);
+    }
+
+    $result = [];
+    foreach ($value as $v) {
+      $result[] = "--$key=" . self::escapeshellarg((string) $v);
+    }
+
+    return implode(' ', $result);
   }
 
 }

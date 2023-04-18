@@ -15,6 +15,7 @@ orbs:
   COMPOSER_MEMORY_LIMIT: '-1'
   COMPOSER_DISABLE_XDEBUG_WARN: '1'
   COMPOSER_CACHE_DIR: '/home/circleci/.cache/composer'
+  COMPOSER_IGNORE_PLATFORM_REQ: 'php'
 
 .env_node: &env_node
   NVM_DIR: '/home/circleci/.nvm'
@@ -41,20 +42,20 @@ executors:
     docker:
       -
         name: 'main'
-        image: 'cimg/php:8.1'
-
-  php_plus1:
-    resource_class: 'small'
-    environment:
-      <<: *env_app
-      <<: *env_xdebug
-      <<: *env_composer
-      <<: *env_node
-      <<: *env_test
-    docker:
-      -
-        name: 'main'
         image: 'cimg/php:8.2'
+
+#  php_plus1:
+#    resource_class: 'small'
+#    environment:
+#      <<: *env_app
+#      <<: *env_xdebug
+#      <<: *env_composer
+#      <<: *env_node
+#      <<: *env_test
+#    docker:
+#      -
+#        name: 'main'
+#        image: 'cimg/php:8.3'
 
 commands:
   install_php_extension_gd:
@@ -144,6 +145,7 @@ commands:
         run:
           name: 'Composer - install'
           command: |
+            sudo composer self-update
             composer install --no-progress
       -
         save_cache:
@@ -248,4 +250,4 @@ workflows:
             parameters:
               executor:
                 - 'php_min'
-                - 'php_plus1'
+#                - 'php_plus1'

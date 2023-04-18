@@ -5,21 +5,21 @@ declare(strict_types = 1);
 namespace Drupal\marvin_product\Robo\Task;
 
 use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
-use Drupal\marvin_product\Utils as MarvinProductUtils;
 use Drupal\marvin\Robo\Task\BaseTask;
+use Drupal\marvin_product\Utils as MarvinProductUtils;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Common\IO;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @deprecated
  */
 class GitHooksDeployTask extends BaseTask implements
-    ContainerAwareInterface,
-    OutputAwareInterface {
+  ContainerAwareInterface,
+  OutputAwareInterface {
 
   use ContainerAwareTrait;
   use IO;
@@ -36,10 +36,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this->hookFilesSourceDir;
   }
 
-  /**
-   * @return $this
-   */
-  public function setHookFilesSourceDir(string $value) {
+  public function setHookFilesSourceDir(string $value): static {
     $this->hookFilesSourceDir = $value;
 
     return $this;
@@ -51,10 +48,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this->commonTemplateFileName;
   }
 
-  /**
-   * @return $this
-   */
-  public function setCommonTemplateFileName(string $value) {
+  public function setCommonTemplateFileName(string $value): static {
     $this->commonTemplateFileName = $value;
 
     return $this;
@@ -68,10 +62,8 @@ class GitHooksDeployTask extends BaseTask implements
 
   /**
    * Absolute path to the project root dir.
-   *
-   * @return $this
    */
-  public function setProjectRootDir(string $value) {
+  public function setProjectRootDir(string $value): static {
     $this->projectRootDir = $value;
 
     return $this;
@@ -83,10 +75,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this->composerExecutable;
   }
 
-  /**
-   * @return $this
-   */
-  public function setComposerExecutable(string $value) {
+  public function setComposerExecutable(string $value): static {
     $this->composerExecutable = $value;
 
     return $this;
@@ -101,10 +90,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this->drushConfigPaths;
   }
 
-  /**
-   * @return $this
-   */
-  public function setDrushConfigPaths(array $drushConfigPaths) {
+  public function setDrushConfigPaths(array $drushConfigPaths): static {
     $this->drushConfigPaths = $drushConfigPaths;
 
     return $this;
@@ -155,9 +141,6 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  /**
-   * {@inheritdoc}
-   */
   protected function runAction(): static {
     $context = [
       'getHookFilesSourceDir' => $this->getHookFilesSourceDir(),
@@ -193,10 +176,7 @@ class GitHooksDeployTask extends BaseTask implements
       ->runActionCopyCommonFile();
   }
 
-  /**
-   * @return $this
-   */
-  protected function runActionPrepareDestinationDir() {
+  protected function runActionPrepareDestinationDir(): static {
     $destinationDir = $this->getDestinationDir();
 
     if (is_link($destinationDir)) {
@@ -219,10 +199,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  /**
-   * @return $this
-   */
-  protected function runActionCopyHookFiles() {
+  protected function runActionCopyHookFiles(): static {
     /** @var \Symfony\Component\Finder\SplFileInfo[] $hookFiles */
     $hookFiles = $this->getHookFiles($this->getHookFilesSourceDir());
     $destinationDir = $this->getDestinationDir();
@@ -234,10 +211,7 @@ class GitHooksDeployTask extends BaseTask implements
     return $this;
   }
 
-  /**
-   * @return $this
-   */
-  protected function runActionCopyCommonFile() {
+  protected function runActionCopyCommonFile(): static {
     $this->fs->dumpFile(
       Path::join($this->getDestinationDir(), '_common.php'),
       $this->replaceTemplateVariables(file_get_contents($this->getCommonTemplateFileName()))
