@@ -5,6 +5,7 @@
     "license": "GPL-3.0-or-later",
     "keywords": [
         "drupal",
+        "drupal-11",
         "drush"
     ],
     "homepage": "https://github.com/Sweetchuck/drupal-marvin_product",
@@ -25,12 +26,12 @@
         "sort-packages": true
     },
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "ext-json": "*",
-        "consolidation/robo": "^4.0",
-        "drupal/marvin": "3.x-dev",
+        "consolidation/robo": "^5.0",
+        "drupal/marvin": "4.x-dev",
         "sweetchuck/utils": "2.x-dev",
-        "symfony/yaml": "^6.3"
+        "symfony/yaml": "^6.3 || ^7.0"
     },
     "require-dev": {
         "behat/mink": "^1.10",
@@ -44,7 +45,7 @@
         "weitzman/drupal-test-traits": "^2.1"
     },
     "suggest": {
-        "drush/drush": "^12.0"
+        "drush/drush": "^13.0"
     },
     "conflict": {
         "drupal/marvin_incubator": "*"
