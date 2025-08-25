@@ -15,6 +15,13 @@ marvin:
   machineName: 'app'
 
   ##
+  # @todo
+  #
+  # @var string
+  ##
+  artifactDir: 'artifacts'
+
+  ##
   # The keys are custom, the structure of the value is pre-defined.
   #
   # @var array

@@ -29,7 +29,6 @@ class ArtifactBuildVanillaCommands extends ArtifactBuildProductCommandsBase {
   )]
   public function onEventMarvinArtifactTypes(string $projectType): array {
     if (!$this->isApplicable($projectType)) {
-      var_dump("\$projectType = $projectType");
       return [];
     }
 
