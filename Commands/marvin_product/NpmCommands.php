@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drush\Commands\marvin_product;
 
@@ -11,6 +11,11 @@ use Drush\Commands\marvin\NpmCommandsBase;
 use Robo\Collection\CollectionBuilder;
 use Robo\State\Data as RoboStateData;
 
+/**
+ * @deprecated
+ *
+ * @todo Convert command marvin:build:npm => marvin:build:frontend.
+ */
 class NpmCommands extends NpmCommandsBase {
 
   #[CLI\Hook(

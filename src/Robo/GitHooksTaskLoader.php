@@ -1,12 +1,15 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\marvin_product\Robo;
 
 use Drupal\marvin_product\Robo\Task\GitHooksDeployTask;
 use Robo\Collection\CollectionBuilder;
 
+/**
+ * @deprecated
+ */
 trait GitHooksTaskLoader {
 
   /**

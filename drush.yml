@@ -1,0 +1,229 @@
+marvin:
+  ##
+  # @todo
+  #
+  # @var string
+  ##
+  projectType: 'product'
+
+  ##
+  # @todo
+  #
+  # @var string
+  ##
+  machineName: 'app'
+
+  ##
+  # @todo
+  #
+  # @var string
+  ##
+  artifactDir: 'artifacts'
+
+  ##
+  # Keys are directory names under DRUPAL_ROOT/sites/.
+  #
+  # @todo Maybe the keys should be in the same format as the $site_path variable in the settings.php.
+  #
+  # @var array
+  ##
+  sites:
+    default:
+      id: 'default'
+      enabled: true
+      weight: -999
+      defaultUri: 'default'
+      uriList:
+        default:
+          uri: 'http://localhost'
+          languages:
+            en: -999
+
+marvin_product:
+
+  finderDefinitionHelpers:
+    notPath: &finderDefinitionHelperNotPath
+      JetBrains: '.idea'
+      PhpStorm: '.phpstorm.meta.php'
+      kdev4: '.kdev4'
+      kdev5: '.kdev5'
+      kdev6: '.kdev6'
+      kate-project: '.kateproject.d'
+      NetBeansProject: 'nbproject'
+      NetBeansSettings: '.settings'
+      NodeJS: 'node_modules'
+
+    notName: &finderDefinitionHelperNotName
+      # Some old tooling might add this file, to describe what patches were applied.
+      patches: 'PATCHES.txt'
+#      jetBrains-old: '___jb_old___'
+      kde-directory: '.directory'
+      kdev4: '*.kdev4'
+      kdev5: '*.kdev5'
+      kdev6: '*.kdev6'
+      kdev: '.kdev*'
+      kate-swap: '*.kate-swp'
+      kate-config: '*.kateconfig'
+      kate-project: '*.kateproject'
+      lokalize: '*.lokalize'
+      mac-directory: '.DS_Store'
+      scss: '*.scss'
+      npm-package: 'package.json'
+      npm-lockfile: 'package-lock.json'
+      yarn-lockfile: 'yarn.lock'
+      a: 'cifs*'
+      b: '*~'
+      c: '.buildpath'
+      d: '.project'
+      e: '*.swp'
+      f: 'nohup.out'
+      g: '.~lock.*'
+
+  artifact:
+    vanilla:
+      ##
+      # "in" relative from the project root.
+      ##
+      filesToCopyDefinitions:
+        composerBase:
+          enabled: true
+          src:
+            in: '.'
+            depth: '== 0'
+            files: true
+            name:
+              j: 'composer.json'
+              l: 'composer.lock'
+              p: 'patches.lock.json'
+        composerPatches:
+          enabled: true
+          src:
+            in: 'patches'
+            files: true
+            name:
+              p: '*.patch'
+        drupalModulesCustom:
+          enabled: true
+          src:
+            in: 'docroot/modules/custom'
+            files: true
+            notPath:
+              <<: *finderDefinitionHelperNotPath
+            notName:
+              <<: *finderDefinitionHelperNotName
+        drupalThemesCustom:
+          enabled: false
+          src:
+            in: 'docroot/themes/custom'
+            files: true
+            notPath:
+              <<: *finderDefinitionHelperNotPath
+            notName:
+              <<: *finderDefinitionHelperNotName
+        drupalProfilesCustom:
+          enabled: true
+          src:
+            in: 'docroot/profiles/custom'
+            files: true
+            notPath:
+              <<: *finderDefinitionHelperNotPath
+            notName:
+              <<: *finderDefinitionHelperNotName
+        drupalSitesOuterAll:
+          enabled: true
+          src:
+            in: 'sites/all'
+            files: true
+            name:
+              po: '*.po'
+              txt: '*.txt'
+        drupalSitesOuterOther:
+          enabled: true
+          src:
+            in: 'sites'
+            files: true
+            notPath:
+              all: '@^all/@'
+              st: '@^simpletest/@'
+              ba: '@^[^/]+/backup/@'
+              ce: '@^[^/]+/certs/@'
+              ps: '@^[^/]+/php_storage/@'
+              pf: '@^[^/]+/private/@'
+              tf: '@^[^/]+/temporary/@'
+            notName:
+              hs: 'hash_salt.txt'
+        drupalSitesInnerSitesPhp:
+          enabled: false
+          src:
+            in: 'docroot/sites'
+            files: true
+            depth: '== 0'
+            name:
+              php: 'sites.php'
+        drupalSitesInnerSettingsPhp:
+          enabled: true
+          src:
+            in: 'docroot/sites'
+            files: true
+            depth: '== 1'
+            notPath:
+              st: '@^simpletest/@'
+            name:
+              php: 'settings.php'
+        drushConfig:
+          enabled: true
+          src:
+            in: 'drush'
+            depth: '== 0'
+            files: true
+            notName:
+              d: 'drush.ddev.yml'
+              h: 'drush.host.yml'
+              l: 'drush.local.yml'
+        drushSites:
+          enabled: true
+          src:
+            in: 'drush/sites'
+            files: true
+            name:
+              yml: '*.yml'
+        drushCommandsCustom:
+          enabled: true
+          src:
+            in: 'drush/Commands/custom'
+            files: true
+            notPath:
+              <<: *finderDefinitionHelperNotPath
+            notName:
+              <<: *finderDefinitionHelperNotName
+      filesToDeleteDefinitions:
+        composerPatchesDir:
+          # @todo The "patches" directory can't be targeted directly because it causes some iterator problem.
+          # Needs more investigation
+          enabled: true
+          src:
+            in: '{{ buildDir }}/patches'
+            files: true
+            name:
+              patch: '*.patch'
+        composerPatchesLock:
+          enabled: true
+          src:
+            in: '{{ buildDir }}'
+            depth: '== 0'
+            files: true
+            name:
+              a: 'patches.lock.json'
+              b: '*-patches.lock.json'
+        directoriesByNameNonRoot:
+          enabled: true
+          src:
+            in: '{{ buildDir }}'
+            depth: '> 0'
+            directories: true
+            ignoreDotFiles: false
+            ignoreVCS: false
+            name:
+              # Command "composer install" might add ".git" directories.
+              git: '.git'
+

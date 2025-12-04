@@ -1,15 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\marvin_product\EnvConfig;
 
 class SitesPhpGenerator {
 
-  /**
-   * @var array
-   */
-  protected $mapping = [];
+  protected array $mapping = [];
 
   public function getMapping(): array {
     return $this->mapping;
@@ -21,10 +18,7 @@ class SitesPhpGenerator {
     return $this;
   }
 
-  /**
-   * @var string
-   */
-  protected $envVarNamePattern = '{{ upper }}';
+  protected string $envVarNamePattern = '{{ upper }}';
 
   public function getEnvVarNamePattern(): string {
     return $this->envVarNamePattern;
@@ -36,7 +30,7 @@ class SitesPhpGenerator {
     return $this;
   }
 
-  public function generate() {
+  public function generate(): string {
     $mapping = $this->getMapping();
     if (!count($mapping)) {
       return implode("\n", [

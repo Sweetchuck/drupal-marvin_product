@@ -1,12 +1,17 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\marvin_product\EnvConfig;
 
 use Drupal\marvin_product\Utils as MarvinProductUtils;
 use Sweetchuck\Utils\Filter\EnabledFilter;
 
+/**
+ * @deprecated
+ *
+ * @todo This might be deleted.
+ */
 class DrupalConfigConverter {
 
   public function getKeyValuePairs(iterable $envConfig, array $sites): string {
