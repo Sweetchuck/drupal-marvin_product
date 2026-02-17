@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drupal\marvin\ContainerInitializer;
 use Drupal\marvin\Robo\SymlinkTaskTrait;
 use Drupal\marvin\RuntimeEnvironment\CommandEvent as RteCommandEvent;
 use Drupal\marvin\RuntimeEnvironment\DetectCurrentEvent as RteDetectCurrentEvent;
+use Drupal\marvin_product\ContainerInitializer;
 use Drush\Attributes\Bootstrap as CliBootstrap;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
