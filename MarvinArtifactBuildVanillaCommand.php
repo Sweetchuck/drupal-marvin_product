@@ -305,7 +305,7 @@ final class MarvinArtifactBuildVanillaCommand extends Command implements
         $changed = FALSE;
         $relative = Path::makeRelative($state['srcDir'], $state['buildDir']);
         foreach ($json['repositories'] as $repoId => $repo) {
-          if (!Path::isRelative($repo['url'])) {
+          if (!isset($repo['url']) || !Path::isRelative($repo['url'])) {
             continue;
           }
 
@@ -375,7 +375,7 @@ final class MarvinArtifactBuildVanillaCommand extends Command implements
 
         $this->fs->rename(
           Path::join($state['buildDir'], $state['oldDrupalRootDir']),
-          Path::join($state['buildDir'], $state['newDrupalRootDir'])
+          Path::join($state['buildDir'], $state['newDrupalRootDir']),
         );
 
         $drushYmlFileName = Path::join($state['buildDir'], 'drush', 'drush.yml');
@@ -386,7 +386,7 @@ final class MarvinArtifactBuildVanillaCommand extends Command implements
             $this->fs->readFile($drushYmlFileName),
             [
               sprintf($pattern, $state['oldDrupalRootDir']) => sprintf($pattern, $state['newDrupalRootDir']),
-            ]
+            ],
           );
 
           $this->fs->dumpFile($drushYmlFileName, $drushYmlContent);
@@ -402,7 +402,7 @@ final class MarvinArtifactBuildVanillaCommand extends Command implements
           $newPath = preg_replace(
             $pattern,
             $state['newDrupalRootDir'] . '/',
-            $oldPath
+            $oldPath,
           );
 
           $json['extra']['installer-paths'][$newPath] = $conditions;
@@ -410,7 +410,7 @@ final class MarvinArtifactBuildVanillaCommand extends Command implements
 
         $this->fs->dumpFile(
           $composerInfo->getJsonFilePath(),
-          json_encode($json, $this->utils->getJsonEncodeFlags())
+          json_encode($json, $this->utils->getJsonEncodeFlags()),
         );
 
         $composerInfo->invalidate();
