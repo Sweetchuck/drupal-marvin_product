@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Drush\Commands\marvin_product;
 
 use Drupal\marvin\ComposerInfo;
-use Drupal\marvin\ContainerInitializer;
 use Drupal\marvin\RuntimeEnvironment\CommandEvent as RteCommandEvent;
 use Drupal\marvin\RuntimeEnvironment\Handler as RteHandler;
-use Drupal\marvin_product\Onboarding\CommandEvent as OnboardingCommandEvent;
 use Drupal\marvin\MarvinTaskDefinitionCommandTrait;
 use Drupal\marvin\Utils;
+use Drupal\marvin_product\ContainerInitializer;
+use Drupal\marvin_product\Onboarding\CommandEvent as OnboardingCommandEvent;
 use Drupal\marvin_product\Site\Collector as SiteCollector;
 use Drush\Attributes\Bootstrap as CliBootstrap;
 use Drush\Boot\DrupalBootLevels;

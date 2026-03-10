@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Drush\Commands\marvin_product;
 
 use Drupal\marvin\Build\CommandEvent as BuildCommandEvent;
-use Drupal\marvin\ContainerInitializer;
 use Drupal\marvin\MarvinTaskDefinitionCommandTrait;
 use Drupal\marvin\Utils;
+use Drupal\marvin_product\ContainerInitializer;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Attributes\Bootstrap as CliBootstrap;
 use Drush\Commands\AutowireTrait;

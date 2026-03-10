@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drupal\marvin\ContainerInitializer;
 use Drupal\marvin\Lint\CommandEvent as LintCommandEvent;
 use Drupal\marvin\MarvinTaskDefinitionCommandTrait;
 use Drupal\marvin\Utils;
 use Drupal\marvin_product\CommandsBaseTrait;
+use Drupal\marvin_product\ContainerInitializer;
 use Drush\Attributes\Bootstrap as CliBootstrap;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;

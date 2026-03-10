@@ -28,10 +28,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 #[CliBootstrap(level: DrupalBootLevels::NONE)]
 final class MarvinSubscriberRuntimeEnvironmentCommand extends Command implements BuilderAwareInterface {
 
-  use TaskAccessor;
   use AutowireTrait {
     create as protected autowireCreate;
   }
+  use TaskAccessor;
   use SymlinkTaskTrait;
 
   public const string NAME = 'marvin-product:subscriber:runtime-environment';

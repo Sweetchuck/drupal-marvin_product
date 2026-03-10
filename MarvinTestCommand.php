@@ -8,9 +8,11 @@ use Drupal\marvin\Test\CommandEvent as TestCommandEvent;
 use Drupal\marvin\MarvinTaskDefinitionCommandTrait;
 use Drupal\marvin\Utils;
 use Drupal\marvin_product\CommandsBaseTrait;
+use Drupal\marvin_product\ContainerInitializer;
 use Drush\Attributes\Bootstrap as CliBootstrap;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Robo\Contract\BuilderAwareInterface;
 use Robo\TaskAccessor;
@@ -28,12 +30,23 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 #[CliBootstrap(level: DrupalBootLevels::NONE)]
 final class MarvinTestCommand extends Command implements BuilderAwareInterface {
 
-  use AutowireTrait;
+  use AutowireTrait {
+    create as protected autowireCreate;
+  }
   use TaskAccessor;
   use CommandsBaseTrait;
   use MarvinTaskDefinitionCommandTrait;
 
   public const string NAME = 'marvin:test';
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): self {
+    ContainerInitializer::initialize($container);
+
+    return self::autowireCreate($container);
+  }
 
   public function __construct(
     #[Autowire('eventDispatcher')]

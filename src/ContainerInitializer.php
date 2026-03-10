@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Drupal\marvin_product;
 
+use Drupal\marvin\ContainerInitializer as ContainerInitializerMarvin;
 use Drupal\marvin\ContainerInitializerBase;
 use Drupal\marvin_product\Site\Collector as SiteCollector;
-use Psr\Container\ContainerInterface;
 
 class ContainerInitializer extends ContainerInitializerBase {
 
-  #[\Override]
-  public static function isInitialized(ContainerInterface $container): bool {
-    return $container->has(SiteCollector::class);
+  /**
+   * {@inheritdoc}
+   */
+  public static function getDependencies(): array {
+    return [
+      ContainerInitializerMarvin::class,
+    ];
   }
 
   #[\Override]

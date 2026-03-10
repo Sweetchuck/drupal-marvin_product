@@ -6,7 +6,7 @@ namespace Drush\Commands\marvin_product;
 
 use Drupal\marvin_product\Site\CollectEvent;
 use Drupal\marvin_product\Site\Collection;
-use Drupal\marvin\ContainerInitializer;
+use Drupal\marvin_product\ContainerInitializer;
 use Drupal\marvin_product\Site\Collector as SiteCollector;
 use Drush\Attributes\Bootstrap as CliBootstrap;
 use Drush\Attributes\DefaultFields as CliDefaultFields;

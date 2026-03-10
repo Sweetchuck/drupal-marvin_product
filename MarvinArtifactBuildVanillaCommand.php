@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Drush\Commands\marvin_product;
 
-use Drupal\marvin\ComposerInfo;
-use Drupal\marvin_product\ContainerInitializer;
-use Drupal\marvin\MarvinTaskDefinitionCommandTrait;
-use Drupal\marvin\Robo\SymlinkTaskTrait;
 use Drupal\marvin\Artifact\BuildActionEvent;
 use Drupal\marvin\ArtifactType\ArtifactTypeListEvent;
+use Drupal\marvin\ComposerInfo;
+use Drupal\marvin\MarvinTaskDefinitionCommandTrait;
+use Drupal\marvin\Robo\SymlinkTaskTrait;
 use Drupal\marvin\Utils;
+use Drupal\marvin_product\ContainerInitializer;
 use Drush\Attributes\Bootstrap as CliBootstrap;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
